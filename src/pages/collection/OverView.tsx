@@ -1,5 +1,5 @@
 const OverView = () => {
-  return <p>Collection Summary</p>;
+  return <p>Portfolio</p>;
 };
 
 export default OverView;

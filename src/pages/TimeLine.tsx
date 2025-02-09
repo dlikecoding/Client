@@ -1,20 +1,16 @@
-import { A } from "@solidjs/router";
+import { A, useLocation } from "@solidjs/router";
+import { createMemo } from "solid-js";
+import FooterCollection from "./collection/FooterCollection";
+import FooterLibrary from "./library/FooterLibrary";
 
 const TimeLine = () => {
+  const location = useLocation();
+  const currentPage = createMemo(() => location.pathname.split("/")[1]);
   return (
     <>
       TimeLine
       <nav>
-        <li>
-          <A href="/library">Year</A>
-        </li>
-        <li>
-          <A href="/library/month">Month</A>
-        </li>
-        <li>
-          <A href="/library/view">View</A>
-        </li>
-
+        {currentPage() === "library" ? <FooterLibrary /> : <FooterCollection />}
         <li>
           <A href="/">Close</A>
         </li>

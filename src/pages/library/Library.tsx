@@ -1,4 +1,4 @@
-import TimeLine from "./TimeLine";
+import TimeLine from "../TimeLine";
 
 const Library = (props: any) => {
   return (
