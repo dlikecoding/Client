@@ -1,4 +1,4 @@
-import Navigate from "../Navigate";
+import Navigate from "../../components/Navigate";
 
 const Collection = (props: any) => {
   return (

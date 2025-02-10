@@ -199,6 +199,20 @@ h1 {
   color: white;
 }
 
+.setting_contents {
+  background: var(--bg-primary);
+  color: #fff;
+  inset: unset;
+  padding: 0;
+  margin: 0;
+  border: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 95%;
+  height: 100vh;
+  animation: slideIn 0.3s ease;
+}
 /* ================== DELETE CONFIRMATION ================== */
 .delete_contents {
   inset: unset;
@@ -307,6 +321,15 @@ h1 {
   }
   to {
     bottom: 0;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    left: -100%;
+  }
+  to {
+    left: 0;
   }
 }
 

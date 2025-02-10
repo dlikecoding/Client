@@ -1,4 +1,4 @@
-import Navigate from "../Navigate";
+import Navigate from "../../components/Navigate";
 import "../homepage/Home.css";
 
 const Library = (props: any) => {

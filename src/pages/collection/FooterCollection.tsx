@@ -5,10 +5,14 @@ const FooterCollection = () => {
 
   return (
     <>
-      <A href="/collection" inactiveClass="" activeClass="">
+      <A href="/collection" inactiveClass="inactive_button" activeClass="active_button">
         Portfolio
       </A>
-      <A href="#" on:click={() => console.log(`${params.pages} ${params.id}`)} inactiveClass="" activeClass="">
+      <A
+        href={`/${params.pages}/${params.id}`}
+        on:click={() => console.log(`${params.pages} ${params.id}`)}
+        inactiveClass="inactive_button"
+        activeClass="active_button">
         View
       </A>
     </>

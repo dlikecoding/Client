@@ -1,8 +1,8 @@
 import { A, useLocation } from "@solidjs/router";
 import { createMemo } from "solid-js";
-import FooterCollection from "./collection/FooterCollection";
-import FooterLibrary from "./library/FooterLibrary";
-import { CloseIcon, FilterIcon } from "../assets/components/svg-icons";
+import FooterCollection from "../pages/collection/FooterCollection";
+import FooterLibrary from "../pages/library/FooterLibrary";
+import { CloseIcon, FilterIcon } from "../components/svg-icons";
 
 const LIBRARY_PATH = "library";
 
@@ -26,19 +26,6 @@ const Navigate = () => {
         <A href="/">{CloseIcon()}</A>
       </div>
     </div>
-
-    // <div>
-    //   Navigate
-    //   <nav>
-    //     <li>
-    //       <A href="#">Filter</A>
-    //     </li>
-    //     {currentPage() === "library" ? <FooterLibrary /> : <FooterCollection />}
-    //     <li>
-    //       <A href="/">Close</A>
-    //     </li>
-    //   </nav>
-    // </div>
   );
 };
 

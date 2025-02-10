@@ -20,7 +20,7 @@ const App = () => {
   const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
 
   // Catch all unknown URL
-  const NotFound = lazy(() => import("./pages/NotFound"));
+  const NotFound = lazy(() => import("./components/NotFound"));
 
   // Login and signup page
   const Login = lazy(() => import("./pages/auth/Login"));
