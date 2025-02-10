@@ -1,14 +1,16 @@
-import { A } from "@solidjs/router";
+import { A, useParams } from "@solidjs/router";
 
 const FooterCollection = () => {
+  const params = useParams();
+
   return (
     <>
-      <li>
-        <A href="/collection/album">Albums</A>
-      </li>
-      <li>
-        <A href="/collection/dataset">Objects</A>
-      </li>
+      <A href="/collection" inactiveClass="" activeClass="">
+        Portfolio
+      </A>
+      <A href="#" on:click={() => console.log(`${params.pages} ${params.id}`)} inactiveClass="" activeClass="">
+        View
+      </A>
     </>
   );
 };

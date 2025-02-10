@@ -1,12 +1,11 @@
-import TimeLine from "../TimeLine";
+import Navigate from "../Navigate";
 
 const Collection = (props: any) => {
   return (
-    <div>
-      <h1>Collection</h1>
+    <main class="mainHomePage currentActivePage">
       {props.children}
-      <TimeLine />
-    </div>
+      <Navigate />
+    </main>
   );
 };
 

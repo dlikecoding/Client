@@ -1,12 +1,13 @@
-import TimeLine from "../TimeLine";
+import Navigate from "../Navigate";
+import "../homepage/Home.css";
 
 const Library = (props: any) => {
   return (
-    <div>
+    <main class="mainHomePage currentActivePage">
       <h1>Library</h1>
       {props.children}
-      <TimeLine />
-    </div>
+      <Navigate />
+    </main>
   );
 };
 

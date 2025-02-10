@@ -3,15 +3,15 @@ import { A } from "@solidjs/router";
 const FooterLibrary = () => {
   return (
     <>
-      <li>
-        <A href="/library">Year</A>
-      </li>
-      <li>
-        <A href="/library/month">Month</A>
-      </li>
-      <li>
-        <A href="/library/view">View</A>
-      </li>
+      <A href="/library/" inactiveClass="inactive_button" activeClass="active_button">
+        Year
+      </A>
+      <A href="/library/month" inactiveClass="inactive_button" activeClass="active_button">
+        Month
+      </A>
+      <A href="/library/all" inactiveClass="inactive_button" activeClass="active_button">
+        All
+      </A>
     </>
   );
 };
