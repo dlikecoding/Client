@@ -14,13 +14,13 @@ const App = () => {
   const OverView = lazy(() => import("./pages/collection/OverView")); // Collection Summanry page
 
   // View medias (Use for Library and Collection)
-  const PhotoView = lazy(() => import("./pages/PhotoView"));
+  const PhotoView = lazy(() => import("./components/photoview/PhotoView"));
 
   // Admin Dashboard
   const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
 
   // Catch all unknown URL
-  const NotFound = lazy(() => import("./components/NotFound"));
+  const NotFound = lazy(() => import("./components/extents/NotFound"));
 
   // Login and signup page
   const Login = lazy(() => import("./pages/auth/Login"));

@@ -1,12 +1,11 @@
-import Navigate from "../../components/Navigate";
+import Navbar from "../../components/navbar/Navbar";
 import "../homepage/Home.css";
 
 const Library = (props: any) => {
   return (
     <main class="mainHomePage currentActivePage">
-      <h1>Library</h1>
       {props.children}
-      <Navigate />
+      <Navbar />
     </main>
   );
 };

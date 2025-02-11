@@ -1,9 +1,10 @@
-import { CloseIcon } from "../components/svg-icons";
+import { CloseIcon } from "../../components/svg-icons";
 import styles from "./Setting.module.css";
 
 const Setting = () => {
   return (
     <>
+      <h1>Setting</h1>
       <div> Display storage ===================</div>
       <div> Reindex ===================</div>
       <div>Link</div>

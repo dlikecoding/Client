@@ -1,10 +1,10 @@
-import Navigate from "../../components/Navigate";
+import Navbar from "../../components/navbar/Navbar";
 
 const Collection = (props: any) => {
   return (
     <main class="mainHomePage currentActivePage">
       {props.children}
-      <Navigate />
+      <Navbar />
     </main>
   );
 };
