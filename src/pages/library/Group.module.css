@@ -1,37 +1,43 @@
 :root {
   --heightMoYo: 270px;
-  --fontSize: 30px;
-  --fontWeight: 700;
-  --font-titles: 550 1.7em sans-serif;
-  --bottom-padding: 115px;
+  --font-days: 550 1.1em sans-serif;
+  --font-titles: 550 1.4em sans-serif;
 }
 
 .groupContainer {
   position: absolute;
+  width: 100dvw;
+
   top: 0;
   left: 0;
-  z-index: -1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: start;
+  gap: 35px;
 }
 
+/* ////////////////// YEARS ////////////////// */
 .mediaContainer {
   position: relative;
   border-radius: 15px;
   height: var(--heightMoYo);
-  padding: 10px 0 25px 0;
+  color: var(--svg-color);
 }
 
-.mediaContainer > img {
+.mediaContainer > img,
+.monthViewContainer > img {
   height: 100%;
   width: 100%;
   object-fit: cover;
   border-radius: 15px;
-  /* aspect-ratio: 1; */
+  aspect-ratio: 1;
 }
 
 .overlayText {
   position: absolute;
-  margin: 25px;
-  top: 0;
+  margin: 15px;
+  /* top: 0; */
 }
 
 .overlayText > h3 {
@@ -40,14 +46,39 @@
   text-shadow: 1px 1px 12px rgb(0, 0, 0);
 }
 
+/* ////////////////// MONTHS ////////////////// */
+
+.monthViewContainer {
+  position: relative;
+  height: 300px;
+  width: 100%;
+  color: var(--svg-color);
+  text-decoration: none;
+  margin-bottom: 25px;
+}
+
+.titleMonthView {
+  margin: 5px 10px;
+  font: var(--font-titles);
+}
+
+.overlayDay {
+  position: absolute;
+  font: var(--font-days);
+  margin: 15px;
+  text-shadow: 1px 1px 12px rgb(0, 0, 0);
+}
+
 @media (orientation: landscape) {
-  .mediaContainer {
+  .mediaContainer,
+  .monthViewContainer {
     width: 70%;
     transition: all 0.4s ease-in-out;
   }
 }
 @media (orientation: portrait) {
-  .mediaContainer {
+  .mediaContainer,
+  .monthViewContainer {
     width: 100%;
     transition: all 0.4s ease-in-out;
   }

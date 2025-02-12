@@ -1,0 +1,171 @@
+:root {
+  --button-color: #007aff;
+}
+
+.albumAddContainer {
+  width: 100%;
+  height: 99%;
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  background: rgba(28, 27, 29, 1);
+  z-index: 3;
+  animation: onSlideUp 0.3s ease;
+}
+
+@keyframes onSlideUp {
+  0% {
+    transform: translateY(40%);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.albumAddContainer > .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 20px 0;
+  font-size: 18px;
+}
+
+.albumAddContainer > .header > h4 {
+  margin: 0;
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.albumAddContainer > .header > button {
+  margin: 0 12px;
+  color: var(--button-color);
+}
+
+.albumAddContainer > .header > button > svg {
+  width: 25px;
+  height: 25px;
+  stroke: var(--button-color);
+}
+
+.albumAddContainer > h4 {
+  margin: 12px;
+  font-size: 27px;
+}
+
+.dialogContainer {
+  position: fixed;
+
+  border: none;
+  background: rgba(30, 30, 30, 1);
+  border-radius: 15px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  padding: 0;
+}
+
+.dialogContainer::backdrop {
+  backdrop-filter: blur(10px);
+}
+
+.dialogHeader {
+  padding: 25px 15px 10px 0;
+}
+
+.dialogTitle {
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+
+.dialogSubtitle {
+  font-size: 14px;
+  color: #b0b0b0;
+  margin-top: 5px;
+}
+
+.inputContainer {
+  margin: 15px 20px;
+}
+
+.inputContainer > input {
+  width: fit-content;
+  min-width: 95%;
+  padding: 10px 0 10px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #2f2f2f;
+  color: #888;
+  font-size: 16px;
+  margin-bottom: 5px;
+  outline: none;
+  transition: color 0.2s ease-in-out;
+}
+
+.inputContainer > input:focus {
+  color: white;
+  /* padding-left: 10px; */
+}
+
+.dialogButtons {
+  display: flex;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dialogButtons > button {
+  flex: 1;
+  padding: 17px 0;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--button-color);
+}
+
+button.cancelBtn {
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+button.saveBtn:disabled {
+  color: #6e6e6e;
+}
+
+/* /////////////////////////////////////////////////////// */
+.listOfAlbums {
+  position: absolute;
+  top: 140px;
+  bottom: 10px;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  gap: 20px;
+  width: 100%;
+  margin: 0 10px;
+  padding: 0;
+}
+
+.listOfAlbums > div {
+  width: calc(100% / 3 - 20px);
+  height: auto;
+  text-align: center;
+}
+.listOfAlbums > div > div {
+  font-size: medium;
+}
+.listOfAlbums > div > text {
+  font-size: small;
+  color: #bebebe;
+}
+
+.listOfAlbums img {
+  width: 100%;
+  border-radius: 7px;
+  object-fit: cover;
+  aspect-ratio: 1;
+}

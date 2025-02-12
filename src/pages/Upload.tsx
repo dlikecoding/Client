@@ -26,7 +26,7 @@ const Upload = () => {
 
     // Store the user's choice in localStorage
     localStorage.setItem("NoticeUploadInstruction", isChecked.toString());
-    // fileUploaded();
+    fileUploaded();
   };
 
   return (

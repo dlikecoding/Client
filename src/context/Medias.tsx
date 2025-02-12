@@ -7,14 +7,14 @@ interface ContextProps {
   setIsSelected: Setter<boolean>;
 }
 
-const GlobalContext = createContext<ContextProps>();
+const GlobalMediaContext = createContext<ContextProps>();
 
-export function MediaContext(props: any) {
+export const MediaContext = (props: any) => {
   const [items, setItems] = createSignal<Map<number, string>>(new Map());
   const [isSelected, setIsSelected] = createSignal(false);
 
   return (
-    <GlobalContext.Provider
+    <GlobalMediaContext.Provider
       value={{
         items,
         setItems,
@@ -22,8 +22,8 @@ export function MediaContext(props: any) {
         setIsSelected,
       }}>
       {props.children}
-    </GlobalContext.Provider>
+    </GlobalMediaContext.Provider>
   );
-}
+};
 
-export const useMediaContext = () => useContext(GlobalContext)!;
+export const useMediaContext = () => useContext(GlobalMediaContext)!;

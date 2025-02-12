@@ -1,5 +1,5 @@
 import { createContext, useContext, JSX } from "solid-js";
-import { createStore } from "solid-js/store";
+import { createStore, SetStoreFunction } from "solid-js/store";
 
 export type SearchQuery = {
   year: string;
@@ -21,6 +21,24 @@ export type ZoomAndAspect = {
   objectFit: boolean;
 };
 
+export interface MediaType {
+  media_id: string;
+  SourceFile: string;
+  ThumbPath: string;
+  timeFormat: string;
+  isFavorite: boolean;
+  FileType: string;
+  duration?: string;
+  Title: string;
+  FileName: string;
+  FileSize: number;
+  CreateDate: string;
+  UploadAt: string;
+  isHidden: number;
+  isDeleted: number;
+  CameraType?: number;
+}
+
 interface ManageURLContextProviderProps {
   children: JSX.Element;
 }
@@ -30,12 +48,12 @@ type ManageURIContextType = {
   updatePageKey: <T extends keyof SearchQuery>(key: T, value: SearchQuery[T]) => void;
   updatePage: (data: Partial<SearchQuery>) => void;
   resetParams: () => void;
-  isYear: () => boolean;
-  isMonth: () => boolean;
-  isAll: () => boolean;
+
+  displayMedias: MediaType[];
+  setDisplayMedia: SetStoreFunction<MediaType[]>;
 
   view: ZoomAndAspect;
-  setView: any;
+  setView: SetStoreFunction<ZoomAndAspect>;
 };
 
 const ManageURLContext = createContext<ManageURIContextType>();
@@ -47,6 +65,8 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
     nColumn: 3,
     objectFit: true,
   });
+
+  const [displayMedias, setDisplayMedia] = createStore<any[]>([]);
 
   // Updates a specific parameter in the query object by key
   const updatePageKey = <T extends keyof SearchQuery>(key: T, value: SearchQuery[T]) => {
@@ -63,13 +83,9 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
     setParams({ ...defaultParams });
   };
 
-  const isYear = () => !params.year && !params.month;
-  const isMonth = () => !!params.year && !params.month;
-  const isAll = () => !!params.year && !!params.month;
-
   return (
     <ManageURLContext.Provider
-      value={{ params, updatePageKey, updatePage, resetParams, isYear, isMonth, isAll, view, setView }}>
+      value={{ params, updatePageKey, updatePage, resetParams, view, setView, displayMedias, setDisplayMedia }}>
       {props.children}
     </ManageURLContext.Provider>
   );
