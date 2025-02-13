@@ -1,7 +1,25 @@
 import { Match, Show, Switch, type Component } from "solid-js";
 import styles from "./PhotoView.module.css";
 import { useMediaContext } from "../../context/Medias";
-import { MediaType, useManageURLContext } from "../../context/ManageUrl";
+import { useManageURLContext } from "../../context/ManageUrl";
+
+export interface MediaType {
+  media_id: string;
+  SourceFile: string;
+  ThumbPath: string;
+  timeFormat: string;
+  isFavorite: boolean;
+  FileType: string;
+  duration?: string;
+  Title: string;
+  FileName: string;
+  FileSize: number;
+  CreateDate: string;
+  UploadAt: string;
+  isHidden: number;
+  isDeleted: number;
+  CameraType?: number;
+}
 
 interface PhotoProps {
   media: MediaType;

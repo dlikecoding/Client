@@ -1,0 +1,43 @@
+import { createContext, useContext } from "solid-js";
+import { createStore, SetStoreFunction } from "solid-js/store";
+
+export interface MediaType {
+  media_id: string;
+  SourceFile: string;
+  ThumbPath: string;
+  timeFormat: string;
+  isFavorite: boolean;
+  FileType: string;
+  duration?: string;
+  Title: string;
+  FileName: string;
+  FileSize: number;
+  CreateDate: string;
+  UploadAt: string;
+  isHidden: number;
+  isDeleted: number;
+  CameraType?: number;
+}
+
+interface ContextProps {
+  displayMedias: MediaType[];
+  setDisplayMedia: SetStoreFunction<MediaType[]>;
+}
+
+const ViewMediaContext = createContext<ContextProps>();
+
+export const ViewMediaProvider = (props: any) => {
+  const [displayMedias, setDisplayMedia] = createStore<MediaType[]>([]);
+
+  return (
+    <ViewMediaContext.Provider
+      value={{
+        displayMedias,
+        setDisplayMedia,
+      }}>
+      {props.children}
+    </ViewMediaContext.Provider>
+  );
+};
+
+export const useViewMediaContext = () => useContext(ViewMediaContext)!;

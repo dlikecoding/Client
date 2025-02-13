@@ -1,13 +1,16 @@
-import { createSignal, Match, Show, Switch } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import { useMediaContext } from "../../../context/Medias";
 import { forDeleting, forUpdating } from "../../extents/request/fetching";
 import AddToAlbum from "./AddToAlbum";
 import { useManageURLContext } from "../../../context/ManageUrl";
 import { DeleteButton, FavoriteButton, MoreActionButton, RecoverButton, ShareButton } from "../../svg-icons";
+import { useViewMediaContext } from "../../../context/ViewContext";
 
 const ActionNav = () => {
   const { items, setItems, setIsSelected } = useMediaContext();
-  const { params, displayMedias, setDisplayMedia } = useManageURLContext();
+  const { params } = useManageURLContext();
+
+  const { displayMedias, setDisplayMedia } = useViewMediaContext();
 
   const [addToAlbum, setAddToAlbum] = createSignal<boolean>(false);
   const actions = {
@@ -35,9 +38,9 @@ const ActionNav = () => {
       const isNotFavorite: boolean = listOfIndex.some((index) => !displayMedias[index].isFavorite);
       updateValue = isNotFavorite;
 
-      items().forEach((_media_id: string, idx: number) => setDisplayMedia(idx, "isFavorite", isNotFavorite));
+      setDisplayMedia(listOfIndex, "isFavorite", isNotFavorite);
     } else {
-      setDisplayMedia((prev) => prev.filter((_, i) => !listOfIndex.includes(i)));
+      setDisplayMedia((prev) => prev.filter((item, _) => !listOfIds.has(item.media_id)));
     }
 
     setIsSelected((prev) => !prev);
@@ -105,7 +108,10 @@ const ActionNav = () => {
             {params.deleted ? (
               <p>This will permanently delete the selectd photo(s). This action can't be undone</p>
             ) : (
-              <p>The photo(s) will be moved to the Deleted photo(s) for 30 days before being permanently deleted.</p>
+              <p>
+                The photo(s) will be moved to the Recently Deleted photo(s) for 30 days before being permanently
+                deleted.
+              </p>
             )}
 
             <button class="deleteBtn" on:click={params.deleted ? actions.deleteOnSV : actions.delete}>

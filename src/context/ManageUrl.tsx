@@ -21,24 +21,6 @@ export type ZoomAndAspect = {
   objectFit: boolean;
 };
 
-export interface MediaType {
-  media_id: string;
-  SourceFile: string;
-  ThumbPath: string;
-  timeFormat: string;
-  isFavorite: boolean;
-  FileType: string;
-  duration?: string;
-  Title: string;
-  FileName: string;
-  FileSize: number;
-  CreateDate: string;
-  UploadAt: string;
-  isHidden: number;
-  isDeleted: number;
-  CameraType?: number;
-}
-
 interface ManageURLContextProviderProps {
   children: JSX.Element;
 }
@@ -48,9 +30,6 @@ type ManageURIContextType = {
   updatePageKey: <T extends keyof SearchQuery>(key: T, value: SearchQuery[T]) => void;
   updatePage: (data: Partial<SearchQuery>) => void;
   resetParams: () => void;
-
-  displayMedias: MediaType[];
-  setDisplayMedia: SetStoreFunction<MediaType[]>;
 
   view: ZoomAndAspect;
   setView: SetStoreFunction<ZoomAndAspect>;
@@ -65,8 +44,6 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
     nColumn: 3,
     objectFit: true,
   });
-
-  const [displayMedias, setDisplayMedia] = createStore<any[]>([]);
 
   // Updates a specific parameter in the query object by key
   const updatePageKey = <T extends keyof SearchQuery>(key: T, value: SearchQuery[T]) => {
@@ -84,8 +61,7 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
   };
 
   return (
-    <ManageURLContext.Provider
-      value={{ params, updatePageKey, updatePage, resetParams, view, setView, displayMedias, setDisplayMedia }}>
+    <ManageURLContext.Provider value={{ params, updatePageKey, updatePage, resetParams, view, setView }}>
       {props.children}
     </ManageURLContext.Provider>
   );
