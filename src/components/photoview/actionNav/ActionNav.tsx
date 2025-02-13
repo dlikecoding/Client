@@ -2,13 +2,13 @@ import { createSignal, Show } from "solid-js";
 import { useMediaContext } from "../../../context/Medias";
 import { forDeleting, forUpdating } from "../../extents/request/fetching";
 import AddToAlbum from "./AddToAlbum";
-import { useManageURLContext } from "../../../context/ManageUrl";
 import { DeleteButton, FavoriteButton, MoreActionButton, RecoverButton, ShareButton } from "../../svg-icons";
 import { useViewMediaContext } from "../../../context/ViewContext";
+import { useParams } from "@solidjs/router";
 
 const ActionNav = () => {
   const { items, setItems, setIsSelected } = useMediaContext();
-  const { params } = useManageURLContext();
+  const params = useParams();
 
   const { displayMedias, setDisplayMedia } = useViewMediaContext();
 
@@ -65,7 +65,7 @@ const ActionNav = () => {
     <>
       <footer style={{ "z-index": 3 }}>
         <div class="actions__toolbar__column is_left">
-          {params.deleted ? (
+          {params.pages === "deleted" ? (
             <button on:click={actions.recovery} disabled={items().size < 1}>
               {RecoverButton()}
             </button>
@@ -82,7 +82,7 @@ const ActionNav = () => {
           </button>
           <button on:click={() => console.log(items())}>{items().size}</button>
 
-          <button popovertarget="actions_contents" disabled={items().size < 1}>
+          <button popovertarget="actions_contents" disabled={items().size < 1 || params.pages === "deleted"}>
             {MoreActionButton()}
           </button>
           <div popover="auto" id="actions_contents" class="popover-container actions_contents">
@@ -93,11 +93,19 @@ const ActionNav = () => {
               }}>
               Add to Album
             </div>
-
-            {params.hidden ? <div on:click={actions.unhide}>Unhide</div> : <div on:click={actions.hide}>Hide</div>}
+            {params.pages === "hidden" ? (
+              <div on:click={actions.unhide}>Unhide</div>
+            ) : (
+              <div on:click={actions.hide}>Hide</div>
+            )}
 
             <div>Slideshow (...)</div>
-            <div>Remove in Training</div>
+
+            {params.pages === "album" ? (
+              <div>Remove from Album</div>
+            ) : params.pages === "dataset" ? (
+              <div>Remove from Dataset</div>
+            ) : null}
           </div>
         </div>
         <div class="actions__toolbar__column is_right">
@@ -105,7 +113,7 @@ const ActionNav = () => {
             {DeleteButton()}
           </button>
           <div popover="auto" id="delete-contents" class="delete_contents">
-            {params.deleted ? (
+            {params.pages === "deleted" ? (
               <p>This will permanently delete the selectd photo(s). This action can't be undone</p>
             ) : (
               <p>
@@ -114,7 +122,7 @@ const ActionNav = () => {
               </p>
             )}
 
-            <button class="deleteBtn" on:click={params.deleted ? actions.deleteOnSV : actions.delete}>
+            <button class="deleteBtn" on:click={params.pages === "deleted" ? actions.deleteOnSV : actions.delete}>
               Delete {items().size} Photo(s)
             </button>
 

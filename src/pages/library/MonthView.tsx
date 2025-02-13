@@ -7,7 +7,7 @@ import { A } from "@solidjs/router";
 
 import { useManageURLContext } from "../../context/ManageUrl";
 import { fetchMediaMonths } from "../../components/extents/request/fetching";
-import { TransitionGroup } from "solid-transition-group";
+
 const MonthView = () => {
   const { params, updatePage } = useManageURLContext();
   const [loadedMedias] = createResource(() => fetchMediaMonths(params.year || "0"));

@@ -9,26 +9,14 @@ import { fetchMedias } from "../extents/request/fetching";
 import PhotoCard from "./PhotoCard";
 import { useIntersectionObserver } from "solidjs-use";
 import NotFound from "../extents/NotFound";
-import { TransitionGroup } from "solid-transition-group";
 import DeviceFilter from "./buttons/DeviceFilter";
 import ActionNav from "./actionNav/ActionNav";
 import Loading from "../extents/Loading";
 import { MediaType, useViewMediaContext } from "../../context/ViewContext";
-
-const pages = {
-  favorite: "Favorite",
-  deleted: "Recently Deleted",
-  hidden: "Hidden",
-  duplicate: "Duplicate",
-  all: "Library",
-  album: "Album",
-  dataset: "Dataset",
-  search: "Search",
-};
+import { getTitle } from "../../App";
 
 const ContextView = () => {
   const paramsUrl = useParams();
-  const currentPage = pages[paramsUrl.pages as keyof typeof pages];
 
   const { isSelected } = useMediaContext();
   const { params, view, resetParams } = useManageURLContext();
@@ -56,11 +44,17 @@ const ContextView = () => {
     month: params.month,
     filterDevice: params.filterDevice,
     filterType: params.filterType,
+    filterObject: params.filterObject,
     sortKey: params.sortKey,
     sortOrder: params.sortOrder,
+
+    favorite: params.favorite,
+    hidden: params.hidden,
+    deleted: params.deleted,
+    duplicate: params.duplicate,
   });
 
-  const [loadedMedias, { mutate, refetch }] = createResource(queries, async (searchParams: SearchQuery) => {
+  const [loadedMedias] = createResource(queries, async (searchParams: SearchQuery) => {
     const newMedia: MediaType[] | null = await fetchMedias(searchParams);
     return setDisplayMedia(newMedia!);
   });
@@ -77,7 +71,7 @@ const ContextView = () => {
     <>
       <header style={{ "z-index": 1 }}>
         <div>
-          <h1>{currentPage}</h1>
+          <h1>{getTitle(paramsUrl.pages)}</h1>
           <p>Aug 8, 2025</p>
         </div>
         <div class="buttonContainer" style={{ "margin-top": "10px" }}>
@@ -97,10 +91,6 @@ const ContextView = () => {
           <Loading />
         </Show>
 
-        {/* <TransitionGroup
-          onExit={(el, done) => {
-            el.animate([]).finished.then(done);
-          }}> */}
         <For each={displayMedias}>
           {(media, index) =>
             displayMedias.length - 1 === index() ? (
@@ -110,7 +100,6 @@ const ContextView = () => {
             )
           }
         </For>
-        {/* </TransitionGroup> */}
       </div>
 
       {/* <p>

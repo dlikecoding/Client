@@ -5,11 +5,12 @@ const FooterCollection = () => {
 
   return (
     <>
-      <A href="/collection" inactiveClass="inactive_button" activeClass="active_button">
+      <A href="/collection/" inactiveClass="inactive_button" activeClass="active_button">
         Portfolio
       </A>
       <A
-        href={`/${params.pages}/${params.id}`}
+        href={`/collection/${params.pages}`}
+        style={{ "pointer-events": "none" }}
         on:click={() => console.log(`${params.pages} ${params.id}`)}
         inactiveClass="inactive_button"
         activeClass="active_button">

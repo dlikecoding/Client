@@ -1,11 +1,25 @@
-import { For, Suspense } from "solid-js";
+import { createResource, For, Suspense } from "solid-js";
 import style from "./OverView.module.css";
 import { A } from "@solidjs/router";
+import { fetchAlbum, fetchStatistic } from "../../components/extents/request/fetching";
+import { useManageURLContext } from "../../context/ManageUrl";
+
+type UpdateKey = "Favorite" | "Hidden" | "Duplicate" | "Recently Deleted";
 
 const OverView = () => {
-  const loadedAlbums = [1, 2, 3, 4, 5, 6];
+  const { updatePage } = useManageURLContext();
 
-  const gotoPage: any = ["favorite", "hidden", "duplicate", "deleted"];
+  const [loadedStatistics, { mutate: statsMutate, refetch: statsRefetch }] = createResource<string, string>(
+    fetchStatistic
+  );
+  const [loadedAlbums, { mutate: albumMutate, refetch: albumRefetch }] = createResource(fetchAlbum);
+
+  const gotoPage: Record<UpdateKey, { [key: string]: number }> = {
+    Favorite: { favorite: 1 },
+    Hidden: { hidden: 1 },
+    Duplicate: { duplicate: 1 },
+    "Recently Deleted": { deleted: 1 },
+  };
 
   return (
     <>
@@ -16,12 +30,17 @@ const OverView = () => {
       </h3>
       <div class={style.album_section}>
         <div class={style.cards}>
-          <For each={loadedAlbums}>
+          <For each={loadedAlbums()}>
             {(album, _) => (
-              <A class={style.albumCard} href={`/collection/dataset/${album}`}>
-                <img src={"album.ThumbPath"} alt="Focus Playlist" />
-                <div> {"album.title"}</div>
-                <p>{"album.media_count"}</p>
+              <A
+                href={`/collection/album/${album.album_id}`}
+                class={style.albumCard}
+                on:click={() => {
+                  console.log(album.album_id);
+                }}>
+                <img src={album.ThumbPath} alt="Focus Playlist" />
+                <div> {album.title}</div>
+                <p>{album.media_count}</p>
               </A>
             )}
           </For>
@@ -35,14 +54,19 @@ const OverView = () => {
       </h3>
       <div class={style.album_section}>
         <div class={style.cards}>
-          <For each={loadedAlbums}>
+          <For each={loadedAlbums()}>
             {(album, _) => (
-              <A class={style.card} href={`/collection/dataset/${album}`}>
-                <img src={"album.ThumbPath"} alt="Focus Playlist" />
+              <A
+                href={`/collection/dataset/${album.album_id}`}
+                class={style.card}
+                on:click={() => {
+                  console.log(album.album_id);
+                }}>
+                <img src={album.ThumbPath} alt="Focus Playlist" />
 
                 <div class={style.cardFooter}>
-                  <div> {"album.title"}</div>
-                  <p>{"album.media_count"}</p>
+                  <div> {album.title}</div>
+                  <p>{album.media_count}</p>
                 </div>
               </A>
             )}
@@ -54,11 +78,26 @@ const OverView = () => {
       <h3>Utilities</h3>
       <div class={style.media_section}>
         <Suspense fallback={<div>Loading...</div>}>
-          <For each={gotoPage}>
+          {/* <For each={gotoPage}>
             {(page, index) => (
               <A href={`/collection/${page}`}>
                 <span>{page}</span>
                 <span>{index()}</span>
+              </A>
+            )}
+          </For> */}
+
+          <For each={Object.entries(loadedStatistics() || {})}>
+            {([key, value], index) => (
+              <A
+                href={`/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}
+                on:click={() => {
+                  const updateData = gotoPage[key as UpdateKey];
+                  if (updateData) return updatePage(updateData);
+                  console.warn(`No update action found for: ${key}`);
+                }}>
+                <span>{key}</span>
+                <span>{value}</span>
               </A>
             )}
           </For>

@@ -2,6 +2,19 @@ import { Route, Router } from "@solidjs/router";
 import { lazy } from "solid-js";
 import AuthGuard from "./pages/auth/AuthGuard";
 
+const viewPages = new Map([
+  ["favorite", { title: "Favorite", page: "favorite" }],
+  ["deleted", { title: "Recently Deleted", page: "deleted" }],
+  ["hidden", { title: "Hidden", page: "hidden" }],
+  ["duplicate", { title: "Duplicate", page: "duplicate" }],
+  ["all", { title: "Library", page: "all" }],
+  ["album", { title: "Album", page: "album" }],
+  ["dataset", { title: "Dataset", page: "dataset" }],
+  ["search", { title: "Search", page: "search" }],
+]);
+
+export const getTitle = (key: string) => viewPages.get(key)?.title;
+
 const App = () => {
   const Homepage = lazy(() => import("./pages/homepage/Home"));
 

@@ -14,6 +14,11 @@ h3 {
   -webkit-overflow-scrolling: touch;
 }
 
+.album_section * {
+  color: aliceblue;
+  text-decoration: none;
+}
+
 /* Album Section Styles ==================================*/
 .albumCard {
   min-width: 190px;

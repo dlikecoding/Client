@@ -1,7 +1,7 @@
 import { A } from "@solidjs/router";
 import { useManageURLContext } from "../../context/ManageUrl";
 
-const FooterLibrary = () => {
+const PageLibrary = () => {
   const { updatePage } = useManageURLContext();
 
   return (
@@ -31,4 +31,4 @@ const FooterLibrary = () => {
   );
 };
 
-export default FooterLibrary;
+export default PageLibrary;
