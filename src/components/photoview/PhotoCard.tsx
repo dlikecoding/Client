@@ -35,8 +35,11 @@ const PhotoCard: Component<PhotoProps> = (props) => {
   const { items, setItems, isSelected } = useMediaContext();
   const { view } = useManageURLContext();
 
-  const handleClick = (idx: number, mediaId: string) => {
-    if (!isSelected()) return;
+  const handleImageClick = (idx: number, mediaId: string) => {
+    if (!isSelected()) {
+      // Open a new modal
+      return;
+    }
     const newItems = new Map(items());
     newItems.has(idx) ? newItems.delete(idx) : newItems.set(idx, mediaId);
     setItems(newItems);
@@ -53,7 +56,7 @@ const PhotoCard: Component<PhotoProps> = (props) => {
       data-thumb={media().ThumbPath}
       data-time={media().timeFormat}
       data-idx={index()}
-      on:click={() => handleClick(index(), media().media_id)}>
+      on:click={() => handleImageClick(index(), media().media_id)}>
       <Show when={view.nColumn < 6}>
         <Show when={items().has(index())}>
           <div class={styles.selectedIcon}></div>

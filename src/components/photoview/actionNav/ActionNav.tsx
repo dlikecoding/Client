@@ -1,11 +1,12 @@
-import { useMediaContext } from "../../../context/Medias";
-import { forDeleting, forUpdating } from "../../extents/request/fetching";
-import { DeleteButtonIcon, RecoverButtonIcon, ShareButtonIcon, UnHiddenIcon } from "../../svg-icons";
-import { useViewMediaContext } from "../../../context/ViewContext";
 import { useParams } from "@solidjs/router";
+import { Match, Show, Switch } from "solid-js";
+
+import { useMediaContext } from "../../../context/Medias";
+import { useViewMediaContext } from "../../../context/ViewContext";
+import { forDeleting, forUpdating } from "../../extents/request/fetching";
+
 import { Favorite } from "./buttons/Favotire";
 import { MoreAction } from "./buttons/MoreAction";
-import { Match, Show, Switch } from "solid-js";
 import { Share } from "./buttons/Share";
 import { Recover } from "./buttons/Recover";
 import { Unhide } from "./buttons/Unhide";
@@ -38,8 +39,6 @@ const ActionNav = () => {
     unhide: () => updateMediaStatus("Hidden", false),
 
     delete: () => updateMediaStatus("DeletedStatus", true),
-    deleteOnSV: () => deleteMediasOnSV(),
-
     recovery: () => updateMediaStatus("DeletedStatus", false),
   };
 
@@ -59,29 +58,18 @@ const ActionNav = () => {
       setDisplayMedia((prev) => prev.filter((item, _) => !listOfIds.has(item.media_id)));
     }
 
-    setIsSelected((prev) => !prev);
+    setIsSelected(false);
     setItems(new Map());
 
     const res = await forUpdating([...listOfIds], updateKey, updateValue!);
     if (!res.ok) console.error(`Failed to update ${updateKey}:`, res);
   };
 
-  const deleteMediasOnSV = async () => {
-    const listOfIds = new Set(items().values());
-    setDisplayMedia((prev) => prev.filter((item, _) => !listOfIds.has(item.media_id)));
-
-    setIsSelected((prev) => !prev);
-    setItems(new Map());
-
-    const res = await forDeleting([...listOfIds]);
-    if (!res.ok) return console.error(`Failed to delete ${listOfIds}:`, res);
-  };
-
   const currentPage = buttonConfig[params.pages as keyof ButtonConfig] || buttonConfig.default;
 
   return (
     <>
-      <footer style={{ "z-index": 3 }}>
+      <footer style={{ "z-index": 1 }}>
         <div class="actions__toolbar__column is_left">
           <Switch fallback={<Share />}>
             <Match when={currentPage.includes("unhide")}>
@@ -105,11 +93,7 @@ const ActionNav = () => {
         </div>
 
         <div class="actions__toolbar__column is_right">
-          <Delete
-            delete={actions.delete}
-            deleteOnSV={actions.deleteOnSV}
-            isDeletePage={currentPage.includes("delete")}
-          />
+          <Delete delete={actions.delete} isDeletePage={currentPage.includes("delete")} />
         </div>
       </footer>
     </>
@@ -117,7 +101,3 @@ const ActionNav = () => {
 };
 
 export default ActionNav;
-
-const shareMedias = (items: Map<number, string>) => {
-  return console.log("Share media: ", items);
-};

@@ -19,7 +19,7 @@ const Navbar = () => {
   const { isSelected } = useMediaContext();
   return (
     <Show when={!isSelected()}>
-      <footer style={{ "z-index": 3 }}>
+      <footer style={{ "z-index": 1 }}>
         <div class="actions__toolbar__column is_left">
           <button popovertarget="filter-timeline" disabled={!paramsUrl.pages}>
             {FilterIcon()}

@@ -14,6 +14,7 @@ import ActionNav from "./actionNav/ActionNav";
 import Loading from "../extents/Loading";
 import { MediaType, useViewMediaContext } from "../../context/ViewContext";
 import { getTitle } from "../../App";
+import Modal from "../modal/Modal";
 
 const ContextView = () => {
   const paramsUrl = useParams();
@@ -109,6 +110,8 @@ const ContextView = () => {
       <Show when={isSelected()}>
         <ActionNav />
       </Show>
+
+      <Modal />
     </>
   );
 };

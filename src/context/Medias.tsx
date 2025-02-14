@@ -9,7 +9,7 @@ interface ContextProps {
 
 const GlobalMediaContext = createContext<ContextProps>();
 
-export const MediaContext = (props: any) => {
+export const MediaContextProvider = (props: any) => {
   const [items, setItems] = createSignal<Map<number, string>>(new Map());
   const [isSelected, setIsSelected] = createSignal(false);
 

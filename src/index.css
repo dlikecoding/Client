@@ -43,6 +43,7 @@ body {
 
 svg {
   stroke: var(--svg-color);
+  stroke-width: 2px;
   fill: var(--svg-color);
 }
 
