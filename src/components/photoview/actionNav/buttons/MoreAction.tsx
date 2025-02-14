@@ -1,5 +1,5 @@
 import { createSignal, Show } from "solid-js";
-import { MoreActionButtonIcon } from "../../../svg-icons";
+import { MoreActionButtonIcon } from "../../../svgIcons";
 import AddToAlbum from "../AddToAlbum";
 import { useParams } from "@solidjs/router";
 import { useMediaContext } from "../../../../context/Medias";

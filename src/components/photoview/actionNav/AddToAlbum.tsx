@@ -3,7 +3,7 @@ import styles from "./AddToAlbum.module.css";
 import { createResource, createSignal, For, Setter } from "solid-js";
 import { useMediaContext } from "../../../context/Medias";
 import { fetchAlbum, fetchAlbumUpdating } from "../../extents/request/fetching";
-import { ZoomInIcon } from "../../svg-icons";
+import { ZoomInIcon } from "../../svgIcons";
 
 interface AddToAlbumProps {
   setAddToAlbum: Setter<boolean>;

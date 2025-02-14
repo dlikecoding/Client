@@ -1,5 +1,5 @@
 import { useMediaContext } from "../../../../context/Medias";
-import { FavoriteButtonIcon } from "../../../svg-icons";
+import { FavoriteButtonIcon } from "../../../svgIcons";
 
 type FavoriteProps = {
   action: () => void;

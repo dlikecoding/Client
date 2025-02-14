@@ -1,5 +1,5 @@
 import { useMediaContext } from "../../../../context/Medias";
-import { ShareButtonIcon } from "../../../svg-icons";
+import { ShareButtonIcon } from "../../../svgIcons";
 
 export const Share = () => {
   const { items } = useMediaContext();

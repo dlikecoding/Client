@@ -1,4 +1,4 @@
-import { UnHiddenIcon } from "../../../svg-icons";
+import { UnHiddenIcon } from "../../../svgIcons";
 
 type UnhideProps = {
   action: () => void;

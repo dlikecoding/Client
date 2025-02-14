@@ -1,4 +1,4 @@
-import { RecoverButtonIcon } from "../../../svg-icons";
+import { RecoverButtonIcon } from "../../../svgIcons";
 
 type RecoverProps = {
   action: () => void;

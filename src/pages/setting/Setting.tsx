@@ -1,4 +1,4 @@
-import { CloseIcon } from "../../components/svg-icons";
+import { CloseIcon } from "../../components/svgIcons";
 import styles from "./Setting.module.css";
 
 const Setting = () => {

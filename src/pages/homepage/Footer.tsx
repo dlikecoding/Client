@@ -1,6 +1,6 @@
 import { A } from "@solidjs/router";
 import Upload from "../Upload";
-import { CollectionIcon, LibraryIcon, SearchIcon, SettingIcon } from "../../components/svg-icons";
+import { CollectionIcon, LibraryIcon, SearchIcon, SettingIcon } from "../../components/svgIcons";
 import Setting from "../setting/Setting";
 
 const Footer = () => {

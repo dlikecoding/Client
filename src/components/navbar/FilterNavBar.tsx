@@ -1,7 +1,7 @@
 import { createSignal, For, Show } from "solid-js";
 
 import { createStore } from "solid-js/store";
-import { SortAscIcon, SortDescIcon, ZoomInIcon, ZoomOutIcon } from "../svg-icons";
+import { SortAscIcon, SortDescIcon, ZoomInIcon, ZoomOutIcon } from "../svgIcons";
 import { useManageURLContext } from "../../context/ManageUrl";
 
 const MAX_NUMBER_OF_COLUMNS = 9; // Zoom out maximum n columns

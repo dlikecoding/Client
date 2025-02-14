@@ -2,7 +2,7 @@ import { createResource, createSignal, For, Show } from "solid-js";
 import { useMediaContext } from "../../../context/Medias";
 import { useManageURLContext } from "../../../context/ManageUrl";
 import { fetchListOfDevices } from "../../extents/request/fetching";
-import { MoreButtonIcon } from "../../svg-icons";
+import { MoreButtonIcon } from "../../svgIcons";
 
 const DeviceFilter = () => {
   const { isSelected } = useMediaContext();

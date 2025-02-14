@@ -1,7 +1,7 @@
 import { useMediaContext } from "../../../../context/Medias";
 import { useViewMediaContext } from "../../../../context/ViewContext";
 import { forDeleting } from "../../../extents/request/fetching";
-import { DeleteButtonIcon } from "../../../svg-icons";
+import { DeleteButtonIcon } from "../../../svgIcons";
 
 type DeleteProps = {
   delete: () => void;

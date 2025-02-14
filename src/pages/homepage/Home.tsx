@@ -2,7 +2,7 @@ import "./Home.css";
 
 import Footer from "./Footer";
 
-import { TestAccountIcon } from "../../components/svg-icons";
+import { TestAccountIcon } from "../../components/svgIcons";
 import { createSignal, For, Show } from "solid-js";
 
 const Home = (props: any) => {

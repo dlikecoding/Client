@@ -1,7 +1,7 @@
 import { A, useLocation, useParams } from "@solidjs/router";
 import FooterCollection from "../../pages/collection/PagesCollection";
 import FooterLibrary from "../../pages/library/PageLibrary";
-import { CloseIcon, FilterIcon } from "../svg-icons";
+import { CloseIcon, FilterIcon } from "../svgIcons";
 import FilterNavBar from "./FilterNavBar";
 import { useMediaContext } from "../../context/Medias";
 import { Show } from "solid-js";
