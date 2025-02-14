@@ -3,14 +3,14 @@ import { lazy } from "solid-js";
 import AuthGuard from "./pages/auth/AuthGuard";
 
 const viewPages = new Map([
-  ["favorite", { title: "Favorite", page: "favorite" }],
-  ["deleted", { title: "Recently Deleted", page: "deleted" }],
-  ["hidden", { title: "Hidden", page: "hidden" }],
-  ["duplicate", { title: "Duplicate", page: "duplicate" }],
-  ["all", { title: "Library", page: "all" }],
-  ["album", { title: "Album", page: "album" }],
-  ["dataset", { title: "Dataset", page: "dataset" }],
-  ["search", { title: "Search", page: "search" }],
+  ["favorite", { title: "Favorite" }],
+  ["deleted", { title: "Recently Deleted" }],
+  ["hidden", { title: "Hidden" }],
+  ["duplicate", { title: "Duplicate" }],
+  ["all", { title: "Library" }],
+  ["album", { title: "Album" }],
+  ["dataset", { title: "Dataset" }],
+  ["search", { title: "Search" }],
 ]);
 
 export const getTitle = (key: string) => viewPages.get(key)?.title;

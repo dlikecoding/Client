@@ -1,5 +1,4 @@
 import { createResource, createSignal, For, Show } from "solid-js";
-import styles from "./Buttons.module.css";
 import { useMediaContext } from "../../../context/Medias";
 import { useManageURLContext } from "../../../context/ManageUrl";
 import { fetchListOfDevices } from "../../extents/request/fetching";
@@ -14,9 +13,7 @@ const DeviceFilter = () => {
 
   return (
     <Show when={!isSelected()}>
-      <button popovertarget="devices-filter-popover" class={styles.btns}>
-        {MoreButtonIcon()}
-      </button>
+      <button popovertarget="devices-filter-popover">{MoreButtonIcon()}</button>
 
       <div popover="auto" id="devices-filter-popover" class="popover-container devices_filter_popover">
         <span
@@ -31,7 +28,7 @@ const DeviceFilter = () => {
         <For each={loadDevices()}>
           {(item) => (
             <div
-              class={selectedCamera() === item.camera_id ? styles.devices_active : ""}
+              class={selectedCamera() === item.camera_id ? "devices_active" : ""}
               on:click={(e) => {
                 e.stopPropagation();
                 setSelectedCamera(item.camera_id);

@@ -265,7 +265,7 @@ footer {
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
-  width: 100%;
+  width: 95%;
   max-width: 390px;
   animation: slideUp 0.3s ease;
 }
@@ -273,8 +273,9 @@ footer {
 .delete_contents > * {
   text-align: center;
   width: 100%;
-  padding: 20px 0;
+  padding: 20px;
   background: var(--bg-primary);
+  box-sizing: border-box;
 }
 
 .delete_contents > p {
@@ -283,6 +284,7 @@ footer {
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   color: #b2b2b2;
   margin: 0;
+  /* width: 100%; */
 }
 
 .delete_contents > .deleteBtn {
