@@ -2,6 +2,7 @@ import { Match, Show, Switch, type Component } from "solid-js";
 import styles from "./PhotoView.module.css";
 import { useMediaContext } from "../../context/Medias";
 import { useManageURLContext } from "../../context/ManageUrl";
+import { useViewMediaContext } from "../../context/ViewContext";
 
 export interface MediaType {
   media_id: string;
@@ -34,12 +35,14 @@ const PhotoCard: Component<PhotoProps> = (props) => {
 
   const { items, setItems, isSelected } = useMediaContext();
   const { view } = useManageURLContext();
+  const { setOpenModal } = useViewMediaContext();
 
   const handleImageClick = (idx: number, mediaId: string) => {
     if (!isSelected()) {
-      // Open a new modal
-      return;
+      window.history.pushState({ state: "Photo Detail" }, "", window.location.href);
+      return setOpenModal(true);
     }
+
     const newItems = new Map(items());
     newItems.has(idx) ? newItems.delete(idx) : newItems.set(idx, mediaId);
     setItems(newItems);

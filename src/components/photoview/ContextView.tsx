@@ -7,7 +7,7 @@ import { useMediaContext } from "../../context/Medias";
 import { SearchQuery, useManageURLContext } from "../../context/ManageUrl";
 import { fetchMedias } from "../extents/request/fetching";
 import PhotoCard from "./PhotoCard";
-import { useIntersectionObserver } from "solidjs-use";
+import { useIntersectionObserver, useWindowScroll } from "solidjs-use";
 import NotFound from "../extents/NotFound";
 import DeviceFilter from "./buttons/DeviceFilter";
 import ActionNav from "./actionNav/ActionNav";
@@ -21,7 +21,7 @@ const ContextView = () => {
 
   const { isSelected } = useMediaContext();
   const { params, view, resetParams } = useManageURLContext();
-  const { displayMedias, setDisplayMedia } = useViewMediaContext();
+  const { openModal, displayMedias, setDisplayMedia } = useViewMediaContext();
 
   const [pageNumber, setPageNumber] = createSignal(0);
   const [target, setTarget] = createSignal<HTMLElement | null>(null);
@@ -68,12 +68,29 @@ const ContextView = () => {
 
   onCleanup(() => resetParams());
 
+  ////////////////////////////////////////////////
+
+  // const { x, y } = useMouse({ type: "client" });
+  const { x, y } = useWindowScroll();
+  // const [el, setEl] = createSignal<HTMLElement>();
+  // const { x, y } = useScroll(el);
+  // const { element } = useElementByPoint({ x: x, y: y });
+
+  createEffect(() => {
+    console.log(x(), y());
+    // console.log(element()?.parentElement);
+  });
+
+  /////////////////////////////////////
   return (
     <>
       <header style={{ "z-index": 1 }}>
         <div>
           <h1>{getTitle(paramsUrl.pages)}</h1>
-          <p>Aug 8, 2025</p>
+          <p>
+            Aug 8, 2025 {x()} {y()}
+          </p>
+          {/* {element()?.parentElement?.dataset.time} --- {x()} {y()} */}
         </div>
         <div class="buttonContainer" style={{ "margin-top": "10px" }}>
           <Show when={view.nColumn < 7}>
@@ -111,7 +128,9 @@ const ContextView = () => {
         <ActionNav />
       </Show>
 
-      <Modal />
+      <Show when={openModal()}>
+        <Modal />
+      </Show>
     </>
   );
 };

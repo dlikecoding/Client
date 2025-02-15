@@ -1,4 +1,4 @@
-import { createContext, useContext } from "solid-js";
+import { Accessor, createContext, createSignal, Setter, useContext } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
 
 export interface MediaType {
@@ -22,6 +22,8 @@ export interface MediaType {
 interface ContextProps {
   displayMedias: MediaType[];
   setDisplayMedia: SetStoreFunction<MediaType[]>;
+  openModal: Accessor<boolean>;
+  setOpenModal: Setter<boolean>;
 }
 
 const ViewMediaContext = createContext<ContextProps>();
@@ -29,11 +31,16 @@ const ViewMediaContext = createContext<ContextProps>();
 export const ViewMediaProvider = (props: any) => {
   const [displayMedias, setDisplayMedia] = createStore<MediaType[]>([]);
 
+  const [openModal, setOpenModal] = createSignal<boolean>(false);
+
   return (
     <ViewMediaContext.Provider
       value={{
         displayMedias,
         setDisplayMedia,
+
+        openModal,
+        setOpenModal,
       }}>
       {props.children}
     </ViewMediaContext.Provider>

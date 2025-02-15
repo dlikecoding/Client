@@ -3,7 +3,7 @@ import { Match, Show, Switch } from "solid-js";
 
 import { useMediaContext } from "../../../context/Medias";
 import { useViewMediaContext } from "../../../context/ViewContext";
-import { forDeleting, forUpdating } from "../../extents/request/fetching";
+import { forUpdating } from "../../extents/request/fetching";
 
 import { Favorite } from "./buttons/Favotire";
 import { MoreAction } from "./buttons/MoreAction";
