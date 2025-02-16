@@ -1,20 +1,24 @@
-import { useParams } from "@solidjs/router";
-import { createEffect, createResource, createSignal, For, onCleanup, Show, Suspense } from "solid-js";
 import style from "./PhotoView.module.css";
 
-import Select from "./buttons/Select";
+import { useParams } from "@solidjs/router";
+import { useElementByPoint, useIntersectionObserver } from "solidjs-use";
+import { createEffect, createResource, createSignal, For, onCleanup, Show } from "solid-js";
+
 import { useMediaContext } from "../../context/Medias";
 import { SearchQuery, useManageURLContext } from "../../context/ManageUrl";
+import { MediaType, useViewMediaContext } from "../../context/ViewContext";
+
 import { fetchMedias } from "../extents/request/fetching";
+
+import { getTitle } from "../../App";
+
 import PhotoCard from "./PhotoCard";
-import { useIntersectionObserver, useWindowScroll } from "solidjs-use";
 import NotFound from "../extents/NotFound";
 import DeviceFilter from "./buttons/DeviceFilter";
 import ActionNav from "./actionNav/ActionNav";
 import Loading from "../extents/Loading";
-import { MediaType, useViewMediaContext } from "../../context/ViewContext";
-import { getTitle } from "../../App";
 import Modal from "../modal/Modal";
+import Select from "./buttons/Select";
 
 const ContextView = () => {
   const paramsUrl = useParams();
@@ -57,7 +61,9 @@ const ContextView = () => {
 
   const [loadedMedias] = createResource(queries, async (searchParams: SearchQuery) => {
     const newMedia: MediaType[] | null = await fetchMedias(searchParams);
-    return setDisplayMedia(newMedia!);
+    setDisplayMedia(newMedia!);
+    setDisplayTime(displayMedias[0]?.timeFormat);
+    return;
   });
 
   const [loadedMoreMedias] = createResource(pageNumber, async (currentPage) => {
@@ -68,29 +74,26 @@ const ContextView = () => {
 
   onCleanup(() => resetParams());
 
-  ////////////////////////////////////////////////
-
-  // const { x, y } = useMouse({ type: "client" });
-  const { x, y } = useWindowScroll();
-  // const [el, setEl] = createSignal<HTMLElement>();
-  // const { x, y } = useScroll(el);
-  // const { element } = useElementByPoint({ x: x, y: y });
+  //Tracking current elemenet on screen based on x and y
+  /////////////////////////////////////
+  const { element } = useElementByPoint({ x: 100, y: 150 });
+  const [displayTime, setDisplayTime] = createSignal<string>(displayMedias[0]?.timeFormat || "");
 
   createEffect(() => {
-    console.log(x(), y());
-    // console.log(element()?.parentElement);
-  });
+    if (openModal()) return;
 
+    const newDate = element()?.parentElement?.dataset.time;
+    // console.log("ContextView: ", newDate);
+    if (newDate) setDisplayTime(newDate);
+  });
   /////////////////////////////////////
+
   return (
     <>
       <header style={{ "z-index": 1 }}>
         <div>
           <h1>{getTitle(paramsUrl.pages)}</h1>
-          <p>
-            Aug 8, 2025 {x()} {y()}
-          </p>
-          {/* {element()?.parentElement?.dataset.time} --- {x()} {y()} */}
+          <p>{displayTime()}</p>
         </div>
         <div class="buttonContainer" style={{ "margin-top": "10px" }}>
           <Show when={view.nColumn < 7}>
