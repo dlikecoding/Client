@@ -17,8 +17,6 @@ export interface MediaType {
   FileSize: number;
   CreateDate: string;
   UploadAt: string;
-  isHidden: number;
-  isDeleted: number;
   CameraType?: number;
 }
 

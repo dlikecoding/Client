@@ -1,9 +1,9 @@
 import styles from "./Modal.module.css";
 
 import { Portal } from "solid-js/web";
-import { createEffect, createSignal, For } from "solid-js";
+import { createEffect, createMemo, createSignal, For } from "solid-js";
 
-import { useElementByPoint } from "solidjs-use";
+import { useElementByPoint, useVirtualList } from "solidjs-use";
 
 import { useViewMediaContext } from "../../context/ViewContext";
 
@@ -19,20 +19,21 @@ const Modal = (props: any) => {
     if (event.state) setOpenModal(false);
   };
 
-  const testListOfIndex = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-
   //Tracking current elemenet on screen based on x and y
   const { element } = useElementByPoint({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-  const [currentElement, setCurrentElement] = createSignal<string>();
 
-  createEffect(() => {
-    const curEl = element()?.parentElement?.dataset.idx;
-
-    console.log(curEl);
-    if (curEl) {
-      setCurrentElement(curEl);
-    }
+  const currentElement = createMemo(() => {
+    const curEl = element()?.parentElement?.dataset.id;
+    if (curEl) return curEl;
   });
+
+  ////////////// Virtual list //////////////////////////////////////////
+  const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(displayMedias, {
+    itemHeight: () => window.innerHeight,
+    overscan: 1, // Only display 3 elements
+  });
+
+  ////////////// END Virtual list //////////////////////////////////////////
 
   return (
     <Portal>
@@ -50,21 +51,23 @@ const Modal = (props: any) => {
             <p style={{ "font-size": "12px" }}>4:02 PM</p>
           </div>
           <div class="buttonContainer">
-            <button>Edit</button>
-            <DeviceFilter />
+            <span>Edit</span>
+            <span>View</span>
           </div>
         </header>
 
-        <div class={styles.modalImages}>
-          <For each={testListOfIndex}>
-            {(mediaIdx, index) => {
-              return (
-                <div class={styles.imageContainer} data-idx={index()}>
-                  <img loading="lazy" src={displayMedias[mediaIdx].SourceFile} alt={`Modal Image ${index()}`} />
-                </div>
-              );
-            }}
-          </For>
+        <div class={styles.modalImages} ref={containerProps.ref} onScroll={containerProps.onScroll}>
+          <div style={wrapperProps().style}>
+            <For each={list()}>
+              {({ data }, index) => {
+                return (
+                  <div class={styles.imageContainer} data-id={data.media_id}>
+                    <img loading="lazy" src={data.SourceFile} alt={`Modal Image ${index()}`} />
+                  </div>
+                );
+              }}
+            </For>
+          </div>
         </div>
         <ActionNav />
       </div>

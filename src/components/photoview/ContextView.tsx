@@ -2,7 +2,7 @@ import style from "./PhotoView.module.css";
 
 import { useParams } from "@solidjs/router";
 import { useElementByPoint, useIntersectionObserver } from "solidjs-use";
-import { createEffect, createResource, createSignal, For, onCleanup, Show } from "solid-js";
+import { createEffect, createMemo, createResource, createSignal, For, onCleanup, Show } from "solid-js";
 
 import { useMediaContext } from "../../context/Medias";
 import { SearchQuery, useManageURLContext } from "../../context/ManageUrl";
@@ -62,7 +62,6 @@ const ContextView = () => {
   const [loadedMedias] = createResource(queries, async (searchParams: SearchQuery) => {
     const newMedia: MediaType[] | null = await fetchMedias(searchParams);
     setDisplayMedia(newMedia!);
-    setDisplayTime(displayMedias[0]?.timeFormat);
     return;
   });
 
@@ -75,18 +74,13 @@ const ContextView = () => {
   onCleanup(() => resetParams());
 
   //Tracking current elemenet on screen based on x and y
-  /////////////////////////////////////
   const { element } = useElementByPoint({ x: 100, y: 150 });
-  const [displayTime, setDisplayTime] = createSignal<string>(displayMedias[0]?.timeFormat || "");
 
-  createEffect(() => {
+  const displayTime = createMemo(() => {
     if (openModal()) return;
-
-    const newDate = element()?.parentElement?.dataset.time;
-    // console.log("ContextView: ", newDate);
-    if (newDate) setDisplayTime(newDate);
+    const dTime = element()?.parentElement?.dataset.time;
+    if (dTime) return dTime;
   });
-  /////////////////////////////////////
 
   return (
     <>
