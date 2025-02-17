@@ -10,7 +10,9 @@
   --backdrop-filter: blur(5px) brightness(0.2);
 
   --text-color: rgb(239, 239, 239);
+
   --button-active-color: rgb(53, 132, 246);
+  --button-delete-color: rgb(224, 58, 40);
 
   --popup-bground: rgba(28, 28, 30, 0.7);
   --popup-bdropfilter: blur(20px) brightness(1);
@@ -262,6 +264,8 @@ footer {
   position: fixed;
   top: 0;
   bottom: 0;
+  left: 0;
+
   width: 95%;
   height: 100%;
   animation: slideIn 0.3s ease;
@@ -305,13 +309,13 @@ footer {
 }
 
 .delete_contents > .deleteBtn {
-  color: rgb(224, 58, 40);
+  color: var(--button-delete-color);
   border-radius: 0 0 12px 12px;
 }
 
 .delete_contents > .cancelBtn {
   font-weight: 500;
-  color: rgb(53, 132, 246);
+  color: var(--button-active-color);
   margin: 5px 0 20px 0;
   border-radius: 12px;
 }

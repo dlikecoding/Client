@@ -4,6 +4,7 @@ import { createStore } from "solid-js/store";
 import { SortAscIcon, SortDescIcon, ZoomInIcon, ZoomOutIcon } from "../svgIcons";
 import { useManageURLContext } from "../../context/ManageUrl";
 
+const MIN_NUMBER_OF_COLUMNS = 3;
 const MAX_NUMBER_OF_COLUMNS = 9; // Zoom out maximum n columns
 
 const FilterTimeline = () => {
@@ -46,7 +47,7 @@ const FilterTimeline = () => {
   return (
     <div popover="auto" id="filter-timeline" class="popover-container filter_timeline">
       <div class="media_type_contents">
-        <button onClick={() => handleZoom(-2)} disabled={view.nColumn === 1}>
+        <button onClick={() => handleZoom(-2)} disabled={view.nColumn === MIN_NUMBER_OF_COLUMNS}>
           {ZoomInIcon()}
         </button>
         <span>Zoom </span>

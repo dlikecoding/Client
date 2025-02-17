@@ -1,0 +1,68 @@
+/* General dialog styling */
+.uploadDialog {
+  position: fixed;
+  top: 0;
+
+  background: var(--popup-bground);
+  backdrop-filter: blur(10px) brightness(1.1);
+  -webkit-backdrop-filter: blur(10px) brightness(1.1);
+
+  border-radius: 15px;
+  width: 400px;
+  max-width: 90%;
+
+  border: none;
+  padding: 0;
+
+  color: var(--text-color);
+
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.dialogHeader {
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 15px 15px 0 0;
+}
+
+.dialogTitle {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.instructionsContent {
+  padding: 12px;
+  margin: 0 12px;
+}
+
+.checkboxLabel {
+  padding: 15px 20px 0 20px;
+  font-size: 14px;
+}
+
+.checkboxInput {
+  margin-right: 12px;
+}
+
+.dialogActions {
+  display: flex;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dialogActions button {
+  flex: 1;
+  padding: 15px 0;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-align: center;
+  color: var(--button-active-color);
+}
+
+.dialogActions > .confirmButton {
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+}

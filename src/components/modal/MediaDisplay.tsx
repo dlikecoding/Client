@@ -15,7 +15,7 @@ const MediaDisplay: Component<MediaTypeProps> = (props: any) => {
 
   return (
     <div ref={curTarget()} class={styles.imageContainer} data-id={media().media_id} data-time={media().CreateDate}>
-      <img loading="lazy" src={media().SourceFile} alt={`Modal Image ${index()}`} />
+      <img inert loading="lazy" src={media().SourceFile} alt={`Modal Image ${index()}`} />
     </div>
   );
 };

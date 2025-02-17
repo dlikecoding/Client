@@ -14,9 +14,8 @@
 .container > .mediaContainer {
   position: relative;
   /* width: calc(100% / 3 - 1px); */
-  aspect-ratio: 1;
   overflow: hidden;
-  transition: all 0.3s;
+  transition: all 0.3s linear;
 }
 
 .imageContainer {
@@ -35,11 +34,6 @@
   transition: transform 0.3s ease;
 }
 
-.imageContainer > span {
-  position: absolute;
-  z-index: 1;
-}
-
 .imageContainer > .cover {
   object-fit: cover;
   transform: scale(1.1);
@@ -50,9 +44,9 @@
   transform: scale(1);
 }
 
-/* .imageContainer > div {
+.imageContainer > div {
   z-index: 1;
-} */
+}
 
 /* Overlay Styles ==================================*/
 .selectedIcon {

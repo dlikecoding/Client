@@ -30,9 +30,14 @@ const Modal = (props: any) => {
   };
 
   // Get a slide of element so can minimal display
-  const [modalEls, setModalEls] = createSignal<MediaType[]>(
-    getSubElements(displayMedias, items().keys().next().value!)
-  );
+  // const [modalEls, setModalEls] = createSignal<MediaType[]>(
+  //   getSubElements(displayMedias, items().keys().next().value!)
+  // );
+
+  const modalEls = () => {
+    const keysArray = Array.from(items().keys());
+    return getSubElements(displayMedias, keysArray[0]!);
+  };
 
   //Tracking current elemenet on screen based on x and y
   const { element } = useElementByPoint({ x: window.innerWidth / 2, y: window.innerHeight / 2 });

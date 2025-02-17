@@ -43,13 +43,14 @@ const AddToAlbum = (props: AddToAlbumProps) => {
           <h4>Add to Album</h4>
           <button
             on:click={() => {
-              document.querySelector("dialog")!.showModal();
+              const dialog = document.getElementById("dialogAlbumContainer") as HTMLDialogElement;
+              if (dialog) dialog.showModal();
             }}>
             {ZoomInIcon()}
           </button>
         </div>
 
-        <dialog id="dialogContainer" class={styles.dialogContainer}>
+        <dialog id="dialogAlbumContainer" class={styles.dialogContainer}>
           <div class={styles.dialogHeader}>
             <div class={styles.dialogTitle}>New Album</div>
             <div class={styles.dialogSubtitle}>Enter a name for this album.</div>
@@ -69,7 +70,8 @@ const AddToAlbum = (props: AddToAlbumProps) => {
               class={styles.cancelBtn}
               on:click={() => {
                 setInputValue("");
-                document.querySelector("dialog")!.close();
+                const dialog = document.getElementById("dialogAlbumContainer") as HTMLDialogElement;
+                if (dialog) dialog.close();
               }}>
               Cancel
             </button>
