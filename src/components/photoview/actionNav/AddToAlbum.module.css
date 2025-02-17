@@ -61,8 +61,11 @@
   position: fixed;
 
   border: none;
+
   background: var(--popup-bground);
-  backdrop-filter: var(--popup-bdropfilter);
+  backdrop-filter: blur(20px) brightness(1);
+  -webkit-backdrop-filter: blur(20px) brightness(1);
+
   border-radius: 15px;
   width: 300px;
   text-align: center;

@@ -13,8 +13,10 @@ import ActionNav from "../photoview/actionNav/ActionNav";
 import { useMediaContext } from "../../context/Medias";
 import MediaDisplay from "./MediaDisplay";
 
+const NUMBER_OF_MEDIAS_MODAL = 5;
+
 const Modal = (props: any) => {
-  const { setOpenModal, displayMedias, setDisplayMedia } = useViewMediaContext();
+  const { setOpenModal, displayMedias } = useViewMediaContext();
   const { items, setItems } = useMediaContext();
 
   const handleCloseModal = () => {
@@ -27,14 +29,10 @@ const Modal = (props: any) => {
     if (event.state) handleCloseModal();
   };
 
-  // ////////////// Virtual list //////////////////////////////////////////
-  // const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(displayMedias, {
-  //   itemHeight: () => window.innerHeight,
-  //   overscan: 2, // Only display 5 elements
-  // });
-  // ////////////// END Virtual list //////////////////////////////////////////
-
-  const modalEls = getSubElements(displayMedias, items().keys().next().value!);
+  // Get a slide of element so can minimal display
+  const [modalEls, setModalEls] = createSignal<MediaType[]>(
+    getSubElements(displayMedias, items().keys().next().value!)
+  );
 
   //Tracking current elemenet on screen based on x and y
   const { element } = useElementByPoint({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
@@ -73,10 +71,10 @@ const Modal = (props: any) => {
         </header>
 
         <div class={styles.modalImages}>
-          <For each={modalEls}>
+          <For each={modalEls()}>
             {(media, index) => {
               return media.media_id === items().values().next().value! ? (
-                <MediaDisplay target={setTargetRef} media={media} index={index()} />
+                <MediaDisplay curTarget={setTargetRef} media={media} index={index()} />
               ) : (
                 <MediaDisplay media={media} index={index()} />
               );
@@ -112,10 +110,8 @@ const formatTime = (timestamp: string): { date: string; time: string } => {
   return { date: formattedDate, time: formattedTime };
 };
 
-const getSubElements = (arr: MediaType[], index: number) => {
-  let result = [];
-  if (index > 0) result.push(arr[index - 1]);
-  if (index >= 0 && index < arr.length) result.push(arr[index]);
-  if (index < arr.length - 1) result.push(arr[index + 1]);
-  return result;
+const getSubElements = (arr: MediaType[], midIdx: number): MediaType[] => {
+  const startIdx = Math.max(0, midIdx - NUMBER_OF_MEDIAS_MODAL);
+  const endIdx = Math.min(arr.length, midIdx + NUMBER_OF_MEDIAS_MODAL + 1);
+  return arr.slice(startIdx, endIdx);
 };

@@ -4,7 +4,7 @@
   /* --font-navigate: 500 17px/16px system-ui, "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif; */
   /* --font-headers: 600 45px/45px system-ui, "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif; */
   --svg-color: rgb(239, 239, 239);
-  --bg-primary: rgb(28, 28, 30);
+  --bg-primary: rgb(19, 19, 20);
   --bg-secondary: rgba(48, 47, 50, 0.9);
   --bg-overlay: rgba(43, 44, 46, 0.95);
   --backdrop-filter: blur(5px) brightness(0.2);
@@ -22,7 +22,7 @@
 body {
   background: var(--bg-primary);
   backdrop-filter: var(--backdrop-filter);
-  -webkit-backdrop-filter: var(--backdrop-filter);
+  -webkit-backdrop-filter: blur(20px) brightness(1);
 
   margin: 0;
   padding: 0;
@@ -109,9 +109,9 @@ header > div > * {
   font: var(--font-info);
   border: none;
 
-  background: var(--bg-primary);
-  backdrop-filter: var(--backdrop-filter);
-  -webkit-backdrop-filter: var(--backdrop-filter);
+  background: var(--popup-bground);
+  backdrop-filter: blur(20px) brightness(1);
+  -webkit-backdrop-filter: blur(20px) brightness(1);
 
   border-radius: 4em;
   padding: 5px;
@@ -269,7 +269,9 @@ footer {
 /* ================== DELETE CONFIRMATION ================== */
 .delete_contents {
   inset: unset;
+
   background: none;
+
   border: none;
   left: 50%;
   bottom: 0;
@@ -283,7 +285,11 @@ footer {
   text-align: center;
   width: 100%;
   padding: 20px;
-  background: var(--bg-primary);
+
+  background: var(--popup-bground);
+  backdrop-filter: blur(20px) brightness(1.2);
+  -webkit-backdrop-filter: blur(50px) brightness(1.2);
+
   box-sizing: border-box;
 
   font-size: larger;
