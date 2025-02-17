@@ -285,6 +285,8 @@ footer {
   padding: 20px;
   background: var(--bg-primary);
   box-sizing: border-box;
+
+  font-size: larger;
 }
 
 .delete_contents > p {

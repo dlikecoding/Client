@@ -76,11 +76,14 @@ const ContextView = () => {
   //Tracking current elemenet on screen based on x and y
   const { element } = useElementByPoint({ x: 100, y: 150 });
 
-  const displayTime = createMemo(() => {
+  const displayTime = () => {
     if (openModal()) return;
-    const dTime = element()?.parentElement?.dataset.time;
-    if (dTime) return dTime;
-  });
+
+    if (element()) {
+      const dTime = element()?.dataset.time; //console.log(dTime);
+      if (dTime) return dTime;
+    }
+  };
 
   return (
     <>

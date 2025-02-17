@@ -1,39 +1,55 @@
 import styles from "./Modal.module.css";
 
 import { Portal } from "solid-js/web";
-import { createEffect, createMemo, createSignal, For } from "solid-js";
+import { createMemo, createSignal, For, onMount } from "solid-js";
 
-import { useElementByPoint, useVirtualList } from "solidjs-use";
+import { useElementByPoint } from "solidjs-use";
 
-import { useViewMediaContext } from "../../context/ViewContext";
+import { MediaType, useViewMediaContext } from "../../context/ViewContext";
 
 import { GoBackIcon } from "../svgIcons";
-import DeviceFilter from "../photoview/buttons/DeviceFilter";
+
 import ActionNav from "../photoview/actionNav/ActionNav";
+import { useMediaContext } from "../../context/Medias";
+import MediaDisplay from "./MediaDisplay";
 
 const Modal = (props: any) => {
   const { setOpenModal, displayMedias, setDisplayMedia } = useViewMediaContext();
+  const { items, setItems } = useMediaContext();
+
+  const handleCloseModal = () => {
+    setItems(new Map());
+    setOpenModal(false);
+  };
 
   // On close or clicked back button, remove the top state on the stack
   window.onpopstate = (event) => {
-    if (event.state) setOpenModal(false);
+    if (event.state) handleCloseModal();
   };
+
+  // ////////////// Virtual list //////////////////////////////////////////
+  // const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(displayMedias, {
+  //   itemHeight: () => window.innerHeight,
+  //   overscan: 2, // Only display 5 elements
+  // });
+  // ////////////// END Virtual list //////////////////////////////////////////
+
+  const modalEls = getSubElements(displayMedias, items().keys().next().value!);
 
   //Tracking current elemenet on screen based on x and y
   const { element } = useElementByPoint({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
 
-  const currentElement = createMemo(() => {
-    const curEl = element()?.parentElement?.dataset.id;
-    if (curEl) return curEl;
+  const displayTime = createMemo(() => {
+    const dTime = element()?.parentElement?.dataset.time;
+    // console.log("Change displayTime", dTime);
+    if (dTime) return formatTime(dTime);
   });
 
-  ////////////// Virtual list //////////////////////////////////////////
-  const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(displayMedias, {
-    itemHeight: () => window.innerHeight,
-    overscan: 1, // Only display 3 elements
+  // Handle scroll to current click element
+  const [targetRef, setTargetRef] = createSignal<HTMLDivElement>();
+  onMount(() => {
+    if (targetRef()) targetRef()!.scrollIntoView({ behavior: "instant", block: "start" });
   });
-
-  ////////////// END Virtual list //////////////////////////////////////////
 
   return (
     <Portal>
@@ -42,13 +58,13 @@ const Modal = (props: any) => {
           <button
             onClick={() => {
               window.history.back();
-              setOpenModal(false);
+              handleCloseModal();
             }}>
             {GoBackIcon()}
           </button>
           <div class={styles.modalTitle}>
-            <p>August 8, 2025 - {currentElement()}</p>
-            <p style={{ "font-size": "12px" }}>4:02 PM</p>
+            <p>{displayTime()?.date}</p>
+            <p style={{ "font-size": "12px" }}>{displayTime()?.time}</p>
           </div>
           <div class="buttonContainer">
             <span>Edit</span>
@@ -56,18 +72,16 @@ const Modal = (props: any) => {
           </div>
         </header>
 
-        <div class={styles.modalImages} ref={containerProps.ref} onScroll={containerProps.onScroll}>
-          <div style={wrapperProps().style}>
-            <For each={list()}>
-              {({ data }, index) => {
-                return (
-                  <div class={styles.imageContainer} data-id={data.media_id}>
-                    <img loading="lazy" src={data.SourceFile} alt={`Modal Image ${index()}`} />
-                  </div>
-                );
-              }}
-            </For>
-          </div>
+        <div class={styles.modalImages}>
+          <For each={modalEls}>
+            {(media, index) => {
+              return media.media_id === items().values().next().value! ? (
+                <MediaDisplay target={setTargetRef} media={media} index={index()} />
+              ) : (
+                <MediaDisplay media={media} index={index()} />
+              );
+            }}
+          </For>
         </div>
         <ActionNav />
       </div>
@@ -76,3 +90,32 @@ const Modal = (props: any) => {
 };
 
 export default Modal;
+
+const formatTime = (timestamp: string): { date: string; time: string } => {
+  const date = new Date(timestamp);
+
+  const dateOptions: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+
+  const timeOptions: Intl.DateTimeFormatOptions = {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  };
+
+  const formattedDate = new Intl.DateTimeFormat("en-US", dateOptions).format(date);
+  const formattedTime = new Intl.DateTimeFormat("en-US", timeOptions).format(date);
+
+  return { date: formattedDate, time: formattedTime };
+};
+
+const getSubElements = (arr: MediaType[], index: number) => {
+  let result = [];
+  if (index > 0) result.push(arr[index - 1]);
+  if (index >= 0 && index < arr.length) result.push(arr[index]);
+  if (index < arr.length - 1) result.push(arr[index + 1]);
+  return result;
+};

@@ -14,14 +14,13 @@ export interface MediaType {
   FileSize: number;
   CreateDate: string;
   UploadAt: string;
-  isHidden: number;
-  isDeleted: number;
   CameraType?: number;
 }
 
 interface ContextProps {
   displayMedias: MediaType[];
   setDisplayMedia: SetStoreFunction<MediaType[]>;
+
   openModal: Accessor<boolean>;
   setOpenModal: Setter<boolean>;
 }
