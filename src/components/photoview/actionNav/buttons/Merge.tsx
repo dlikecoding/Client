@@ -1,0 +1,14 @@
+import { MergeButtonIcon } from "../../../svgIcons";
+
+type RecoverProps = {
+  action: () => void;
+  status: boolean;
+};
+
+export const Merge = (props: RecoverProps) => {
+  return (
+    <button onClick={props.action} disabled={props.status}>
+      {MergeButtonIcon()}
+    </button>
+  );
+};
