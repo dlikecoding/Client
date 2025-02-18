@@ -14,6 +14,8 @@ export type SearchQuery = {
   hidden?: number;
   deleted?: number;
   duplicate?: number;
+
+  albumId?: string;
 };
 
 export type ZoomAndAspect = {

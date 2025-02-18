@@ -57,6 +57,8 @@ const ContextView = () => {
     hidden: params.hidden,
     deleted: params.deleted,
     duplicate: params.duplicate,
+
+    albumId: paramsUrl.id,
   });
 
   const [loadedMedias] = createResource(queries, async (searchParams: SearchQuery) => {

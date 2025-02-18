@@ -65,7 +65,7 @@ const PhotoCard: Component<PhotoProps> = (props) => {
         <img
           loading="lazy"
           src={media().ThumbPath}
-          alt={media().Title}
+          alt={media().videoTitle}
           class={`${view.objectFit ? styles.cover : styles.contain} ${items().has(index()) ? styles.grayscale : ""}`}
         />
       </div>

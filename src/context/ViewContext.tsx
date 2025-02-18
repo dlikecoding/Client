@@ -9,7 +9,7 @@ export interface MediaType {
   isFavorite: boolean;
   FileType: string;
   duration?: string;
-  Title: string;
+  videoTitle?: string;
   FileName: string;
   FileSize: number;
   CreateDate: string;
