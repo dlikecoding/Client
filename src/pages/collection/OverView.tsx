@@ -25,7 +25,7 @@ const OverView = () => {
     <>
       <header style={{ position: "relative", "z-index": 1 }}>
         <div>
-          <h1>Portfolio</h1>
+          <h1>Collection</h1> {/* Portfolio */}
         </div>
       </header>
 
@@ -83,22 +83,20 @@ const OverView = () => {
 
       <h3>Utilities</h3>
       <div class={style.media_section}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <For each={Object.entries(loadedStatistics() || {})}>
-            {([key, value]) => (
-              <A
-                href={`/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}
-                on:click={() => {
-                  const updateData = gotoPage[key as UpdateKey];
-                  if (updateData) return updatePage(updateData);
-                  console.warn(`No update action found for: ${key}`);
-                }}>
-                <span>{key}</span>
-                <span>{value}</span>
-              </A>
-            )}
-          </For>
-        </Suspense>
+        <For each={Object.entries(loadedStatistics() || {})} fallback={<div>Loading...</div>}>
+          {([key, value]) => (
+            <A
+              href={`/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}
+              on:click={() => {
+                const updateData = gotoPage[key as UpdateKey];
+                if (updateData) return updatePage(updateData);
+                console.warn(`No update action found for: ${key}`);
+              }}>
+              <span>{key}</span>
+              <span>{value}</span>
+            </A>
+          )}
+        </For>
       </div>
       <br />
       <br />

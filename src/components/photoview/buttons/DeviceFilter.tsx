@@ -2,7 +2,7 @@ import { createResource, createSignal, For, Show } from "solid-js";
 import { useMediaContext } from "../../../context/Medias";
 import { useManageURLContext } from "../../../context/ManageUrl";
 import { fetchListOfDevices } from "../../extents/request/fetching";
-import { MoreButtonIcon } from "../../svgIcons";
+import { CameraIcon } from "../../svgIcons";
 
 const DeviceFilter = () => {
   const { isSelected } = useMediaContext();
@@ -13,7 +13,7 @@ const DeviceFilter = () => {
 
   return (
     <Show when={!isSelected()}>
-      <button popovertarget="devices-filter-popover">{MoreButtonIcon()}</button>
+      <button popovertarget="devices-filter-popover">{CameraIcon()}</button>
 
       <div popover="auto" id="devices-filter-popover" class="popover-container devices_filter_popover">
         <span

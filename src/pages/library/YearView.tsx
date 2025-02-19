@@ -7,6 +7,7 @@ import { A } from "@solidjs/router";
 
 import { useManageURLContext } from "../../context/ManageUrl";
 import { fetchMediaYears } from "../../components/extents/request/fetching";
+import Loading from "../../components/extents/Loading";
 const YearView = () => {
   const { updatePage } = useManageURLContext();
   const [loadedMedias] = createResource(fetchMediaYears);
@@ -18,7 +19,7 @@ const YearView = () => {
           <NotFound />
         </Show>
 
-        <For each={loadedMedias()} fallback={<div>Loading... </div>}>
+        <For each={loadedMedias()} fallback={<Loading />}>
           {(photo) => (
             <A
               class={styles.mediaContainer}

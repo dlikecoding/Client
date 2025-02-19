@@ -1,4 +1,4 @@
-import { createContext, useContext, JSX, createEffect } from "solid-js";
+import { createContext, useContext, JSX, createEffect, createMemo } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
 
 export type SearchQuery = {
@@ -67,11 +67,11 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
     setParams({ ...defaultParams });
   };
 
-  createEffect(() => {
+  createMemo(() => {
     localStorage.setItem("SearchQuery", JSON.stringify(params));
   });
 
-  createEffect(() => {
+  createMemo(() => {
     localStorage.setItem("ZoomAndAspect", JSON.stringify(view));
   });
 

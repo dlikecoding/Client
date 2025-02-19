@@ -1,6 +1,6 @@
 import styles from "./Loading.module.css";
 const Loading = () => (
-  <div class={styles.loading_container}>
+  <div inert class={styles.loading_container}>
     <div class={styles.loader}>
       <svg viewBox="0 0 80 80">
         <circle r="32" cy="40" cx="40" id="test"></circle>

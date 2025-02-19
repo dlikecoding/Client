@@ -7,6 +7,7 @@ import { A } from "@solidjs/router";
 
 import { useManageURLContext } from "../../context/ManageUrl";
 import { fetchMediaMonths } from "../../components/extents/request/fetching";
+import Loading from "../../components/extents/Loading";
 
 const MonthView = () => {
   const { params, updatePage } = useManageURLContext();
@@ -19,11 +20,7 @@ const MonthView = () => {
           <NotFound />
         </Show>
 
-        {/* <TransitionGroup
-          onExit={(el, done) => {
-            el.animate([]).finished.then(done);
-          }}> */}
-        <For each={loadedMedias()} fallback={<div>Loading... </div>}>
+        <For each={loadedMedias()} fallback={<Loading />}>
           {(photo) => (
             <A
               class={styles.monthViewContainer}
@@ -37,7 +34,6 @@ const MonthView = () => {
             </A>
           )}
         </For>
-        {/* </TransitionGroup> */}
       </div>
     </>
   );

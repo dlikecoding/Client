@@ -3,9 +3,21 @@ import "./Home.css";
 import Footer from "./Footer";
 
 import { TestAccountIcon } from "../../components/svgIcons";
-import { createSignal, For, Show } from "solid-js";
+import { createMemo, createSignal, For, onMount, Show } from "solid-js";
+import { useLocation, useNavigate } from "@solidjs/router";
 
 const Home = (props: any) => {
+  // Goto previous page if any:
+  const pramsUrl = useLocation();
+  const navigate = useNavigate();
+  const prevState = localStorage.getItem("LastVisited") || "";
+
+  onMount(() => {
+    if (prevState && prevState !== "/") navigate(prevState);
+  });
+  createMemo(() => localStorage.setItem("LastVisited", pramsUrl.pathname.toString()));
+
+  // Create search items for media
   const [pageNumber, setPageNumber] = createSignal(0);
   const loadedMedias: any[] | null | undefined = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 

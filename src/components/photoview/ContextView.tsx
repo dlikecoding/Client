@@ -2,7 +2,7 @@ import style from "./PhotoView.module.css";
 
 import { useParams } from "@solidjs/router";
 import { useElementByPoint, useIntersectionObserver } from "solidjs-use";
-import { createEffect, createMemo, createResource, createSignal, For, onCleanup, Show } from "solid-js";
+import { createEffect, createResource, createSignal, For, onCleanup, Show, Suspense } from "solid-js";
 
 import { useMediaContext } from "../../context/Medias";
 import { SearchQuery, useManageURLContext } from "../../context/ManageUrl";
@@ -75,6 +75,7 @@ const ContextView = () => {
     if (newMedia) setDisplayMedia((prev) => [...prev!, ...newMedia]);
   });
 
+  // Reset params on closed
   onCleanup(() => resetParams());
 
   //Tracking current elemenet on screen based on x and y
@@ -105,15 +106,11 @@ const ContextView = () => {
       </header>
 
       <div class={style.container}>
-        <Show when={displayMedias.length === 0 || loadedMedias.error || loadedMoreMedias.error}>
+        <Show when={loadedMedias.error || loadedMoreMedias.error}>
           <NotFound errorCode={"Not Found"} message={"Page you're looking for could not be found"} />
         </Show>
 
-        <Show when={loadedMedias.loading || loadedMoreMedias.loading}>
-          <Loading />
-        </Show>
-
-        <For each={displayMedias}>
+        <For each={displayMedias} fallback={<Loading />}>
           {(media, index) =>
             displayMedias.length - 1 === index() ? (
               <PhotoCard lastItem={setTarget} media={media} index={index()} />
@@ -123,10 +120,6 @@ const ContextView = () => {
           }
         </For>
       </div>
-
-      {/* <p>
-        PhotoView - ID: {params.id} - Page: {params.pages}
-      </p> */}
 
       <Show when={isSelected()}>
         <ActionNav />
@@ -140,3 +133,5 @@ const ContextView = () => {
 };
 
 export default ContextView;
+
+/* <p> PhotoView - ID: {params.id} - Page: {params.pages} </p> */
