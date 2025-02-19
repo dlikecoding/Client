@@ -23,7 +23,12 @@ const OverView = () => {
 
   return (
     <>
-      <h1>Portfolio</h1>
+      <header style={{ position: "relative", "z-index": 1 }}>
+        <div>
+          <h1>Portfolio</h1>
+        </div>
+      </header>
+
       <h3>
         My Albums
         <button class={style.atag_group_views}>Edit</button>
@@ -59,9 +64,10 @@ const OverView = () => {
               <A
                 href={`/collection/dataset/${album.album_id}`}
                 class={style.card}
-                on:click={() => {
-                  console.log(album.album_id);
-                }}>
+                // on:click={() => {
+                //   console.log(album.album_id);
+                // }}
+              >
                 <img src={album.ThumbPath} alt="Focus Playlist" />
 
                 <div class={style.cardFooter}>
@@ -78,17 +84,8 @@ const OverView = () => {
       <h3>Utilities</h3>
       <div class={style.media_section}>
         <Suspense fallback={<div>Loading...</div>}>
-          {/* <For each={gotoPage}>
-            {(page, index) => (
-              <A href={`/collection/${page}`}>
-                <span>{page}</span>
-                <span>{index()}</span>
-              </A>
-            )}
-          </For> */}
-
           <For each={Object.entries(loadedStatistics() || {})}>
-            {([key, value], index) => (
+            {([key, value]) => (
               <A
                 href={`/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}
                 on:click={() => {

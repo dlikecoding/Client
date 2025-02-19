@@ -1,12 +1,11 @@
-import { createSignal, Show } from "solid-js";
+import { createSignal } from "solid-js";
 import styles from "./Upload.module.css";
+import { UploadIcon } from "../../components/svgIcons";
 
 const Upload = () => {
-  const [isDialogOpen, setIsDialogOpen] = createSignal(false);
-
   // Handle the confirmation to allow file upload
   const handleConfirmation = () => {
-    setIsDialogOpen(false); // Close the confirmation dialog
+    document.getElementById("uploadPopover")?.hidePopover();
     fileUploaded();
   };
 
@@ -18,7 +17,7 @@ const Upload = () => {
   };
 
   // Check localStorage to see if the user has agreed
-  const [hasAgreed, setHasAgreed] = createSignal(localStorage.getItem("NoticeUploadInstruction") === "true");
+  const [hasAgreed, setHasAgreed] = createSignal(localStorage.getItem("NoticeUpload") === "true");
 
   // Handle the checkbox change event
   const handleCheckboxChange = (event: any) => {
@@ -26,9 +25,11 @@ const Upload = () => {
     setHasAgreed(isChecked);
 
     // Store the user's choice in localStorage
-    localStorage.setItem("NoticeUploadInstruction", isChecked.toString());
+    localStorage.setItem("UploadInstruction", isChecked.toString());
     fileUploaded();
   };
+
+  // console.log("MOUNT UPLOAD");
 
   return (
     <>
@@ -38,10 +39,9 @@ const Upload = () => {
 
           if (hasAgreed()) return fileUploaded();
         }}>
-        {UploadIconPath()}
+        {UploadIcon()}
       </button>
 
-      {/* <Show when={!hasAgreed()}> */}
       <div popover="auto" id="uploadPopover" class={styles.uploadDialog}>
         <div class={styles.checkboxLabel}>
           <h2 class={styles.dialogTitle}>Upload Instructions</h2>
@@ -87,7 +87,6 @@ const Upload = () => {
           </button>
         </div>
       </div>
-      {/* </Show> */}
 
       <input
         type="file"
@@ -103,16 +102,6 @@ const Upload = () => {
 };
 
 export default Upload;
-
-const UploadIconPath = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-    <path
-      stroke-width="2.5"
-      d="M1 45h1l4-4c5-4 8-9 11-14 5-7 12-6 18-3 8-12 19-17 31-14 12 4 19 11 20 28 7 0 11 5 15 9v17l-3 1c-3 6-8 8-14 8H63c0-3 0-4 3-4l19-1c6-1 11-6 11-12 0-7-4-13-11-14-4 0-4-2-4-5-1-17-14-26-30-21-5 2-9 5-11 11-2 3-3 4-7 2-5-4-13-2-15 6-1 3-1 4-4 6-6 3-9 8-8 15 0 5 4 9 9 11l9 2h15c0 3 0 4-3 4H17c-6 0-10-4-13-8l-3-2V45z"
-    />
-    <path stroke-width="2.5" d="m44 51 6-8-1 3 16 11c-7 4-8-2-12-4v36h-4V53c-4 1-5 9-12 4l7-6z" />
-  </svg>
-);
 
 const fileUploaded = () => {
   document.getElementById("fileInput")?.click();

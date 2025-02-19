@@ -12,6 +12,7 @@ import { Recover } from "./buttons/Recover";
 import { Unhide } from "./buttons/Unhide";
 import { Delete } from "./buttons/Delete";
 import { Merge } from "./buttons/Merge";
+import { EditButtonIcon, InfoButtonIcon } from "../../svgIcons";
 
 type ButtonConfig = {
   duplicate: string[];
@@ -100,7 +101,8 @@ const ActionNav = () => {
           </Show>
           {/* //////////////////////////////////////////////// */}
           <Show when={openModal()}>
-            <button>Do something</button>
+            <button>{EditButtonIcon()}</button>
+            <button>{InfoButtonIcon()}</button>
           </Show>
 
           <Show when={currentPage.includes("more")}>

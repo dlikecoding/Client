@@ -35,8 +35,13 @@ header > .modalTitle {
 
 .imageContainer {
   position: relative;
-  width: 100%;
+  min-width: 100dvw;
   min-height: 100dvh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
@@ -45,6 +50,8 @@ header > .modalTitle {
   position: absolute;
   width: 100%;
   height: 100%;
+  /* max-height: 90%; */
+
   aspect-ratio: 1;
   object-fit: contain;
   display: block;

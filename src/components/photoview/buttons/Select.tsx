@@ -9,8 +9,13 @@ const Select = () => {
   };
 
   createEffect(() => {
+    const footerBar = document.getElementById("navigationBar");
+
     if (!isSelected()) {
       setItems(new Map<number, string>());
+      footerBar?.classList.remove("hideFooter");
+    } else {
+      footerBar?.classList.add("hideFooter");
     }
   });
 

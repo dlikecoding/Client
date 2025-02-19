@@ -2,6 +2,8 @@ import { CloseIcon } from "../../components/svgIcons";
 import styles from "./Setting.module.css";
 
 const Setting = () => {
+  console.log("Setting");
+
   return (
     <>
       <h1>Setting</h1>

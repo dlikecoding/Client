@@ -20,6 +20,8 @@ import Loading from "../extents/Loading";
 import Modal from "../modal/Modal";
 import Select from "./buttons/Select";
 
+const HIDE_SELECT_BUTTON = 5; // Hide select button when number of column > 5
+
 const ContextView = () => {
   const paramsUrl = useParams();
 
@@ -76,7 +78,7 @@ const ContextView = () => {
   onCleanup(() => resetParams());
 
   //Tracking current elemenet on screen based on x and y
-  const { element } = useElementByPoint({ x: 100, y: 150 });
+  const { element } = useElementByPoint({ x: 100, y: 120 });
 
   const displayTime = () => {
     if (openModal()) return;
@@ -95,7 +97,7 @@ const ContextView = () => {
           <p>{displayTime()}</p>
         </div>
         <div class="buttonContainer" style={{ "margin-top": "10px" }}>
-          <Show when={view.nColumn < 7}>
+          <Show when={view.nColumn <= HIDE_SELECT_BUTTON}>
             <Select />
           </Show>
           <DeviceFilter />

@@ -70,7 +70,7 @@ const Modal = (props: any) => {
             <p style={{ "font-size": "12px" }}>{displayTime()?.time}</p>
           </div>
           <div class="buttonContainer">
-            <span>Edit</span>
+            {/* <span>Edit</span> */}
             <span>View</span>
           </div>
         </header>

@@ -1,4 +1,4 @@
-import { createContext, useContext, JSX } from "solid-js";
+import { createContext, useContext, JSX, createEffect } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
 
 export type SearchQuery = {
@@ -40,12 +40,17 @@ type ManageURIContextType = {
 const ManageURLContext = createContext<ManageURIContextType>();
 
 export const ManageURLContextProvider = (props: ManageURLContextProviderProps) => {
-  const [params, setParams] = createStore<SearchQuery>({ ...defaultParams });
+  const localSearchQuery = localStorage.getItem("SearchQuery");
+  const localZoomAndAspect = localStorage.getItem("ZoomAndAspect");
 
-  const [view, setView] = createStore({
-    nColumn: 3,
-    objectFit: true,
-  });
+  const [params, setParams] = createStore<SearchQuery>(JSON.parse(localSearchQuery!) || { ...defaultParams });
+
+  const [view, setView] = createStore(
+    JSON.parse(localZoomAndAspect!) || {
+      nColumn: 3,
+      objectFit: true,
+    }
+  );
 
   // Updates a specific parameter in the query object by key
   const updatePageKey = <T extends keyof SearchQuery>(key: T, value: SearchQuery[T]) => {
@@ -61,6 +66,14 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
   const resetParams = () => {
     setParams({ ...defaultParams });
   };
+
+  createEffect(() => {
+    localStorage.setItem("SearchQuery", JSON.stringify(params));
+  });
+
+  createEffect(() => {
+    localStorage.setItem("ZoomAndAspect", JSON.stringify(view));
+  });
 
   return (
     <ManageURLContext.Provider value={{ params, updatePageKey, updatePage, resetParams, view, setView }}>

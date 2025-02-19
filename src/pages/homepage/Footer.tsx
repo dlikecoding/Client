@@ -1,7 +1,10 @@
+import { lazy } from "solid-js";
 import { A } from "@solidjs/router";
-import Upload from "../upload/Upload";
+
 import { CollectionIcon, LibraryIcon, SearchIcon, SettingIcon } from "../../components/svgIcons";
-import Setting from "../setting/Setting";
+
+const Upload = lazy(() => import("../upload/Upload"));
+const Setting = lazy(() => import("../setting/Setting"));
 
 const Footer = () => {
   return (

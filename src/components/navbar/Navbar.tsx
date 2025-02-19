@@ -3,8 +3,7 @@ import FooterCollection from "../../pages/collection/PagesCollection";
 import FooterLibrary from "../../pages/library/PageLibrary";
 import { CloseIcon, FilterIcon } from "../svgIcons";
 import FilterNavBar from "./FilterNavBar";
-import { useMediaContext } from "../../context/Medias";
-import { Show } from "solid-js";
+import { useManageURLContext } from "../../context/ManageUrl";
 
 const LIBRARY_PATH = "library";
 
@@ -15,27 +14,26 @@ const Navbar = () => {
 
   // Use to Enable filter button when user in photoView
   const paramsUrl = useParams();
-
-  const { isSelected } = useMediaContext();
+  const { resetParams } = useManageURLContext();
   return (
-    <Show when={!isSelected()}>
-      <footer style={{ "z-index": 1 }}>
-        <div class="actions__toolbar__column is_left">
-          <button popovertarget="filter-timeline" disabled={!paramsUrl.pages}>
-            {FilterIcon()}
-          </button>
-          <FilterNavBar />
-        </div>
+    <footer style={{ "z-index": 1 }} id="navigationBar">
+      <div class="actions__toolbar__column is_left">
+        <button popovertarget="filter-timeline" disabled={!paramsUrl.pages}>
+          {FilterIcon()}
+        </button>
+        <FilterNavBar />
+      </div>
 
-        <div class="actions__toolbar__column is_middle">
-          {currentPage === LIBRARY_PATH ? <FooterLibrary /> : <FooterCollection />}
-        </div>
+      <div class="actions__toolbar__column is_middle">
+        {currentPage === LIBRARY_PATH ? <FooterLibrary /> : <FooterCollection />}
+      </div>
 
-        <div class="actions__toolbar__column is_right">
-          <A href="/">{CloseIcon()}</A>
-        </div>
-      </footer>
-    </Show>
+      <div class="actions__toolbar__column is_right">
+        <A href="/" on:click={() => resetParams()}>
+          {CloseIcon()}
+        </A>
+      </div>
+    </footer>
   );
 };
 
