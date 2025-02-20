@@ -1,8 +1,10 @@
 import { createSignal, Show } from "solid-js";
 import { MoreActionButtonIcon } from "../../../svgIcons";
-import AddToAlbum from "../AddToAlbum";
+// import AddToAlbum from "../_AddToAlbum";
 import { useParams } from "@solidjs/router";
 import { useMediaContext } from "../../../../context/Medias";
+import AddToCollection from "../addColection/AddToCollection";
+import { fetchAlbum, fetchAlbumUpdating } from "../../../extents/request/fetching";
 
 type MoreActionsProps = {
   hide: () => void;
@@ -43,7 +45,14 @@ export const MoreAction = (props: MoreActionsProps) => {
       </div>
 
       <Show when={addToAlbum()}>
-        <AddToAlbum setAddToAlbum={setAddToAlbum} />
+        {/* <AddToAlbum setAddToAlbum={setAddToAlbum} /> */}
+
+        <AddToCollection
+          setAddToCollection={setAddToAlbum}
+          entityType="Album"
+          fetchItems={fetchAlbum}
+          updateItems={fetchAlbumUpdating}
+        />
       </Show>
     </>
   );
