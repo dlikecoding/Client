@@ -93,7 +93,7 @@ const ContextView = () => {
   return (
     <>
       <header style={{ "z-index": 1 }}>
-        <div>
+        <div inert>
           <h1>{getTitle(paramsUrl.pages)}</h1>
           <p>{displayTime()}</p>
         </div>
@@ -106,11 +106,13 @@ const ContextView = () => {
       </header>
 
       <div class={style.container}>
-        <Show when={loadedMedias.error || loadedMoreMedias.error}>
-          <NotFound errorCode={"Not Found"} message={"Page you're looking for could not be found"} />
+        <Show when={loadedMedias.loading || loadedMoreMedias.loading}>
+          <Loading />
         </Show>
 
-        <For each={displayMedias} fallback={<Loading />}>
+        <For
+          each={displayMedias}
+          fallback={<NotFound errorCode={"Not Found"} message={"Page you're looking for could not be found"} />}>
           {(media, index) =>
             displayMedias.length - 1 === index() ? (
               <PhotoCard lastItem={setTarget} media={media} index={index()} />

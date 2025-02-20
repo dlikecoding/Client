@@ -1,6 +1,5 @@
-import { createSignal, For, Show } from "solid-js";
+import { For, Show } from "solid-js";
 
-import { createStore } from "solid-js/store";
 import { SortAscIcon, SortDescIcon, ZoomInIcon, ZoomOutIcon } from "../svgIcons";
 import { useManageURLContext } from "../../context/ManageUrl";
 
@@ -8,10 +7,7 @@ const MIN_NUMBER_OF_COLUMNS = 2;
 const MAX_NUMBER_OF_COLUMNS = 7; // Zoom out maximum n columns
 
 const FilterTimeline = () => {
-  const { view, setView, updatePage, updatePageKey } = useManageURLContext();
-
-  const [selectedType, setSelectedType] = createSignal("");
-  const [sortData, setSortData] = createStore({ type: "CreateDate", order: 0 });
+  const { view, params, setView, updatePage, updatePageKey } = useManageURLContext();
 
   const filterOptions = [
     { label: "Photo", className: "photos" },
@@ -20,19 +16,16 @@ const FilterTimeline = () => {
   ];
 
   const updateFilter = (type: string = "") => {
-    setSelectedType(type);
     updatePageKey("filterType", type);
   };
 
   const toggleSort = (type: string) => {
-    setSortData("order", sortData.type === type ? 1 - sortData.order : 0); // Toggle order
-    setSortData("type", type);
-    updatePage({ sortKey: type, sortOrder: sortData.order });
+    updatePage({ sortKey: type, sortOrder: 1 - (params.sortOrder! | 0) });
   };
   const sortOptions = [
     { type: "FileSize", label: "Size" },
     { type: "CreateDate", label: "Created" },
-    { type: "UploadAt", label: "Uploads" },
+    { type: "UploadAt", label: "Uploaded" },
   ];
 
   // Handlers for UI interactions
@@ -55,7 +48,7 @@ const FilterTimeline = () => {
           {ZoomOutIcon()}
         </button>
       </div>
-      <div onClick={changeGrid}>Aspect Ratio Grid</div>
+      <div onClick={changeGrid}>{view.objectFit ? "Aspect Ratio Grid" : "Square Photo Grid"}</div>
 
       <div
         style={{ "font-size": "smaller", "text-decoration": "underline", border: "none", padding: "10px 0 5px 15px" }}
@@ -67,7 +60,7 @@ const FilterTimeline = () => {
         <For each={filterOptions}>
           {({ className, label }) => (
             <button
-              class={`icon_type ${className} ${selectedType() === label ? "active_filter" : ""}`}
+              class={`icon_type ${className} ${params.filterType === label ? "active_filter" : ""}`}
               onClick={() => updateFilter(label)}></button>
           )}
         </For>
@@ -75,10 +68,10 @@ const FilterTimeline = () => {
 
       <For each={sortOptions}>
         {({ type, label }) => (
-          <div class={`sort_filter ${sortData.type === type ? "active" : ""}`} onClick={() => toggleSort(type)}>
+          <div class={`sort_filter ${params.sortKey === type ? "active" : ""}`} onClick={() => toggleSort(type)}>
             <span>Sort by {label}</span>
-            <Show when={sortData.type === type}>
-              <span>{sortData.order === 0 ? SortAscIcon() : SortDescIcon()}</span>
+            <Show when={params.sortKey === type}>
+              <span>{params.sortOrder === 0 ? SortAscIcon() : SortDescIcon()}</span>
             </Show>
           </div>
         )}

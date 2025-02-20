@@ -23,8 +23,8 @@
 /* ================== GLOBAL STYLES ================== */
 body {
   background: var(--bg-primary);
-  backdrop-filter: var(--backdrop-filter);
-  -webkit-backdrop-filter: blur(20px) brightness(1);
+  /* backdrop-filter: var(--backdrop-filter);
+  -webkit-backdrop-filter: blur(20px) brightness(1); */
 
   margin: 0;
   padding: 0;
@@ -79,7 +79,13 @@ header {
   padding: 25px 15px 12px 15px;
   width: 100%;
 
-  background: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.15) 30%,
+    rgba(0, 0, 0, 0.4) 60%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
 
   /* Create backdrop cause image display error */
   /* backdrop-filter: blur(1px) brightness(1); */
@@ -89,6 +95,8 @@ header {
   flex-direction: row;
   justify-content: space-between;
 
+  pointer-events: none;
+
   margin: 0;
   box-sizing: border-box;
 }
@@ -96,6 +104,10 @@ header {
 header > div > * {
   margin: 0;
   margin-bottom: 5px;
+}
+
+header button {
+  pointer-events: visible;
 }
 
 /* ================== BUTTON CONTAINER ================== */
@@ -148,9 +160,13 @@ footer {
   padding: 10px;
   border-radius: 25px;
 
-  background: var(--bg-secondary);
+  background: var(--popup-bground);
+  backdrop-filter: blur(20px) brightness(1);
+  -webkit-backdrop-filter: blur(20px) brightness(1);
+
+  /* background: var(--bg-secondary);
   -webkit-backdrop-filter: blur(5px) brightness(1);
-  backdrop-filter: var(--backdrop-filter);
+  backdrop-filter: var(--backdrop-filter); */
 
   display: flex;
   justify-content: space-between;
@@ -413,3 +429,7 @@ footer {
 button:disabled svg {
   opacity: 0.5;
 }
+
+/* button {
+  visibility: visible;
+} */

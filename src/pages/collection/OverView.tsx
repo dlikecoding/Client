@@ -83,7 +83,7 @@ const OverView = () => {
 
       <h3>Utilities</h3>
       <div class={style.media_section}>
-        <For each={Object.entries(loadedStatistics() || {})} fallback={<div>Loading...</div>}>
+        <For each={Object.entries(loadedStatistics() || {})} fallback={<div>Not Found...</div>}>
           {([key, value]) => (
             <A
               href={`/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}

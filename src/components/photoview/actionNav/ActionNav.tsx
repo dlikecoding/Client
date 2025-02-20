@@ -91,21 +91,26 @@ const ActionNav = () => {
           </Switch>
         </div>
 
-        <div class="actions__toolbar__column is_middle">
+        <div
+          class="actions__toolbar__column is_middle"
+          style={{ visibility: !currentPage.includes("favorite") && openModal() ? "hidden" : "visible" }}>
+          {/* //////////////////////////////////////////////// */}
+          <Show when={openModal()}>
+            <button>{InfoButtonIcon()}</button>
+            <button>{EditButtonIcon()}</button>
+          </Show>
+
           <Show when={currentPage.includes("favorite")}>
             <Favorite action={actions.favorite} status={disableButtons()} />
           </Show>
 
           <Show when={!openModal()}>
-            <button>{items().size}</button>
-          </Show>
-          {/* //////////////////////////////////////////////// */}
-          <Show when={openModal()}>
-            <button>{EditButtonIcon()}</button>
-            <button>{InfoButtonIcon()}</button>
+            <button title="item size" disabled={true}>
+              {items().size}
+            </button>
           </Show>
 
-          <Show when={currentPage.includes("more")}>
+          <Show when={currentPage.includes("more") && !openModal()}>
             <MoreAction hide={actions.hide} status={disableButtons()} />
           </Show>
         </div>

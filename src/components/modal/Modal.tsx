@@ -43,8 +43,8 @@ const Modal = (props: any) => {
   const { element } = useElementByPoint({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
 
   const displayTime = createMemo(() => {
-    const dTime = element()?.parentElement?.dataset.time;
-    // console.log("Change displayTime", dTime);
+    const dTime = element()?.dataset.time;
+    // console.log(element());
     if (dTime) return formatTime(dTime);
   });
 

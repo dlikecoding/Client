@@ -96,8 +96,8 @@ export const defaultParams: SearchQuery = {
   filterType: undefined,
   filterDevice: undefined,
   filterObject: undefined,
-  sortKey: undefined,
-  sortOrder: undefined,
+  sortKey: "CreateDate",
+  sortOrder: 0,
 
   favorite: undefined,
   deleted: undefined,

@@ -16,11 +16,11 @@ const MonthView = () => {
   return (
     <>
       <div class={styles.groupContainer}>
-        <Show when={loadedMedias.error}>
-          <NotFound />
+        <Show when={loadedMedias.loading}>
+          <Loading />
         </Show>
 
-        <For each={loadedMedias()} fallback={<Loading />}>
+        <For each={loadedMedias()} fallback={<NotFound />}>
           {(photo) => (
             <A
               class={styles.monthViewContainer}
