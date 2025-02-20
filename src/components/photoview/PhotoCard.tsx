@@ -44,7 +44,7 @@ const PhotoCard: Component<PhotoProps> = (props) => {
       data-thumb={media().ThumbPath}
       data-time={media().timeFormat}
       data-idx={index()}
-      on:click={() => handleImageClick(index(), media().media_id)}>
+      onClick={() => handleImageClick(index(), media().media_id)}>
       <div inert class={styles.imageContainer}>
         <Show when={view.nColumn < 6}>
           <Show when={items().has(index())}>

@@ -29,7 +29,7 @@ const Navbar = () => {
       </div>
 
       <div class="actions__toolbar__column is_right">
-        <A href="/" on:click={() => resetParams()}>
+        <A href="/" onClick={() => resetParams()}>
           {CloseIcon()}
         </A>
       </div>

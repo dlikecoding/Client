@@ -40,7 +40,7 @@ const OverView = () => {
               <A
                 href={`/collection/album/${album.album_id}`}
                 class={style.albumCard}
-                on:click={() => {
+                onClick={() => {
                   console.log(album.album_id);
                 }}>
                 <img src={album.ThumbPath} alt="Focus Playlist" />
@@ -64,7 +64,7 @@ const OverView = () => {
               <A
                 href={`/collection/dataset/${album.album_id}`}
                 class={style.card}
-                // on:click={() => {
+                // onClick={() => {
                 //   console.log(album.album_id);
                 // }}
               >
@@ -87,7 +87,7 @@ const OverView = () => {
           {([key, value]) => (
             <A
               href={`/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}
-              on:click={() => {
+              onClick={() => {
                 const updateData = gotoPage[key as UpdateKey];
                 if (updateData) return updatePage(updateData);
                 console.warn(`No update action found for: ${key}`);

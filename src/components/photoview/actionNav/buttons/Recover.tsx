@@ -1,11 +1,7 @@
 import { RecoverButtonIcon } from "../../../svgIcons";
+import { ButtonProps } from "./ButtonProps";
 
-type RecoverProps = {
-  action: () => void;
-  status: boolean;
-};
-
-export const Recover = (props: RecoverProps) => {
+export const Recover = (props: ButtonProps) => {
   return (
     <button onClick={props.action} disabled={props.status}>
       {RecoverButtonIcon()}

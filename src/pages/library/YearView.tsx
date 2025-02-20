@@ -23,7 +23,7 @@ const YearView = () => {
           {(photo) => (
             <A
               class={styles.mediaContainer}
-              on:click={() => {
+              onClick={() => {
                 updatePage({ year: photo.timeFormat });
               }}
               href="/library/month">

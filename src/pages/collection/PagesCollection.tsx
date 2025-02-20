@@ -11,7 +11,7 @@ const FooterCollection = () => {
       <A
         href={`/collection/${params.pages}`}
         style={{ "pointer-events": "none" }}
-        // on:click={() => console.log(`${params.pages} ${params.id}`)}
+        // onClick={() => console.log(`${params.pages} ${params.id}`)}
         inactiveClass="inactive_button"
         activeClass="active_button">
         View

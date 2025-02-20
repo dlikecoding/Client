@@ -19,7 +19,7 @@ const DeviceFilter = () => {
         <span
           // style={{ position: "sticky", top: 0, "z-index": 1 }}
           class="clear_button"
-          on:click={(e) => {
+          onClick={(e) => {
             e.stopPropagation();
             updatePageKey("filterDevice", undefined);
           }}>
@@ -29,7 +29,7 @@ const DeviceFilter = () => {
           {(item) => (
             <div
               class={selectedCamera() === item.camera_id ? "devices_active" : ""}
-              on:click={(e) => {
+              onClick={(e) => {
                 e.stopPropagation();
                 setSelectedCamera(item.camera_id);
                 updatePageKey("filterDevice", item.camera_id);

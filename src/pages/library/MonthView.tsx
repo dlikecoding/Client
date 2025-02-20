@@ -24,7 +24,7 @@ const MonthView = () => {
           {(photo) => (
             <A
               class={styles.monthViewContainer}
-              on:click={() => {
+              onClick={() => {
                 updatePage({ year: photo.createAtYear, month: photo.createAtMonth });
               }}
               href="/library/all">

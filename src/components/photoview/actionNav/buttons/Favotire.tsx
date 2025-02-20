@@ -1,12 +1,8 @@
 import { useMediaContext } from "../../../../context/Medias";
 import { FavoriteButtonIcon } from "../../../svgIcons";
+import { ButtonProps } from "./ButtonProps";
 
-type FavoriteProps = {
-  action: () => void;
-  status: boolean;
-};
-
-export const Favorite = (props: FavoriteProps) => {
+export const Favorite = (props: ButtonProps) => {
   const { items } = useMediaContext();
 
   return (

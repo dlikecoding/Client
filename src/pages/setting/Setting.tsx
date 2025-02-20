@@ -15,7 +15,7 @@ const Setting = () => {
       <div>Link</div>
       <button
         class={styles.closeButton}
-        on:click={() => {
+        onClick={() => {
           const popover = document.getElementById("setting-contents");
           if (popover) popover.hidePopover();
         }}>

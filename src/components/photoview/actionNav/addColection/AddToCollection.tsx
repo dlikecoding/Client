@@ -34,10 +34,10 @@ const AddToCollection = (props: AddToCollectionProps) => {
     <Portal>
       <div class={styles.albumAddContainer}>
         <div class={styles.header}>
-          <button on:click={() => props.setAddToCollection(false)}>Cancel</button>
+          <button onClick={() => props.setAddToCollection(false)}>Cancel</button>
           <h4>Add to {props.entityType}</h4>
           <button
-            on:click={() => {
+            onClick={() => {
               const dialog = document.getElementById("dialogCollectionContainer") as HTMLDialogElement;
               if (dialog) dialog.showModal();
             }}>
@@ -63,7 +63,7 @@ const AddToCollection = (props: AddToCollectionProps) => {
           <div class={styles.dialogButtons}>
             <button
               class={styles.cancelBtn}
-              on:click={() => {
+              onClick={() => {
                 setInputValue("");
                 const dialog = document.getElementById("dialogCollectionContainer") as HTMLDialogElement;
                 if (dialog) dialog.close();
@@ -72,7 +72,7 @@ const AddToCollection = (props: AddToCollectionProps) => {
             </button>
             <button
               class={styles.saveBtn}
-              on:click={async () => {
+              onClick={async () => {
                 await addItemsToCollection(undefined, inputValue());
               }}
               disabled={!inputValue().trim()}>
@@ -86,7 +86,7 @@ const AddToCollection = (props: AddToCollectionProps) => {
           <For each={loadedEntities() ?? []}>
             {(entity) => (
               <div
-                on:click={async () => {
+                onClick={async () => {
                   await addItemsToCollection(entity.id);
                 }}>
                 <img src={entity.ThumbPath} alt={entity.title} />

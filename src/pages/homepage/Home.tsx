@@ -39,7 +39,7 @@ const Home = (props: any) => {
             id="searchInput"
             type="text"
             placeholder="Places, Objects, Devices, Years ... "
-            on:input={(e) => setPageNumber(parseInt(e.target.value))}
+            oninput={(e) => setPageNumber(parseInt(e.target.value))}
           />
         </form>
 

@@ -34,7 +34,7 @@ const Upload = () => {
   return (
     <>
       <button
-        on:click={() => {
+        onClick={() => {
           document.getElementById("uploadPopover")?.showPopover();
 
           if (hasAgreed()) return fileUploaded();

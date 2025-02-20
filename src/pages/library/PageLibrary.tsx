@@ -10,7 +10,7 @@ const PageLibrary = () => {
         Year
       </A>
       <A
-        on:click={() => {
+        onClick={() => {
           updatePage({ year: "0" });
         }}
         href="/library/month"
@@ -19,7 +19,7 @@ const PageLibrary = () => {
         Month
       </A>
       <A
-        on:click={() => {
+        onClick={() => {
           updatePage({ year: "", month: "" });
         }}
         href="/library/all"

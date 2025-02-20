@@ -1,12 +1,19 @@
 {
   "short_name": "Photos",
   "name": "Solid App",
+  "icons": [
+    {
+      "src": "./favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ],
   "shortcuts": [
     {
       "name": "Photo",
       "short_name": "pt",
       "url": "/library",
-      "icon": [{ "src": "./favicon.ico" }]
+      "icons": [{ "src": "./favicon.ico", "sizes": "48x48", "type": "image/x-icon" }]
     }
   ],
   "start_url": "/",

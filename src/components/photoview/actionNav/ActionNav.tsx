@@ -35,6 +35,8 @@ const ActionNav = () => {
   const { openModal, displayMedias, setDisplayMedia } = useViewMediaContext();
 
   const actions = {
+    share: () => console.log("Share clicked"),
+
     favorite: () => updateMediaStatus("Favorite"),
 
     hide: () => updateMediaStatus("Hidden", true),
@@ -78,7 +80,7 @@ const ActionNav = () => {
     <>
       <footer style={{ "z-index": 1 }}>
         <div class="actions__toolbar__column is_left">
-          <Switch fallback={<Share />}>
+          <Switch fallback={<Share action={actions.share} status={disableButtons()} />}>
             <Match when={currentPage.includes("unhide")}>
               <Unhide action={actions.unhide} status={disableButtons()} />
             </Match>
