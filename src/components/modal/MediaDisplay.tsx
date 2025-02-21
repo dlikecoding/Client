@@ -13,9 +13,9 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
     <div
       ref={props.refSetter}
       class={styles.imageContainer}
-      data-idx={props.index}
-      data-id={props.media.media_id}
-      data-time={props.media.CreateDate}>
+      data-modalIdx={props.index}
+      data-modalId={props.media.media_id}
+      data-modalTime={props.media.CreateDate}>
       <img inert loading="lazy" src={props.media.SourceFile} alt={`Modal Image ${props.index}`} />
     </div>
   );

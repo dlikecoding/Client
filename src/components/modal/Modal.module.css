@@ -71,7 +71,7 @@ header > .modalTitle {
   justify-content: center;
   align-items: center;
 
-  gap: 5px;
+  gap: 3px;
   z-index: 1;
 }
 

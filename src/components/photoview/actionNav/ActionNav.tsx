@@ -96,14 +96,13 @@ const ActionNav = () => {
         <div
           class="actions__toolbar__column is_middle"
           style={{ visibility: !currentPage.includes("favorite") && openModal() ? "hidden" : "visible" }}>
+          <Show when={currentPage.includes("favorite")}>
+            <Favorite action={actions.favorite} />
+          </Show>
           {/* //////////////////////////////////////////////// */}
           <Show when={openModal()}>
             <button>{InfoButtonIcon()}</button>
             <button>{EditButtonIcon()}</button>
-          </Show>
-
-          <Show when={currentPage.includes("favorite")}>
-            <Favorite action={actions.favorite} />
           </Show>
 
           <Show when={!openModal()}>

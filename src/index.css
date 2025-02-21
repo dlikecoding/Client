@@ -221,6 +221,11 @@ footer {
   stroke: var(--svg-color);
 }
 
+/* ================== DISABLED BUTTONS ================== */
+.footerDisabled button {
+  opacity: 0.7;
+}
+
 /* ================== POPOVER CONTAINER ================== */
 .popover-container {
   inset: unset;
@@ -425,18 +430,4 @@ footer {
   to {
     left: 0;
   }
-}
-
-/* ================== DISABLED BUTTONS ================== */
-/* button:disabled svg {
-  opacity: 0.5;
-} */
-
-/* button {
-  visibility: visible;
-} */
-
-.footerDisabled button {
-  opacity: 0.5;
-  color: #b2b2b2;
 }

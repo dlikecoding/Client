@@ -12,6 +12,13 @@ import { GoBackIcon } from "../svgIcons";
 import ActionNav from "../photoview/actionNav/ActionNav";
 import { useMediaContext } from "../../context/Medias";
 import MediaDisplay from "./MediaDisplay";
+import { createStore, SetStoreFunction, StoreSetter } from "solid-js/store";
+
+interface ElementModal {
+  curIndex: number;
+  curId: string;
+  divEl?: HTMLElement;
+}
 
 const STEP = 2;
 
@@ -28,8 +35,19 @@ const Modal = (props: any) => {
   window.onpopstate = (event) => {
     if (event.state) handleCloseModal();
   };
+  /////////////////////////////////////////////////////////////
 
-  const [selectedIdx, setSelectedIdx] = createSignal<number>(items().keys().next().value!);
+  const [el, setEl] = createStore<ElementModal>({
+    curIndex: items().keys().next().value!, // Current selected index
+    curId: items().values().next().value!, // Current Id of selected el
+    divEl: undefined,
+  });
+
+  // Handle selected Item on change
+  const handleSelectItems = (idx: number, id: string, divEl?: HTMLElement) => {
+    setOneItem(idx, id);
+    setEl({ curId: id, curIndex: idx, divEl: divEl });
+  };
 
   //Tracking current elemenet on screen based on x and y
   const { element } = useElementByPoint({
@@ -37,47 +55,35 @@ const Modal = (props: any) => {
     y: window.innerHeight / 2,
     multiple: false,
     immediate: true,
+    interval: 1,
   });
 
   const displayTime = createMemo(() => {
-    const dTime = element()?.dataset.time;
+    const dTime = element()?.dataset.modaltime;
     if (dTime) return formatTime(dTime);
   });
 
-  // Handle scroll to current click element
-  const [targetRef, setTargetRef] = createSignal<HTMLDivElement>();
+  const modalMedias = () =>
+    displayMedias.slice(Math.max(0, el.curIndex - STEP), Math.min(displayMedias.length, el.curIndex + 1 + STEP));
 
-  onMount(() => {
-    targetRef()?.scrollIntoView({ behavior: "instant", block: "start" });
+  // const addTopEls = () => setEl("curIndex", (prev) => (prev > 1 ? prev - 1 : prev));
+  // const addBottomEls = () => setEl("curIndex", (prev) => (prev < displayMedias.length - 1 ? prev + 1 : prev));
+
+  ////////////////////TEST////////////////////////
+
+  createMemo(() => {
+    const elementIdx: string | undefined = element()?.dataset.modalidx;
+    const elementId: string | undefined = element()?.dataset.modalid;
+
+    if (!elementId) return;
+    console.log("scroll", elementIdx, elementId);
+    // handleSelectItems(parseInt(elementIdx!), elementId, element()!);
   });
 
   createMemo(() => {
-    const currentEl = element()?.dataset.idx;
-    console.log("selectedIdx", currentEl);
+    if (el && el.divEl) el.divEl.scrollIntoView({ behavior: "instant", block: "start" });
   });
 
-  const [target, setTarget] = createSignal<HTMLElement | null>(null);
-  const [isVisible, setIsVisible] = createSignal(false);
-
-  useIntersectionObserver(target, ([{ isIntersecting }]) => {
-    setIsVisible(isIntersecting);
-  });
-
-  const addTopEls = () => setSelectedIdx((prev) => (prev > 1 ? prev - 1 : prev));
-  const addBottomEls = () => setSelectedIdx((prev) => (prev < displayMedias.length - 1 ? prev + 1 : prev));
-
-  /** When last element is visible on the DOM, remove from the target,
-   * and then load more element to dom (only ONCE)*/
-  createEffect(() => {
-    if (isVisible()) {
-      console.log(target());
-      addTopEls();
-      setTarget(null);
-    }
-  });
-
-  const medias = () =>
-    displayMedias.slice(Math.max(0, selectedIdx() - STEP), Math.min(displayMedias.length, selectedIdx() + 1 + STEP));
   return (
     <Portal>
       <div class={styles.modalContainer} style={{ "z-index": 1 }}>
@@ -96,37 +102,44 @@ const Modal = (props: any) => {
           <div class="buttonContainer">
             {/* <span>Edit</span> */}
             {/* <span>View</span> */}
-            <button onClick={addTopEls}>TOP </button>
-            <button onClick={addBottomEls}>BOTTOM </button>
+            {/* <button onClick={addTopEls}>TOP </button>
+            <button onClick={addBottomEls}>BOTTOM </button> */}
           </div>
         </header>
 
         <div class={styles.modalImages}>
-          <For each={medias()}>
+          <For each={modalMedias()}>
             {(media, index) => {
-              const curItem = createMemo(() => items().values().next().value!);
-              const isCurItem = media.media_id === curItem();
-              const isFirst = index() === 1;
-
-              return (
+              const currentIndex = el.curIndex - (STEP - index());
+              return media.media_id === el.curId ? (
                 <MediaDisplay
-                  refSetter={isCurItem ? setTargetRef : isFirst ? setTarget : undefined}
+                  refSetter={(el: StoreSetter<any>) => setEl("divEl", el)}
                   media={media}
-                  index={index()}
+                  index={currentIndex}
                 />
+              ) : (
+                <MediaDisplay media={media} index={currentIndex} />
               );
             }}
           </For>
         </div>
 
         <div class={styles.modalThumbs}>
-          <Index each={medias()}>
-            {(media, index) => (
-              <div>
-                <img src={media().ThumbPath} />
-              </div>
-            )}
-          </Index>
+          <For each={modalMedias()}>
+            {(media, index) => {
+              const currentIndex = el.curIndex - (STEP - index());
+              return (
+                <div
+                  data-thumbId={media.media_id}
+                  onClick={() => {
+                    const element: HTMLElement | null = document.querySelector(`[data-modalId="${media.media_id}"]`);
+                    handleSelectItems(currentIndex, media.media_id, element!);
+                  }}>
+                  <img src={media.ThumbPath} />
+                </div>
+              );
+            }}
+          </For>
         </div>
 
         <ActionNav />

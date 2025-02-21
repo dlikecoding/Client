@@ -39,7 +39,7 @@ const PhotoCard: Component<PhotoProps> = (props) => {
       style={{ width: `calc(100% / ${view.nColumn} - 1px)` }}
       data-id={media().media_id}
       data-src={media().SourceFile}
-      data-thumb={media().ThumbPath}
+      // data-thumb={media().ThumbPath}
       data-time={media().timeFormat}
       data-idx={index()}
       onClick={() => handleImageClick(index(), media().media_id)}>
