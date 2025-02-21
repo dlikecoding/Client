@@ -9,8 +9,7 @@ export const Share = (props: ButtonProps) => {
     <button
       onClick={() => {
         props.action;
-      }}
-      disabled={props.status}>
+      }}>
       {ShareButtonIcon()}
     </button>
   );

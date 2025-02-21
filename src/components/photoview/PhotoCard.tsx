@@ -15,7 +15,7 @@ const PhotoCard: Component<PhotoProps> = (props) => {
   const media = () => props.media;
   const lastItem = () => props.lastItem;
 
-  const { items, setItems, isSelected } = useMediaContext();
+  const { items, setItems, setOneItem, isSelected } = useMediaContext();
   const { view } = useManageURLContext();
   const { setOpenModal } = useViewMediaContext();
 
@@ -23,9 +23,7 @@ const PhotoCard: Component<PhotoProps> = (props) => {
     if (!isSelected()) {
       window.history.pushState({ state: "Photo Detail" }, "", window.location.href);
 
-      const newItems = new Map(items());
-      newItems.set(idx, mediaId);
-      setItems(newItems);
+      setOneItem(idx, mediaId);
       return setOpenModal(true);
     }
 

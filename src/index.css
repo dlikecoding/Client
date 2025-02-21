@@ -231,6 +231,8 @@ footer {
   border-radius: 10px;
   right: 5px;
   border: none;
+
+  pointer-events: visible;
   animation: zoomIn 0.3s ease;
 }
 
@@ -426,10 +428,15 @@ footer {
 }
 
 /* ================== DISABLED BUTTONS ================== */
-button:disabled svg {
+/* button:disabled svg {
   opacity: 0.5;
-}
+} */
 
 /* button {
   visibility: visible;
 } */
+
+.footerDisabled button {
+  opacity: 0.5;
+  color: #b2b2b2;
+}

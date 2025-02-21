@@ -5,9 +5,5 @@ import { ButtonProps } from "./ButtonProps";
 export const Favorite = (props: ButtonProps) => {
   const { items } = useMediaContext();
 
-  return (
-    <button onClick={props.action} disabled={props.status}>
-      {FavoriteButtonIcon()}
-    </button>
-  );
+  return <button onClick={props.action}>{FavoriteButtonIcon()}</button>;
 };

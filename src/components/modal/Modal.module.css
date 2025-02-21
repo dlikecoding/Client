@@ -27,6 +27,7 @@ header > .modalTitle {
   flex-direction: column;
   gap: 10px;
 
+  scroll-behavior: smooth;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
 
@@ -57,4 +58,33 @@ header > .modalTitle {
   display: block;
   /* -webkit-user-drag: none; */
   /* transition: transform 0.3s ease; */
+}
+
+.modalThumbs {
+  position: fixed;
+  width: 100%;
+  height: 50px;
+
+  bottom: 90px;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 5px;
+  z-index: 1;
+}
+
+.modalThumbs > div {
+  position: relative;
+  width: 30px;
+  height: 100%;
+}
+
+.modalThumbs > div > img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 9/16;
+  object-fit: cover;
 }

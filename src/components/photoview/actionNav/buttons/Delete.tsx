@@ -30,9 +30,7 @@ export const Delete = (props: DeleteProps) => {
   const handleDelete = () => (props.isDeletePage ? props.delete() : deleteMediasOnSV());
   return (
     <>
-      <button popovertarget="delete-contents" disabled={items().size < 1}>
-        {DeleteButtonIcon()}
-      </button>
+      <button popovertarget="delete-contents">{DeleteButtonIcon()}</button>
       <div popover="auto" id="delete-contents" class="delete_contents">
         <p>{textDelete}</p>
 

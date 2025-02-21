@@ -78,17 +78,17 @@ const ActionNav = () => {
   const disableButtons = () => items().size < 1;
   return (
     <>
-      <footer style={{ "z-index": 1 }}>
+      <footer inert={disableButtons()} style={{ "z-index": 1 }} class={disableButtons() ? "footerDisabled" : ""}>
         <div class="actions__toolbar__column is_left">
-          <Switch fallback={<Share action={actions.share} status={disableButtons()} />}>
+          <Switch fallback={<Share action={actions.share} />}>
             <Match when={currentPage.includes("unhide")}>
-              <Unhide action={actions.unhide} status={disableButtons()} />
+              <Unhide action={actions.unhide} />
             </Match>
             <Match when={currentPage.includes("recover")}>
-              <Recover action={actions.recovery} status={disableButtons()} />
+              <Recover action={actions.recovery} />
             </Match>
             <Match when={currentPage.includes("merge")}>
-              <Merge action={actions.merge} status={disableButtons()} />
+              <Merge action={actions.merge} />
             </Match>
           </Switch>
         </div>
@@ -103,7 +103,7 @@ const ActionNav = () => {
           </Show>
 
           <Show when={currentPage.includes("favorite")}>
-            <Favorite action={actions.favorite} status={disableButtons()} />
+            <Favorite action={actions.favorite} />
           </Show>
 
           <Show when={!openModal()}>
@@ -113,7 +113,7 @@ const ActionNav = () => {
           </Show>
 
           <Show when={currentPage.includes("more") && !openModal()}>
-            <MoreAction hide={actions.hide} status={disableButtons()} />
+            <MoreAction hide={actions.hide} />
           </Show>
         </div>
 

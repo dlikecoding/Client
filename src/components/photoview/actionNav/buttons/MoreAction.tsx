@@ -8,7 +8,6 @@ import { fetchAlbum, fetchAlbumUpdating } from "../../../extents/request/fetchin
 
 type MoreActionsProps = {
   hide: () => void;
-  status: boolean;
 };
 
 export const MoreAction = (props: MoreActionsProps) => {
@@ -29,9 +28,7 @@ export const MoreAction = (props: MoreActionsProps) => {
 
   return (
     <>
-      <button popovertarget="actions_contents" disabled={props.status}>
-        {MoreActionButtonIcon()}
-      </button>
+      <button popovertarget="actions_contents">{MoreActionButtonIcon()}</button>
 
       <div popover="auto" id="actions_contents" class="popover-container actions_contents">
         {params.pages === "album" && <div>Remove from Album</div>}

@@ -3,6 +3,8 @@ import { createContext, useContext, createSignal, Accessor, Setter } from "solid
 interface ContextProps {
   items: Accessor<Map<number, string>>;
   setItems: Setter<Map<number, string>>;
+  setOneItem: (key: number, value: string) => void;
+
   isSelected: Accessor<boolean>;
   setIsSelected: Setter<boolean>;
 }
@@ -13,11 +15,17 @@ export const MediaContextProvider = (props: any) => {
   const [items, setItems] = createSignal<Map<number, string>>(new Map());
   const [isSelected, setIsSelected] = createSignal(false);
 
+  const setOneItem = (key: number, value: string): void => {
+    setItems(new Map([[key, value]]));
+  };
+
   return (
     <GlobalMediaContext.Provider
       value={{
         items,
+        setOneItem,
         setItems,
+
         isSelected,
         setIsSelected,
       }}>

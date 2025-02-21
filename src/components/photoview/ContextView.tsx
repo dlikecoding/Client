@@ -77,6 +77,8 @@ const ContextView = () => {
 
   // Reset params on closed
   onCleanup(() => resetParams());
+  // Change number of column when in duplicate page. Otherwise, keep the preveous.
+  //// NOT SURE IF NEEDED
 
   //Tracking current elemenet on screen based on x and y
   const { element } = useElementByPoint({ x: 100, y: 120 });
