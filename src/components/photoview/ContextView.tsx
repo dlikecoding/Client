@@ -2,7 +2,7 @@ import style from "./PhotoView.module.css";
 
 import { useParams } from "@solidjs/router";
 import { useElementByPoint, useIntersectionObserver } from "solidjs-use";
-import { createEffect, createResource, createSignal, For, onCleanup, Show, Suspense } from "solid-js";
+import { createEffect, createResource, createSignal, For, onCleanup, Show } from "solid-js";
 
 import { useMediaContext } from "../../context/Medias";
 import { SearchQuery, useManageURLContext } from "../../context/ManageUrl";
@@ -26,16 +26,20 @@ const ContextView = () => {
   const paramsUrl = useParams();
 
   const { isSelected } = useMediaContext();
-  const { params, view, resetParams } = useManageURLContext();
+  const { params, view, resetLibrary } = useManageURLContext();
   const { openModal, displayMedias, setDisplayMedia } = useViewMediaContext();
 
   const [pageNumber, setPageNumber] = createSignal(0);
   const [target, setTarget] = createSignal<HTMLElement | null>(null);
 
   const [isVisible, setIsVisible] = createSignal(false);
-  useIntersectionObserver(target, ([{ isIntersecting }]) => {
-    setIsVisible(isIntersecting);
-  });
+  useIntersectionObserver(
+    target,
+    ([{ isIntersecting }]) => {
+      setIsVisible(isIntersecting);
+    }
+    // { threshold: 0, rootMargin: "1000px 0px" }
+  );
 
   /** When last element is visible on the DOM, remove from the target,
    * and then load more element to dom (only ONCE)*/
@@ -75,8 +79,8 @@ const ContextView = () => {
     if (newMedia) setDisplayMedia((prev) => [...prev!, ...newMedia]);
   });
 
-  // Reset params on closed
-  onCleanup(() => resetParams());
+  // Reset params on closed (This dose not reset year and month )
+  onCleanup(() => resetLibrary());
   // Change number of column when in duplicate page. Otherwise, keep the preveous.
   //// NOT SURE IF NEEDED
 

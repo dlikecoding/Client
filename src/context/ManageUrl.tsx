@@ -32,6 +32,7 @@ type ManageURIContextType = {
   updatePageKey: <T extends keyof SearchQuery>(key: T, value: SearchQuery[T]) => void;
   updatePage: (data: Partial<SearchQuery>) => void;
   resetParams: () => void;
+  resetLibrary: () => void;
 
   view: ZoomAndAspect;
   setView: SetStoreFunction<ZoomAndAspect>;
@@ -67,6 +68,11 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
     setParams({ ...defaultParams });
   };
 
+  // Resets all parameters in the query object to their default values
+  const resetLibrary = () => {
+    setParams((prevState) => ({ ...prevState, ...resetFilter }));
+  };
+
   createMemo(() => {
     localStorage.setItem("SearchQuery", JSON.stringify(params));
   });
@@ -76,7 +82,7 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
   });
 
   return (
-    <ManageURLContext.Provider value={{ params, updatePageKey, updatePage, resetParams, view, setView }}>
+    <ManageURLContext.Provider value={{ params, updatePageKey, updatePage, resetParams, resetLibrary, view, setView }}>
       {props.children}
     </ManageURLContext.Provider>
   );
@@ -93,6 +99,19 @@ export const useManageURLContext = () => {
 export const defaultParams: SearchQuery = {
   year: "",
   month: undefined,
+  filterType: undefined,
+  filterDevice: undefined,
+  filterObject: undefined,
+  sortKey: "CreateDate",
+  sortOrder: 0,
+
+  favorite: undefined,
+  deleted: undefined,
+  hidden: undefined,
+  duplicate: undefined,
+};
+
+const resetFilter = {
   filterType: undefined,
   filterDevice: undefined,
   filterObject: undefined,

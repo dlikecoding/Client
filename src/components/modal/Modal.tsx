@@ -1,31 +1,31 @@
 import styles from "./Modal.module.css";
 
 import { Portal } from "solid-js/web";
-import { createEffect, createMemo, createSignal, For, Index, onMount } from "solid-js";
+import { createMemo, For, onMount } from "solid-js";
 
-import { useElementByPoint, useIntersectionObserver } from "solidjs-use";
+import { useIntersectionObserver } from "solidjs-use";
 
-import { MediaType, useViewMediaContext } from "../../context/ViewContext";
+import { useViewMediaContext } from "../../context/ViewContext";
 
 import { GoBackIcon } from "../svgIcons";
 
 import ActionNav from "../photoview/actionNav/ActionNav";
 import { useMediaContext } from "../../context/Medias";
 import MediaDisplay from "./MediaDisplay";
-import { createStore, SetStoreFunction, StoreSetter } from "solid-js/store";
+import { createStore } from "solid-js/store";
 
-interface ElementModal {
+export interface ElementModal {
   curIndex: number;
   curId: string;
-  divEl?: HTMLElement;
 }
 
 const STEP = 2;
 
-const Modal = (props: any) => {
+const Modal = () => {
   const { setOpenModal, displayMedias } = useViewMediaContext();
   const { items, setItems, setOneItem } = useMediaContext();
 
+  // when this modal close
   const handleCloseModal = () => {
     setItems(new Map());
     setOpenModal(false);
@@ -37,51 +37,37 @@ const Modal = (props: any) => {
   };
   /////////////////////////////////////////////////////////////
 
+  // Create tracking current element displaying in DOME tree
   const [el, setEl] = createStore<ElementModal>({
     curIndex: items().keys().next().value!, // Current selected index
     curId: items().values().next().value!, // Current Id of selected el
-    divEl: undefined,
   });
 
-  // Handle selected Item on change
-  const handleSelectItems = (idx: number, id: string, divEl?: HTMLElement) => {
-    setOneItem(idx, id);
-    setEl({ curId: id, curIndex: idx, divEl: divEl });
-  };
-
-  //Tracking current elemenet on screen based on x and y
-  const { element } = useElementByPoint({
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-    multiple: false,
-    immediate: true,
-    interval: 1,
-  });
-
-  const displayTime = createMemo(() => {
-    const dTime = element()?.dataset.modaltime;
-    if (dTime) return formatTime(dTime);
-  });
-
+  // List of medias. Started with selected mediaID and then add 2 lement on the top and 2 element in the bottom
   const modalMedias = () =>
     displayMedias.slice(Math.max(0, el.curIndex - STEP), Math.min(displayMedias.length, el.curIndex + 1 + STEP));
 
-  // const addTopEls = () => setEl("curIndex", (prev) => (prev > 1 ? prev - 1 : prev));
-  // const addBottomEls = () => setEl("curIndex", (prev) => (prev < displayMedias.length - 1 ? prev + 1 : prev));
+  // When Item scrolled to or clicked in thumb image, it will change current element (el)
+  const handleSelectItems = (idx: number, id: string) => {
+    setOneItem(idx, id);
+    setEl({ curId: id, curIndex: idx });
+  };
 
-  ////////////////////TEST////////////////////////
+  // Create observtion for all elements in DOME
+  const handleIntersection =
+    (id: string, idx: number) =>
+    ([entry]: IntersectionObserverEntry[]) => {
+      if (!entry.isIntersecting) return;
 
-  createMemo(() => {
-    const elementIdx: string | undefined = element()?.dataset.modalidx;
-    const elementId: string | undefined = element()?.dataset.modalid;
+      return handleSelectItems(idx, id);
+    };
 
-    if (!elementId) return;
-    console.log("scroll", elementIdx, elementId);
-    // handleSelectItems(parseInt(elementIdx!), elementId, element()!);
-  });
+  // Display Date and Time on the header
+  const displayTime = createMemo(() => formatTime(displayMedias[el.curIndex].CreateDate));
 
-  createMemo(() => {
-    if (el && el.divEl) el.divEl.scrollIntoView({ behavior: "instant", block: "start" });
+  // Scroll to selected element in Modal
+  onMount(() => {
+    handleScrolltoEl(el.curId);
   });
 
   return (
@@ -96,14 +82,12 @@ const Modal = (props: any) => {
             {GoBackIcon()}
           </button>
           <div class={styles.modalTitle}>
-            <p>{displayTime()?.date}</p>
-            <p style={{ "font-size": "12px" }}>{displayTime()?.time}</p>
+            <p>{displayTime().date}</p>
+            <p style={{ "font-size": "12px" }}>{displayTime().time}</p>
           </div>
           <div class="buttonContainer">
             {/* <span>Edit</span> */}
-            {/* <span>View</span> */}
-            {/* <button onClick={addTopEls}>TOP </button>
-            <button onClick={addBottomEls}>BOTTOM </button> */}
+            <span>View</span>
           </div>
         </header>
 
@@ -111,14 +95,17 @@ const Modal = (props: any) => {
           <For each={modalMedias()}>
             {(media, index) => {
               const currentIndex = el.curIndex - (STEP - index());
-              return media.media_id === el.curId ? (
+              return (
                 <MediaDisplay
-                  refSetter={(el: StoreSetter<any>) => setEl("divEl", el)}
+                  refSetter={(el) =>
+                    el &&
+                    useIntersectionObserver(el, handleIntersection(media.media_id, currentIndex), {
+                      threshold: 1,
+                    })
+                  }
                   media={media}
                   index={currentIndex}
                 />
-              ) : (
-                <MediaDisplay media={media} index={currentIndex} />
               );
             }}
           </For>
@@ -132,8 +119,8 @@ const Modal = (props: any) => {
                 <div
                   data-thumbId={media.media_id}
                   onClick={() => {
-                    const element: HTMLElement | null = document.querySelector(`[data-modalId="${media.media_id}"]`);
-                    handleSelectItems(currentIndex, media.media_id, element!);
+                    handleScrolltoEl(media.media_id);
+                    handleSelectItems(currentIndex, media.media_id);
                   }}>
                   <img src={media.ThumbPath} />
                 </div>
@@ -158,8 +145,9 @@ const formatTime = (timestamp: string): { date: string; time: string } => {
   };
 };
 
-// const getSubElements = (arr: MediaType[], midIdx: number): MediaType[] => {
-//   const startIdx = Math.max(0, midIdx - NUMBER_OF_MEDIAS_MODAL);
-//   const endIdx = Math.min(arr.length, midIdx + NUMBER_OF_MEDIAS_MODAL + 1);
-//   return arr.slice(startIdx, endIdx);
-// };
+const handleScrolltoEl = (elId: string) => {
+  const element = document.querySelector(`[data-modalId="${elId}"]`);
+  if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
+};
+
+const currentIndex = (elCurIdx: number, idx: number) => elCurIdx - (STEP - idx);
