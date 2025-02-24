@@ -1,6 +1,6 @@
 import styles from "./Group.module.css";
 
-import { createResource, For, Show } from "solid-js";
+import { createResource, Index, Show } from "solid-js";
 import NotFound from "../../components/extents/NotFound";
 
 import { A } from "@solidjs/router";
@@ -19,21 +19,21 @@ const YearView = () => {
           <Loading />
         </Show>
 
-        <For each={loadedMedias()} fallback={<NotFound />}>
+        <Index each={loadedMedias()} fallback={<NotFound />}>
           {(photo) => (
             <A
               class={styles.mediaContainer}
               onClick={() => {
-                updatePage({ year: photo.timeFormat });
+                updatePage({ year: photo().timeFormat });
               }}
               href="/library/month">
               <div class={styles.overlayText}>
-                <h3>{photo.timeFormat}</h3>
+                <h3>{photo().timeFormat}</h3>
               </div>
-              <img loading="lazy" alt="Year Photos" src={photo.ThumbPath} />
+              <img loading="lazy" alt="Year Photos" src={photo().ThumbPath} />
             </A>
           )}
-        </For>
+        </Index>
       </div>
     </>
   );

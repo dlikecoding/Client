@@ -1,23 +1,16 @@
 import { useMediaContext } from "../../../context/Medias";
-import { createEffect } from "solid-js";
 
 const Select = () => {
-  const { setItems, isSelected, setIsSelected } = useMediaContext();
+  const { isSelected, setIsSelected } = useMediaContext();
+
+  const footerBar = document.getElementById("navigationBar") as HTMLElement;
 
   const handleSelectClick = () => {
     setIsSelected((prev) => !prev); // Toggle the selection state
+
+    // Hide navigation bar when Select button clicked
+    footerBar.style.display = isSelected() ? "none" : "";
   };
-
-  createEffect(() => {
-    const footerBar = document.getElementById("navigationBar");
-
-    if (!isSelected()) {
-      setItems(new Map<number, string>());
-      footerBar?.classList.remove("hideFooter");
-    } else {
-      footerBar?.classList.add("hideFooter");
-    }
-  });
 
   return (
     <button onClick={handleSelectClick} style={{ padding: "5px 10px" }}>

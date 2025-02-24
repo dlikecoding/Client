@@ -1,5 +1,5 @@
 import { useParams } from "@solidjs/router";
-import { Match, Show, Switch } from "solid-js";
+import { Accessor, Component, Match, Show, Switch } from "solid-js";
 
 import { useMediaContext } from "../../../context/Medias";
 import { useViewMediaContext } from "../../../context/ViewContext";
@@ -21,6 +21,10 @@ type ButtonConfig = {
   default: string[];
 };
 
+interface ActionNavProps {
+  showImageOnly?: boolean;
+}
+
 export const buttonConfig: ButtonConfig = {
   default: ["favorite", "share", "more", "delete"],
   deleted: ["recover", "permanentDelete"],
@@ -28,7 +32,7 @@ export const buttonConfig: ButtonConfig = {
   duplicate: ["merge", "delete"],
 };
 
-const ActionNav = () => {
+const ActionNav = (props: ActionNavProps) => {
   const { items, setItems, setIsSelected } = useMediaContext();
   const params = useParams();
 
@@ -76,9 +80,15 @@ const ActionNav = () => {
 
   // Disable all action buttons when there is no selected item
   const disableButtons = () => items().size < 1;
+
+  const showImageOnly = () => props.showImageOnly;
+
   return (
     <>
-      <footer inert={disableButtons()} style={{ "z-index": 1 }} class={disableButtons() ? "footerDisabled" : ""}>
+      <footer
+        inert={disableButtons()}
+        style={{ "z-index": 1, opacity: showImageOnly() ? 0 : 1 }}
+        class={disableButtons() ? "footerDisabled" : ""}>
         <div class="actions__toolbar__column is_left">
           <Switch fallback={<Share action={actions.share} />}>
             <Match when={currentPage.includes("unhide")}>
