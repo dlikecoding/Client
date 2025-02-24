@@ -1,19 +1,23 @@
+import { createEffect, createMemo } from "solid-js";
 import { useMediaContext } from "../../../context/Medias";
 
 const Select = () => {
-  const { isSelected, setIsSelected } = useMediaContext();
+  const { setItems, isSelected, setIsSelected } = useMediaContext();
 
   const footerBar = document.getElementById("navigationBar") as HTMLElement;
 
-  const handleSelectClick = () => {
-    setIsSelected((prev) => !prev); // Toggle the selection state
-
+  createEffect(() => {
     // Hide navigation bar when Select button clicked
-    footerBar.style.display = isSelected() ? "none" : "";
-  };
+    if (isSelected()) {
+      footerBar.style.display = "none";
+    } else {
+      footerBar.style.display = "";
+      setItems(new Map());
+    }
+  });
 
   return (
-    <button onClick={handleSelectClick} style={{ padding: "5px 10px" }}>
+    <button onClick={() => setIsSelected((prev) => !prev)} style={{ padding: "5px 10px" }}>
       {!isSelected() ? "Select" : "Cancel"}
     </button>
   );

@@ -1,3 +1,4 @@
+import { onMount } from "solid-js";
 import { useMediaContext } from "../../../../context/Medias";
 import { useViewMediaContext } from "../../../../context/ViewContext";
 import { forDeleting } from "../../../extents/request/fetching";
@@ -14,6 +15,8 @@ export const Delete = (props: DeleteProps) => {
 
   const deleteMediasOnSV = async () => {
     const listOfIds = new Set(items().values());
+    console.log(listOfIds); //////////////////////////
+
     setDisplayMedia((prev) => prev.filter((item, _) => !listOfIds.has(item.media_id)));
 
     setIsSelected(false);
@@ -27,7 +30,16 @@ export const Delete = (props: DeleteProps) => {
     ? "The photo(s) will be moved to the Recently Deleted for 30 days before being permanently deleted."
     : "This will permanently delete the selectd photo(s). This action can't be undone";
 
-  const handleDelete = () => (props.isDeletePage ? props.delete() : deleteMediasOnSV());
+  let popoverDelete: HTMLElement | null;
+  onMount(() => {
+    popoverDelete = document.getElementById("delete-contents");
+  });
+
+  const handleDelete = () => {
+    if (popoverDelete) popoverDelete.hidePopover();
+    return props.isDeletePage ? props.delete() : deleteMediasOnSV();
+  };
+
   return (
     <>
       <button popovertarget="delete-contents">{DeleteButtonIcon()}</button>
@@ -41,8 +53,7 @@ export const Delete = (props: DeleteProps) => {
         <button
           class="cancelBtn"
           on:click={() => {
-            const popoverDelete = document.getElementById("delete-contents");
-            popoverDelete?.hidePopover();
+            if (popoverDelete) popoverDelete.hidePopover();
           }}>
           Cancel
         </button>

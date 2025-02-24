@@ -11,6 +11,9 @@
   height: 100%;
   background: var(--bg-primary);
   transition: all 1s;
+
+  overscroll-behavior-y: none;
+  overflow-x: hidden;
 }
 
 header > .modalTitle {
@@ -32,7 +35,6 @@ header > .modalTitle {
   flex-direction: column;
   gap: 10px;
 
-  overscroll-behavior: none;
   overscroll-behavior-y: none;
   overflow-x: hidden;
 
@@ -65,7 +67,8 @@ header > .modalTitle {
   object-fit: contain;
   display: block;
   /* -webkit-user-drag: none; */
-  /* transition: transform 0.3s ease; */
+  opacity: 1;
+  transition: opaccity 0.3s linear;
 }
 /* /////////////////// THUMBNAIL //////////////////////// */
 .modalThumbs {
