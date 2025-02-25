@@ -13,7 +13,6 @@ import ActionNav from "../photoview/actionNav/ActionNav";
 import { useMediaContext } from "../../context/Medias";
 import MediaDisplay from "./MediaDisplay";
 import { createStore } from "solid-js/store";
-import { List } from "@solid-primitives/list";
 
 export interface ElementModal {
   curIndex: number;
@@ -32,10 +31,16 @@ const Modal = () => {
     setOpenModal(false);
   };
 
-  // On close or clicked back button, remove the top state on the stack
-  window.onpopstate = (event) => {
-    if (event.state) handleCloseModal();
-  };
+  onMount(() => {
+    // Scroll to selected element in Modal
+    handleScrolltoEl(el.curId);
+
+    // On close or clicked back button, remove the top state on the stack
+    window.onpopstate = (event) => {
+      if (event.state) handleCloseModal();
+    };
+  });
+
   /////////////////////////////////////////////////////////////
 
   // Create tracking current element displaying in DOME tree
@@ -49,9 +54,9 @@ const Modal = () => {
     displayMedias.slice(Math.max(0, el.curIndex - STEP), Math.min(displayMedias.length, el.curIndex + 1 + STEP));
 
   // When Item scrolled to or clicked in thumb image, it will change current element (el)
-  const handleSelectItems = (idx: number, id: string) => {
-    setOneItem(idx, id);
-    setEl({ curId: id, curIndex: idx });
+  const currentSelectedItem = (index: number, id: string) => {
+    setOneItem(index, id);
+    setEl({ curId: id, curIndex: index });
   };
 
   // Create observtion for all elements in DOME
@@ -59,17 +64,12 @@ const Modal = () => {
     (id: string, idx: number) =>
     ([entry]: IntersectionObserverEntry[]) => {
       if (!entry.isIntersecting) return;
-
-      return handleSelectItems(idx, id);
+      console.log(idx, id);
+      currentSelectedItem(idx, id);
     };
 
   // Display Date and Time on the header
   const displayTime = createMemo(() => formatTime(displayMedias[el.curIndex].CreateDate));
-
-  // Scroll to selected element in Modal
-  onMount(() => {
-    handleScrolltoEl(el.curId);
-  });
 
   const [showImageOnly, setShowImgOnly] = createSignal(false);
 
@@ -97,6 +97,20 @@ const Modal = () => {
         </header>
 
         <div class={styles.modalImages} id="modalImages">
+          {/* {modalMedias().map((media, index) => (
+            <MediaDisplay
+              refSetter={(el) =>
+                el &&
+                useIntersectionObserver(el, handleIntersection(media.media_id, index), {
+                  threshold: 1,
+                })
+              }
+              media={media}
+              index={displayMedias.indexOf(media)}
+              setShowImgOnly={setShowImgOnly}
+            />
+          ))} */}
+
           <For each={modalMedias()}>
             {(media) => {
               const currentIndex = displayMedias.indexOf(media); //el.curIndex - (STEP - index());
@@ -120,23 +134,20 @@ const Modal = () => {
         </div>
 
         <div class={styles.modalThumbs} style={{ opacity: showImageOnly() ? 0 : 1 }}>
-          <For each={modalMedias()}>
-            {(media, index) => {
-              const currentIndex = displayMedias.indexOf(media); //el.curIndex - (STEP - index()); //displayMedias.indexOf(media);
-              return (
-                <div
-                  style={media.media_id === el.curId ? { width: "70px", margin: "0 5px" } : {}}
-                  data-thumbId={media.media_id}
-                  onClick={() => {
-                    console.log(currentIndex, media.media_id);
-                    handleScrolltoEl(media.media_id);
-                    handleSelectItems(currentIndex, media.media_id);
-                  }}>
-                  <img inert src={media.ThumbPath} />
-                </div>
-              );
-            }}
-          </For>
+          {modalMedias().map((media, index) => (
+            // const currentIndex = displayMedias.indexOf(media); //el.curIndex - (STEP - index()); //displayMedias.indexOf(media);
+
+            <div
+              style={media.media_id === el.curId ? { width: "70px", margin: "0 5px" } : {}}
+              data-thumbId={media.media_id}
+              onClick={() => {
+                console.log(displayMedias.indexOf(media), media.media_id);
+                handleScrolltoEl(media.media_id);
+                currentSelectedItem(displayMedias.indexOf(media), media.media_id);
+              }}>
+              <img inert src={media.ThumbPath} />
+            </div>
+          ))}
         </div>
 
         <ActionNav showImageOnly={showImageOnly()} />
@@ -160,7 +171,11 @@ const handleScrolltoEl = (elId: string) => {
   if (element) element.scrollIntoView({ behavior: "auto", block: "start" });
 };
 
-const IntersectionOnScroll = (handleSelectItems: (idx: number, id: string) => void): void => {
+const getIndex = (elCurIdx: number, idx: number) => {
+  return elCurIdx < STEP ? idx : elCurIdx - (STEP - idx);
+};
+
+const IntersectionOnScroll = (currentSelectedItem: (idx: number, id: string) => void): void => {
   const elements = document.querySelectorAll<HTMLElement>("#modalImages");
 
   if (!elements.length) return;
@@ -174,7 +189,7 @@ const IntersectionOnScroll = (handleSelectItems: (idx: number, id: string) => vo
           const modalId = mediaEl.dataset.modalid;
 
           if (!isNaN(modalIdx) && modalId) {
-            handleSelectItems(modalIdx, modalId);
+            currentSelectedItem(modalIdx, modalId);
           }
         }
       });

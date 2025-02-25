@@ -1,11 +1,11 @@
 import styles from "./Modal.module.css";
 
 import { Portal } from "solid-js/web";
-import { createMemo, createSignal, For, onMount } from "solid-js";
+import { createEffect, createMemo, createSignal, For, Index, onMount } from "solid-js";
 
-import { useIntersectionObserver } from "solidjs-use";
+import { useElementByPoint, useIntersectionObserver } from "solidjs-use";
 
-import { useViewMediaContext } from "../../context/ViewContext";
+import { MediaType, useViewMediaContext } from "../../context/ViewContext";
 
 import { GoBackIcon } from "../svgIcons";
 
@@ -13,17 +13,22 @@ import ActionNav from "../photoview/actionNav/ActionNav";
 import { useMediaContext } from "../../context/Medias";
 import MediaDisplay from "./MediaDisplay";
 import { createStore } from "solid-js/store";
+import { List } from "@solid-primitives/list";
 
 export interface ElementModal {
   curIndex: number;
   curId: string;
+  curEl: HTMLElement | null;
 }
 
-const STEP = 5;
+const DISPLAY_SIZE = 7; // We want to show at least 7 elements
+const BUFFER_SIZE = 3; // 3 elements before and after the current index
 
 const Modal = () => {
   const { setOpenModal, displayMedias } = useViewMediaContext();
   const { items, setItems, setOneItem } = useMediaContext();
+
+  const [showImageOnly, setShowImgOnly] = createSignal(false);
 
   // when this modal close
   const handleCloseModal = () => {
@@ -31,47 +36,59 @@ const Modal = () => {
     setOpenModal(false);
   };
 
+  /////////////////////////////////////////////////////////////
+
+  const [current, setCurrent] = createStore<ElementModal>({
+    curIndex: items().keys().next().value!, // Current selected index
+    curId: items().values().next().value!, // Current Id of selected el
+    curEl: null,
+  });
+
   onMount(() => {
     // Scroll to selected element in Modal
-    handleScrolltoEl(el.curId);
+    handleScrolltoEl(displayMedias[current.curIndex].media_id);
 
     // On close or clicked back button, remove the top state on the stack
     window.onpopstate = (event) => {
       if (event.state) handleCloseModal();
     };
+
+    setCurrent("curEl", element());
   });
 
-  /////////////////////////////////////////////////////////////
+  const modalMedias = createMemo(() => getSublist(displayMedias, current.curIndex));
 
-  // Create tracking current element displaying in DOME tree
-  const [el, setEl] = createStore<ElementModal>({
-    curIndex: items().keys().next().value!, // Current selected index
-    curId: items().values().next().value!, // Current Id of selected el
-  });
+  // const updateList = () => {
+  //   const result = getSublist(displayMedias, current.curIndex);
+  //   // setModalMedias(result);
+  // };
 
-  // List of medias. Started with selected mediaID and then add 2 lement on the top and 2 element in the bottom
-  const modalMedias = () =>
-    displayMedias.slice(Math.max(0, el.curIndex - STEP), Math.min(displayMedias.length, el.curIndex + 1 + STEP));
+  //Tracking current element on screen based on x and y
+  const { element } = useElementByPoint({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
 
-  // When Item scrolled to or clicked in thumb image, it will change current element (el)
-  const currentSelectedItem = (index: number, id: string) => {
-    setOneItem(index, id);
-    setEl({ curId: id, curIndex: index });
+  const updateCurrent = (direction: number): void => {
+    setCurrent({
+      curEl: element(),
+      curId: displayMedias[current.curIndex + direction].media_id,
+      curIndex: current.curIndex + direction,
+    });
+    handleScrolltoEl(current.curId);
   };
 
-  // Create observtion for all elements in DOME
-  const handleIntersection =
-    (id: string, idx: number) =>
-    ([entry]: IntersectionObserverEntry[]) => {
-      if (!entry.isIntersecting) return;
-      console.log(idx, id);
-      currentSelectedItem(idx, id);
-    };
+  const shiftUp = () => {
+    if (current.curIndex > 0) {
+      updateCurrent(-1);
+      console.log("UP: ", current.curIndex);
+    }
+  };
 
-  // Display Date and Time on the header
-  const displayTime = createMemo(() => formatTime(displayMedias[el.curIndex].CreateDate));
-
-  const [showImageOnly, setShowImgOnly] = createSignal(false);
+  const shiftDown = () => {
+    if (current.curIndex < displayMedias.length) {
+      // setCurrent("curIndex", (prev) => prev + 1);
+      console.log("Down: ", current.curIndex);
+      updateCurrent(1);
+    }
+  };
 
   return (
     <Portal>
@@ -85,69 +102,47 @@ const Modal = () => {
             {GoBackIcon()}
           </button>
           <div class={styles.modalTitle}>
-            <p>{displayTime().date}</p>
-            <p style={{ "font-size": "12px" }}>{displayTime().time}</p>
+            {/* <p>{displayTime().date}</p>
+            <p style={{ "font-size": "12px" }}>{displayTime().time}</p> */}
           </div>
           <div class="buttonContainer">
-            {/* <span>Edit</span> */}
-            <button class={styles.modalButtons} onClick={() => console.log("View change clicked")}>
-              View
+            <button class={styles.modalButtons} onClick={shiftUp}>
+              Up
+            </button>
+            <button class={styles.modalButtons} onClick={shiftDown}>
+              Down
+            </button>
+
+            <button class={styles.modalButtons} onClick={shiftDown}>
+              SetEl
             </button>
           </div>
         </header>
 
         <div class={styles.modalImages} id="modalImages">
-          {/* {modalMedias().map((media, index) => (
-            <MediaDisplay
-              refSetter={(el) =>
-                el &&
-                useIntersectionObserver(el, handleIntersection(media.media_id, index), {
-                  threshold: 1,
-                })
-              }
-              media={media}
-              index={displayMedias.indexOf(media)}
-              setShowImgOnly={setShowImgOnly}
-            />
-          ))} */}
-
           <For each={modalMedias()}>
-            {(media) => {
-              const currentIndex = displayMedias.indexOf(media); //el.curIndex - (STEP - index());
+            {(media, index) => {
+              console.log("Create new", index());
               return (
-                <MediaDisplay
-                  refSetter={(el) =>
-                    el &&
-                    useIntersectionObserver(el, handleIntersection(media.media_id, currentIndex), {
-                      root: null,
-                      rootMargin: "0px",
-                      threshold: 0.99999999999999,
-                    })
-                  }
-                  media={media}
-                  index={currentIndex}
-                  setShowImgOnly={setShowImgOnly}
-                />
+                <MediaDisplay media={media} index={displayMedias.indexOf(media)} setShowImgOnly={setShowImgOnly} />
               );
             }}
           </For>
         </div>
 
         <div class={styles.modalThumbs} style={{ opacity: showImageOnly() ? 0 : 1 }}>
-          {modalMedias().map((media, index) => (
-            // const currentIndex = displayMedias.indexOf(media); //el.curIndex - (STEP - index()); //displayMedias.indexOf(media);
-
-            <div
-              style={media.media_id === el.curId ? { width: "70px", margin: "0 5px" } : {}}
-              data-thumbId={media.media_id}
-              onClick={() => {
-                console.log(displayMedias.indexOf(media), media.media_id);
-                handleScrolltoEl(media.media_id);
-                currentSelectedItem(displayMedias.indexOf(media), media.media_id);
-              }}>
-              <img inert src={media.ThumbPath} />
-            </div>
-          ))}
+          <For each={modalMedias()}>
+            {(media, index) => {
+              return (
+                <div
+                  style={media.media_id === current.curId ? { width: "70px", margin: "0 5px" } : {}}
+                  data-thumbId={media.media_id}
+                  onClick={() => {}}>
+                  <img inert src={media.ThumbPath} />
+                </div>
+              );
+            }}
+          </For>
         </div>
 
         <ActionNav showImageOnly={showImageOnly()} />
@@ -172,8 +167,39 @@ const handleScrolltoEl = (elId: string) => {
 };
 
 const getIndex = (elCurIdx: number, idx: number) => {
-  return elCurIdx < STEP ? idx : elCurIdx - (STEP - idx);
+  return elCurIdx < BUFFER_SIZE ? idx : elCurIdx - (BUFFER_SIZE - idx);
 };
+
+const getElementId = (el: HTMLElement) => {
+  console.log(el.dataset.modalid);
+  return el.dataset.modalid;
+};
+
+function getSublist(elements: MediaType[], currentIndex: number) {
+  // Case 1: If the list is smaller than 7 elements, return the whole list
+  if (elements.length <= DISPLAY_SIZE) {
+    return elements;
+  }
+
+  // Case 2: If the list is large enough, we want to dynamically calculate the sublist
+  let start = currentIndex - BUFFER_SIZE;
+  let end = currentIndex + BUFFER_SIZE;
+
+  // Case 3: If the start goes below 0, adjust the window to the left
+  if (start < 0) {
+    start = 0;
+    end = DISPLAY_SIZE - 1;
+  }
+
+  // Case 4: If the end exceeds the list's length, adjust the window to the right
+  if (end >= elements.length) {
+    end = elements.length - 1;
+    start = end - (DISPLAY_SIZE - 1);
+  }
+
+  // Return the sublist by slicing the elements from start to end (inclusive)
+  return elements.slice(start, end + 1);
+}
 
 const IntersectionOnScroll = (currentSelectedItem: (idx: number, id: string) => void): void => {
   const elements = document.querySelectorAll<HTMLElement>("#modalImages");
