@@ -21,6 +21,22 @@
 }
 
 /* ================== GLOBAL STYLES ================== */
+
+* {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  overscroll-behavior: smooth;
+}
+
+/* Hide Scrollbars */
+::-webkit-scrollbar,
+::-webkit-scrollbar-thumb {
+  display: none;
+}
+
 body {
   background: var(--bg-primary);
   /* backdrop-filter: var(--backdrop-filter);
@@ -29,21 +45,10 @@ body {
   margin: 0;
   padding: 0;
 
-  user-select: none;
-  overscroll-behavior: none;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
   scroll-behavior: smooth;
   /* overflow: hidden; */
   color: white;
   font-family: system-ui, "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif;
-}
-
-/* Hide Scrollbars */
-::-webkit-scrollbar,
-::-webkit-scrollbar-thumb {
-  display: none;
 }
 
 svg {
@@ -222,8 +227,17 @@ footer {
 }
 
 /* ================== DISABLED BUTTONS ================== */
-.footerDisabled button {
+.footerDisabled button,
+button:disabled {
   opacity: 0.5;
+  pointer-events: none;
+  transition: opacity 0.2s linear;
+}
+
+.hideButtons * {
+  opacity: 0;
+  pointer-events: none;
+  cursor: none;
   transition: opacity 0.3s linear;
 }
 

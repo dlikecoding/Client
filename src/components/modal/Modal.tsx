@@ -1,7 +1,7 @@
 import styles from "./Modal.module.css";
 
 import { Portal } from "solid-js/web";
-import { createEffect, createMemo, createSignal, For, Index, onMount } from "solid-js";
+import { Component, createEffect, createMemo, createSignal, For, Index, onMount, Setter } from "solid-js";
 
 import { useElementByPoint, useIntersectionObserver } from "solidjs-use";
 
@@ -12,19 +12,23 @@ import { GoBackIcon } from "../svgIcons";
 import ActionNav from "../photoview/actionNav/ActionNav";
 import { useMediaContext } from "../../context/Medias";
 import MediaDisplay from "./MediaDisplay";
-import { createStore } from "solid-js/store";
+import { createStore, SetStoreFunction, StoreSetter } from "solid-js/store";
 import { List } from "@solid-primitives/list";
 
 export interface ElementModal {
-  curIndex: number;
-  curId: string;
-  curEl: HTMLElement | null;
+  elIndex: number;
+  elId: string;
+  curEl?: HTMLElement | null;
+}
+
+interface ModalProps {
+  lastItem?: Setter<HTMLElement | null>;
 }
 
 const DISPLAY_SIZE = 7; // We want to show at least 7 elements
-const BUFFER_SIZE = 3; // 3 elements before and after the current index
+const BUFFER_SIZE = Math.floor(DISPLAY_SIZE / 2); // 3 elements before and after the current index
 
-const Modal = () => {
+const Modal: Component<ModalProps> = (props) => {
   const { setOpenModal, displayMedias } = useViewMediaContext();
   const { items, setItems, setOneItem } = useMediaContext();
 
@@ -39,61 +43,95 @@ const Modal = () => {
   /////////////////////////////////////////////////////////////
 
   const [current, setCurrent] = createStore<ElementModal>({
-    curIndex: items().keys().next().value!, // Current selected index
-    curId: items().values().next().value!, // Current Id of selected el
-    curEl: null,
+    elIndex: items().keys().next().value!, // Current selected index
+    elId: items().values().next().value!, // Current Id of selected el
   });
 
   onMount(() => {
     // Scroll to selected element in Modal
-    handleScrolltoEl(displayMedias[current.curIndex].media_id);
+    scrollToElement(current.elId);
 
     // On close or clicked back button, remove the top state on the stack
     window.onpopstate = (event) => {
       if (event.state) handleCloseModal();
     };
-
-    setCurrent("curEl", element());
   });
 
-  const modalMedias = createMemo(() => getSublist(displayMedias, current.curIndex));
+  const modalMedias = () => getSublist(displayMedias, current.elIndex);
 
-  // const updateList = () => {
-  //   const result = getSublist(displayMedias, current.curIndex);
-  //   // setModalMedias(result);
-  // };
-
-  //Tracking current element on screen based on x and y
-  const { element } = useElementByPoint({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-
-  const updateCurrent = (direction: number): void => {
+  const setData = (index: number, mediaId: string) => {
     setCurrent({
-      curEl: element(),
-      curId: displayMedias[current.curIndex + direction].media_id,
-      curIndex: current.curIndex + direction,
+      elId: mediaId,
+      elIndex: index,
     });
-    handleScrolltoEl(current.curId);
+    setOneItem(current.elIndex, current.elId);
   };
 
-  const shiftUp = () => {
-    if (current.curIndex > 0) {
-      updateCurrent(-1);
-      console.log("UP: ", current.curIndex);
-    }
+  const updateCurrent = (newIndex: number): void => {
+    if (newIndex < 0 || newIndex >= displayMedias.length) return; // Prevent out-of-bounds access
+    setData(newIndex, displayMedias[newIndex].media_id);
+    scrollToElement(current.elId);
   };
 
-  const shiftDown = () => {
-    if (current.curIndex < displayMedias.length) {
-      // setCurrent("curIndex", (prev) => prev + 1);
-      console.log("Down: ", current.curIndex);
-      updateCurrent(1);
-    }
-  };
+  const shiftUp = () => updateCurrent(current.elIndex - 1);
+  const shiftDown = () => updateCurrent(current.elIndex + 1);
+
+  // //Tracking current element on screen based on x and y
+  // const { element } = useElementByPoint({
+  //   x: window.innerWidth / 2,
+  //   y: window.innerHeight / 2,
+  //   multiple: false,
+  //   // immediate: false,
+  //   // interval: 500,
+  // });
+
+  // createMemo(() => {
+  //   // Auto select the next element after an item deleted
+  //   if (items().size === 0) {
+  //     // Handle the case where the list empty - Close Modal
+  //     if (displayMedias.length === 0) handleCloseModal();
+
+  //     // Handle index delete is the last index
+  //     // current.elIndex >= displayMedias.length - 1 ? current.elIndex - 1 : current.elIndex;
+  //     const index = current.elIndex >= displayMedias.length - 1 ? current.elIndex - 1 : current.elIndex; //Math.min(current.elIndex, displayMedias.length - 1);
+  //     const mediaId = displayMedias[index].media_id;
+
+  //     console.log(index, mediaId);
+  //     console.log(displayMedias);
+
+  //     setData(index, mediaId);
+  //     scrollToElement(current.elId);
+  //   }
+  // });
+
+  // createEffect(() => {
+  //   console.log("Current before", current.elIndex, current.elId);
+
+  //   const mediaEl = element()?.dataset;
+  //   if (!mediaEl) return;
+  //   const modalIdx = mediaEl.modalidx ? parseInt(mediaEl.modalidx, 10) : NaN;
+  //   const modalId = mediaEl.modalid;
+
+  //   if (isNaN(modalIdx) || !modalId) return;
+  //   if (current.elIndex === modalIdx || current.elId === modalId) return;
+
+  //   if (current.elIndex < modalIdx) {
+  //     //Shirt down
+  //     shiftDown();
+  //   }
+
+  //   if (current.elIndex > modalIdx) {
+  //     //Shirt up
+  //     shiftUp();
+  //   }
+  //   console.log("Current:", current.elIndex, modalIdx, current.elId, modalId, current.elId === modalId);
+  //   // setCurrent({ elIndex: modalIdx, elId: modalId });
+  // });
 
   return (
     <Portal>
       <div class={styles.modalContainer} style={{ "z-index": 1 }}>
-        <header style={{ "z-index": 1, opacity: showImageOnly() ? 0 : 1 }}>
+        <header class={`${showImageOnly() ? "hideButtons" : ""}`} style={{ "z-index": 1 }}>
           <button
             onClick={() => {
               window.history.back();
@@ -112,37 +150,42 @@ const Modal = () => {
             <button class={styles.modalButtons} onClick={shiftDown}>
               Down
             </button>
-
-            <button class={styles.modalButtons} onClick={shiftDown}>
-              SetEl
-            </button>
           </div>
         </header>
 
         <div class={styles.modalImages} id="modalImages">
-          <For each={modalMedias()}>
+          <List each={modalMedias()}>
             {(media, index) => {
-              console.log("Create new", index());
-              return (
-                <MediaDisplay media={media} index={displayMedias.indexOf(media)} setShowImgOnly={setShowImgOnly} />
-              );
+              // const currentIndex = displayMedias.indexOf(media());
+
+              return <MediaDisplay media={media()} index={0} setShowImgOnly={setShowImgOnly} />;
             }}
-          </For>
+          </List>
         </div>
 
-        <div class={styles.modalThumbs} style={{ opacity: showImageOnly() ? 0 : 1 }}>
-          <For each={modalMedias()}>
+        <div class={`${styles.modalThumbs} ${showImageOnly() ? "hideButtons" : ""}`}>
+          <List each={modalMedias()}>
             {(media, index) => {
+              // const edgeEl: boolean = index === 0 || modalMedias().length - 1 ? true : false;
+              // const currentIndex = displayMedias.indexOf(media());
               return (
                 <div
-                  style={media.media_id === current.curId ? { width: "70px", margin: "0 5px" } : {}}
-                  data-thumbId={media.media_id}
-                  onClick={() => {}}>
-                  <img inert src={media.ThumbPath} />
+                  style={media().media_id === current.elId ? { width: "70px", height: "60px", margin: "0 5px" } : {}}
+                  data-thumbId={media().media_id}
+                  data-idx={index()}
+                  onClick={() => {
+                    const numberOfSteps = calculateIndex(index(), current.elIndex, displayMedias.length);
+                    const navigateToIndex = current.elIndex + numberOfSteps;
+
+                    if (current.elIndex === navigateToIndex) return;
+
+                    updateCurrent(navigateToIndex);
+                  }}>
+                  <img inert src={media().ThumbPath} />
                 </div>
               );
             }}
-          </For>
+          </List>
         </div>
 
         <ActionNav showImageOnly={showImageOnly()} />
@@ -161,13 +204,33 @@ const formatTime = (timestamp: string): { date: string; time: string } => {
   };
 };
 
-const handleScrolltoEl = (elId: string) => {
-  const element = document.querySelector(`[data-modalId="${elId}"]`);
-  if (element) element.scrollIntoView({ behavior: "auto", block: "start" });
+/**
+ * Scrolls to the specified element using its data-modalId attribute.
+ *
+ * @param modalId - The unique identifier of the target element.
+ */
+const scrollToElement = (modalId: string): void => {
+  const targetElement = document.querySelector(`[data-modalId="${modalId}"]`) as HTMLElement | null;
+
+  if (targetElement) {
+    targetElement.scrollIntoView({ behavior: "instant", block: "start" });
+  }
 };
 
-const getIndex = (elCurIdx: number, idx: number) => {
-  return elCurIdx < BUFFER_SIZE ? idx : elCurIdx - (BUFFER_SIZE - idx);
+/**
+ * Calculates the step difference required to move from the current index
+ * to the target index based on buffer constraints.
+ * @param targetIndex - The index of the clicked thumbnail.
+ * @param currentIndex - The current active index.
+ * @param arrayLength - The total length of the array.
+ * @returns The computed step difference for navigation.
+ */
+const calculateIndex = (targetIndex: number, currentIndex: number, arrayLength: number): number => {
+  const isAtEnd = currentIndex + BUFFER_SIZE >= arrayLength;
+
+  return isAtEnd
+    ? targetIndex - 2 * BUFFER_SIZE - currentIndex + arrayLength - 1
+    : targetIndex - Math.min(currentIndex, BUFFER_SIZE);
 };
 
 const getElementId = (el: HTMLElement) => {
@@ -175,53 +238,33 @@ const getElementId = (el: HTMLElement) => {
   return el.dataset.modalid;
 };
 
-function getSublist(elements: MediaType[], currentIndex: number) {
-  // Case 1: If the list is smaller than 7 elements, return the whole list
-  if (elements.length <= DISPLAY_SIZE) {
+/**
+ * Retrieves a sublist of elements centered around the current index, adjusting for boundaries.
+ * @param elements - The full list of media elements.
+ * @param currentIndex - The index of the currently active element.
+ * @returns A sublist of elements, dynamically adjusted based on the current index.
+ */
+const getSublist = (elements: MediaType[], currentIndex: number): MediaType[] => {
+  const totalElements = elements.length;
+
+  // Case 1: If the list has fewer elements than DISPLAY_SIZE, return the full list
+  if (totalElements <= DISPLAY_SIZE) {
     return elements;
   }
 
-  // Case 2: If the list is large enough, we want to dynamically calculate the sublist
-  let start = currentIndex - BUFFER_SIZE;
-  let end = currentIndex + BUFFER_SIZE;
+  // Define initial sublist range
+  let startIndex = Math.max(0, currentIndex - BUFFER_SIZE);
+  let endIndex = Math.min(totalElements - 1, currentIndex + BUFFER_SIZE);
 
-  // Case 3: If the start goes below 0, adjust the window to the left
-  if (start < 0) {
-    start = 0;
-    end = DISPLAY_SIZE - 1;
+  // Adjust window if it doesn’t fit within DISPLAY_SIZE
+  if (endIndex - startIndex + 1 < DISPLAY_SIZE) {
+    if (startIndex === 0) {
+      endIndex = Math.min(DISPLAY_SIZE - 1, totalElements - 1);
+    } else if (endIndex === totalElements - 1) {
+      startIndex = Math.max(0, totalElements - DISPLAY_SIZE);
+    }
   }
 
-  // Case 4: If the end exceeds the list's length, adjust the window to the right
-  if (end >= elements.length) {
-    end = elements.length - 1;
-    start = end - (DISPLAY_SIZE - 1);
-  }
-
-  // Return the sublist by slicing the elements from start to end (inclusive)
-  return elements.slice(start, end + 1);
-}
-
-const IntersectionOnScroll = (currentSelectedItem: (idx: number, id: string) => void): void => {
-  const elements = document.querySelectorAll<HTMLElement>("#modalImages");
-
-  if (!elements.length) return;
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const mediaEl = entry.target as HTMLElement;
-          const modalIdx = mediaEl.dataset.modalidx ? parseInt(mediaEl.dataset.modalidx, 10) : NaN;
-          const modalId = mediaEl.dataset.modalid;
-
-          if (!isNaN(modalIdx) && modalId) {
-            currentSelectedItem(modalIdx, modalId);
-          }
-        }
-      });
-    },
-    { threshold: 1 }
-  );
-
-  elements.forEach((el) => observer.observe(el));
+  // Return the sublist
+  return elements.slice(startIndex, endIndex + 1);
 };

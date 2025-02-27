@@ -87,8 +87,8 @@ const ActionNav = (props: ActionNavProps) => {
     <>
       <footer
         inert={disableButtons()}
-        style={{ "z-index": 1, opacity: showImageOnly() ? 0 : 1 }}
-        class={disableButtons() ? "footerDisabled" : ""}>
+        style={{ "z-index": 1 }}
+        class={`${showImageOnly() ? "hideButtons" : ""} ${disableButtons() ? "footerDisabled" : ""}`}>
         <div class="actions__toolbar__column is_left">
           <Switch fallback={<Share action={actions.share} />}>
             <Match when={currentPage.includes("unhide")}>
@@ -116,7 +116,7 @@ const ActionNav = (props: ActionNavProps) => {
           </Show>
 
           <Show when={!openModal()}>
-            <button title="item size" disabled={true}>
+            <button title="item size" inert>
               {items().size}
             </button>
           </Show>

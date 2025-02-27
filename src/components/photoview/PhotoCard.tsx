@@ -1,4 +1,4 @@
-import { Match, Setter, Show, Switch, type Component } from "solid-js";
+import { Match, Show, Switch, type Component } from "solid-js";
 import styles from "./PhotoView.module.css";
 import { useMediaContext } from "../../context/Medias";
 import { useManageURLContext } from "../../context/ManageUrl";
@@ -6,7 +6,7 @@ import { MediaType, useViewMediaContext } from "../../context/ViewContext";
 
 interface PhotoProps {
   media: MediaType;
-  lastItem?: Setter<HTMLElement | null>;
+  lastItem?: (el: HTMLElement) => void;
   index: number;
 }
 

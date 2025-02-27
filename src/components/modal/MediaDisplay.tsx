@@ -7,12 +7,22 @@ interface MediaTypeProps {
   index: number;
   refSetter?: (el: HTMLElement) => void;
   setShowImgOnly: Setter<boolean>;
+
+  // itemTop: number;
+  // itemHeight: number;
 }
 
 const MediaDisplay: Component<MediaTypeProps> = (props) => {
   return (
     <div
       ref={props.refSetter}
+      // style={{
+      //   position: "absolute",
+      //   top: `${props.itemTop}px`,
+      //   // height: `${props.itemHeight}px`,
+      //   // width: "100%",
+      //   background: `${props.index % 2 === 0 ? "#000" : "#999"}`,
+      // }}
       class={styles.imageContainer}
       data-modalIdx={props.index}
       data-modalId={props.media.media_id}
