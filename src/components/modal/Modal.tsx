@@ -1,28 +1,25 @@
 import styles from "./Modal.module.css";
 
 import { Portal } from "solid-js/web";
-import { Component, createEffect, createMemo, createSignal, For, Index, onMount, Setter } from "solid-js";
-
-import { useElementByPoint, useIntersectionObserver } from "solidjs-use";
+import { Component, createMemo, createSignal, For, Index, onCleanup, onMount, Setter } from "solid-js";
+import { createStore } from "solid-js/store";
+import { List } from "@solid-primitives/list";
 
 import { MediaType, useViewMediaContext } from "../../context/ViewContext";
-
+import { useMediaContext } from "../../context/Medias";
 import { GoBackIcon } from "../svgIcons";
 
 import ActionNav from "../photoview/actionNav/ActionNav";
-import { useMediaContext } from "../../context/Medias";
 import MediaDisplay from "./MediaDisplay";
-import { createStore, SetStoreFunction, StoreSetter } from "solid-js/store";
-import { List } from "@solid-primitives/list";
 
 export interface ElementModal {
   elIndex: number;
   elId: string;
-  curEl?: HTMLElement | null;
+  // curEl?: HTMLElement | null;
 }
 
 interface ModalProps {
-  lastItem?: Setter<HTMLElement | null>;
+  // lastItem?: (el: HTMLElement) => void;
 }
 
 const DISPLAY_SIZE = 7; // We want to show at least 7 elements
@@ -41,7 +38,6 @@ const Modal: Component<ModalProps> = (props) => {
   };
 
   /////////////////////////////////////////////////////////////
-
   const [current, setCurrent] = createStore<ElementModal>({
     elIndex: items().keys().next().value!, // Current selected index
     elId: items().values().next().value!, // Current Id of selected el
@@ -57,9 +53,17 @@ const Modal: Component<ModalProps> = (props) => {
     };
   });
 
+  onCleanup(() => {
+    // Set target to the last element in PhotoView
+    /** TO DO: Need to implement set target to the last target of element. */
+
+    // scroll to view the current id
+    scrollToElementPV(current.elId);
+  });
+
   const modalMedias = () => getSublist(displayMedias, current.elIndex);
 
-  const setData = (index: number, mediaId: string) => {
+  const setSelectCurrentItem = (index: number, mediaId: string) => {
     setCurrent({
       elId: mediaId,
       elIndex: index,
@@ -69,64 +73,18 @@ const Modal: Component<ModalProps> = (props) => {
 
   const updateCurrent = (newIndex: number): void => {
     if (newIndex < 0 || newIndex >= displayMedias.length) return; // Prevent out-of-bounds access
-    setData(newIndex, displayMedias[newIndex].media_id);
+    setSelectCurrentItem(newIndex, displayMedias[newIndex].media_id);
     scrollToElement(current.elId);
   };
 
   const shiftUp = () => updateCurrent(current.elIndex - 1);
   const shiftDown = () => updateCurrent(current.elIndex + 1);
 
-  // //Tracking current element on screen based on x and y
-  // const { element } = useElementByPoint({
-  //   x: window.innerWidth / 2,
-  //   y: window.innerHeight / 2,
-  //   multiple: false,
-  //   // immediate: false,
-  //   // interval: 500,
-  // });
-
-  // createMemo(() => {
-  //   // Auto select the next element after an item deleted
-  //   if (items().size === 0) {
-  //     // Handle the case where the list empty - Close Modal
-  //     if (displayMedias.length === 0) handleCloseModal();
-
-  //     // Handle index delete is the last index
-  //     // current.elIndex >= displayMedias.length - 1 ? current.elIndex - 1 : current.elIndex;
-  //     const index = current.elIndex >= displayMedias.length - 1 ? current.elIndex - 1 : current.elIndex; //Math.min(current.elIndex, displayMedias.length - 1);
-  //     const mediaId = displayMedias[index].media_id;
-
-  //     console.log(index, mediaId);
-  //     console.log(displayMedias);
-
-  //     setData(index, mediaId);
-  //     scrollToElement(current.elId);
-  //   }
-  // });
-
-  // createEffect(() => {
-  //   console.log("Current before", current.elIndex, current.elId);
-
-  //   const mediaEl = element()?.dataset;
-  //   if (!mediaEl) return;
-  //   const modalIdx = mediaEl.modalidx ? parseInt(mediaEl.modalidx, 10) : NaN;
-  //   const modalId = mediaEl.modalid;
-
-  //   if (isNaN(modalIdx) || !modalId) return;
-  //   if (current.elIndex === modalIdx || current.elId === modalId) return;
-
-  //   if (current.elIndex < modalIdx) {
-  //     //Shirt down
-  //     shiftDown();
-  //   }
-
-  //   if (current.elIndex > modalIdx) {
-  //     //Shirt up
-  //     shiftUp();
-  //   }
-  //   console.log("Current:", current.elIndex, modalIdx, current.elId, modalId, current.elId === modalId);
-  //   // setCurrent({ elIndex: modalIdx, elId: modalId });
-  // });
+  const displayTime = createMemo(() => {
+    const curEl = displayMedias.at(current.elIndex);
+    if (!curEl) return { date: "", time: "" };
+    return formatTime(curEl.CreateDate);
+  });
 
   return (
     <Portal>
@@ -140,8 +98,8 @@ const Modal: Component<ModalProps> = (props) => {
             {GoBackIcon()}
           </button>
           <div class={styles.modalTitle}>
-            {/* <p>{displayTime().date}</p>
-            <p style={{ "font-size": "12px" }}>{displayTime().time}</p> */}
+            <p>{displayTime().date}</p>
+            <p style={{ "font-size": "12px" }}>{displayTime().time}</p>
           </div>
           <div class="buttonContainer">
             <button class={styles.modalButtons} onClick={shiftUp}>
@@ -153,38 +111,45 @@ const Modal: Component<ModalProps> = (props) => {
           </div>
         </header>
 
-        <div class={styles.modalImages} id="modalImages">
-          <List each={modalMedias()}>
-            {(media, index) => {
-              // const currentIndex = displayMedias.indexOf(media());
+        <div
+          class={styles.modalImages}
+          id="modalImages"
+          // onScroll={(e) => {
+          //   console.log("Scrolling");
 
-              return <MediaDisplay media={media()} index={0} setShowImgOnly={setShowImgOnly} />;
-            }}
-          </List>
+          //   const newIndex = getIndexOfElementByPoint();
+          //   console.log(current.elIndex, newIndex);
+          // }}
+          onScrollEnd={() => {
+            console.log("Scolling DONE");
+          }}>
+          <For each={modalMedias()}>
+            {(media, index) => (
+              <MediaDisplay media={media} index={index()} setShowImgOnly={setShowImgOnly} showImgOnly={showImageOnly} />
+            )}
+          </For>
         </div>
 
         <div class={`${styles.modalThumbs} ${showImageOnly() ? "hideButtons" : ""}`}>
           <List each={modalMedias()}>
-            {(media, index) => {
-              // const edgeEl: boolean = index === 0 || modalMedias().length - 1 ? true : false;
-              // const currentIndex = displayMedias.indexOf(media());
-              return (
-                <div
-                  style={media().media_id === current.elId ? { width: "70px", height: "60px", margin: "0 5px" } : {}}
-                  data-thumbId={media().media_id}
-                  data-idx={index()}
-                  onClick={() => {
-                    const numberOfSteps = calculateIndex(index(), current.elIndex, displayMedias.length);
-                    const navigateToIndex = current.elIndex + numberOfSteps;
+            {(media, index) => (
+              <div
+                // CHECK if it's the last element, set to target
+                // ref={displayMedias[displayMedias.length - 1] === media() ? props.lastItem : undefined}
+                style={media().media_id === current.elId ? { width: "70px", height: "60px", margin: "0 5px" } : {}}
+                data-thumbId={media().media_id}
+                data-idx={index()}
+                onClick={() => {
+                  const numberOfSteps = calculateIndex(index(), current.elIndex, displayMedias.length);
+                  const navigateToIndex = current.elIndex + numberOfSteps;
 
-                    if (current.elIndex === navigateToIndex) return;
+                  if (current.elIndex === navigateToIndex) return;
 
-                    updateCurrent(navigateToIndex);
-                  }}>
-                  <img inert src={media().ThumbPath} />
-                </div>
-              );
-            }}
+                  updateCurrent(navigateToIndex);
+                }}>
+                <img inert src={media().ThumbPath} />
+              </div>
+            )}
           </List>
         </div>
 
@@ -210,10 +175,22 @@ const formatTime = (timestamp: string): { date: string; time: string } => {
  * @param modalId - The unique identifier of the target element.
  */
 const scrollToElement = (modalId: string): void => {
-  const targetElement = document.querySelector(`[data-modalId="${modalId}"]`) as HTMLElement | null;
+  const targetElement = document.querySelector<HTMLElement>(`[data-modalId="${modalId}"]`);
 
   if (targetElement) {
     targetElement.scrollIntoView({ behavior: "instant", block: "start" });
+  }
+};
+
+/**
+ * Scrolls to the specified element using its data-modalId attribute.
+ *
+ * @param mediaId - The unique identifier of the target element.
+ */
+const scrollToElementPV = (mediaId: string): void => {
+  const el = document.querySelector<HTMLElement>(`[data-id="${mediaId}"]`);
+  if (el) {
+    el.scrollIntoView({ behavior: "instant", block: "center" });
   }
 };
 
@@ -233,9 +210,10 @@ const calculateIndex = (targetIndex: number, currentIndex: number, arrayLength: 
     : targetIndex - Math.min(currentIndex, BUFFER_SIZE);
 };
 
-const getElementId = (el: HTMLElement) => {
-  console.log(el.dataset.modalid);
-  return el.dataset.modalid;
+const getIndexOfElementByPoint = () => {
+  const el: HTMLElement = document.elementFromPoint(window.innerWidth / 3, window.innerHeight / 2) as HTMLElement;
+  if (!el) return;
+  return el.dataset.modalidx;
 };
 
 /**

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun x --bun vite",
-    "buildX": "bun x --bun vite build && cp ./assets/fancybox.umd.js ../Server/dist/assets",
+    "buildX": "bun x --bun vite build --emptyOutDir",
     "preview": "vite preview"
   },
   "license": "MIT",

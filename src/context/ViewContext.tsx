@@ -2,6 +2,7 @@ import { Accessor, createContext, createSignal, Setter, useContext } from "solid
 import { createStore, SetStoreFunction } from "solid-js/store";
 
 export interface MediaType {
+  MIMEType?: string;
   media_id: string;
   SourceFile: string;
   ThumbPath: string;

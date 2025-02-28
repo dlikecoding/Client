@@ -1,36 +1,38 @@
 import styles from "./Modal.module.css";
 import { MediaType } from "../../context/ViewContext";
-import { Component, Setter } from "solid-js";
+import { Accessor, Component, createSignal, Match, Setter, Show, Switch } from "solid-js";
+import Video from "./Types/Video";
+import Photo from "./Types/Photo";
+import Live from "./Types/Live";
 
 interface MediaTypeProps {
   media: MediaType;
   index: number;
   refSetter?: (el: HTMLElement) => void;
+  showImgOnly: Accessor<boolean>;
   setShowImgOnly: Setter<boolean>;
-
-  // itemTop: number;
-  // itemHeight: number;
 }
 
 const MediaDisplay: Component<MediaTypeProps> = (props) => {
   return (
     <div
       ref={props.refSetter}
-      // style={{
-      //   position: "absolute",
-      //   top: `${props.itemTop}px`,
-      //   // height: `${props.itemHeight}px`,
-      //   // width: "100%",
-      //   background: `${props.index % 2 === 0 ? "#000" : "#999"}`,
-      // }}
-      class={styles.imageContainer}
+      class={styles.mediaContainer}
       data-modalIdx={props.index}
       data-modalId={props.media.media_id}
-      data-modalTime={props.media.CreateDate}
       onClick={() => props.setShowImgOnly((prev) => !prev)}>
-      <img inert loading="lazy" src={props.media.SourceFile} alt={`Modal Image ${props.index}`} />
+      <Switch fallback={<div>Unknown type</div>}>
+        <Match when={props.media.FileType === "Photo"}>
+          <Photo media={props.media} />
+        </Match>
+        <Match when={props.media.FileType === "Video"}>
+          <Video media={props.media} showImgOnly={props.showImgOnly} setShowImgOnly={props.setShowImgOnly} />
+        </Match>
+        <Match when={props.media.FileType === "Live"}>
+          <Live media={props.media} />
+        </Match>
+      </Switch>
     </div>
   );
 };
-
 export default MediaDisplay;

@@ -2,7 +2,7 @@ import style from "./PhotoView.module.css";
 
 import { useParams } from "@solidjs/router";
 import { useElementByPoint, useIntersectionObserver } from "solidjs-use";
-import { createEffect, createMemo, createResource, createSignal, For, Index, onCleanup, onMount, Show } from "solid-js";
+import { createMemo, createResource, createSignal, Index, onCleanup, onMount, Show } from "solid-js";
 
 import { useMediaContext } from "../../context/Medias";
 import { SearchQuery, useManageURLContext } from "../../context/ManageUrl";
@@ -64,9 +64,9 @@ const ContextView = () => {
   /** When last element is visible on the DOM, remove from the target,
    * and then load more element to dom (only ONCE)*/
   const lastElement = () => {
-    if (target()) return; // If target exist, since setTarget inside Index loop, run return.
+    // if (target()) return; // If target exist, since setTarget inside Index loop, run return.
     const lastEl = getLastElement(displayMedias.length - 1);
-    setTarget(lastEl); // Set target everytime user change sort or filter.
+    if (lastEl) setTarget(lastEl); // Set target everytime user change sort or filter.
   };
 
   const [loadedMedias] = createResource(queries, async (searchParams: SearchQuery) => {
@@ -95,15 +95,7 @@ const ContextView = () => {
 
   const displayTime = createMemo(() => {
     if (openModal()) return;
-    const sElement = startEl();
-    const eElement = endEl();
-
-    if (!sElement || !eElement) return;
-
-    const sTime = sElement.dataset.time;
-    const eTime = eElement.dataset.time;
-    if (!sTime || !eTime) return;
-    return `${sTime} - ${eTime}`;
+    return elPointToTime(startEl(), endEl());
   });
 
   return (
@@ -162,17 +154,26 @@ const ContextView = () => {
 
 export default ContextView;
 
-const elPointToTime = (elStart: HTMLElement, elEnd: HTMLElement) => {
-  if (!elStart || !elEnd) return { start: "", end: "" };
+/**
+ * Returns a formatted time range from the `data-time` attributes of two elements.
+ * @param elStart - The starting element.
+ * @param elEnd - The ending element.
+ * @returns A string in the format `"startTime - endTime"` or an empty string if unavailable.
+ */
+const elPointToTime = (elStart: HTMLElement | null, elEnd: HTMLElement | null): string => {
+  if (!elStart || !elEnd) return "";
 
   const sTime = elStart.dataset.time;
   const eTime = elEnd.dataset.time;
-  if (sTime && eTime) {
-    return { sTime, eTime };
-  }
-  return { start: "", end: "" };
+  if (!sTime || !eTime) return "";
+  return `${sTime} - ${eTime}`;
 };
 
+/**
+ * Returns an element with the specified `data-idx` attribute.
+ * @param index - The index to match.
+ * @returns The matching element or `null` if not found.
+ */
 const getLastElement = (index: number) => {
   return document.querySelector<HTMLElement>(`[data-idx="${index}"]`);
 };
