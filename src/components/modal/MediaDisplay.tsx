@@ -7,8 +7,8 @@ import Live from "./Types/Live";
 
 interface MediaTypeProps {
   media: MediaType;
-  index: number;
-  refSetter?: (el: HTMLElement) => void;
+  // index: number;
+  // refSetter?: (el: HTMLElement) => void;
   showImgOnly: Accessor<boolean>;
   setShowImgOnly: Setter<boolean>;
 }
@@ -16,9 +16,9 @@ interface MediaTypeProps {
 const MediaDisplay: Component<MediaTypeProps> = (props) => {
   return (
     <div
-      ref={props.refSetter}
+      // ref={props.refSetter}
       class={styles.mediaContainer}
-      data-modalIdx={props.index}
+      // data-modalIdx={props.index}
       data-modalId={props.media.media_id}
       onClick={() => props.setShowImgOnly((prev) => !prev)}>
       <Switch fallback={<div>Unknown type</div>}>

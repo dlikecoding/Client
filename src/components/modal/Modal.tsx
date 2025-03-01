@@ -11,6 +11,7 @@ import { GoBackIcon } from "../svgIcons";
 
 import ActionNav from "../photoview/actionNav/ActionNav";
 import MediaDisplay from "./MediaDisplay";
+import { scrollIntoViewFc } from "../extents/helper/helper";
 
 export interface ElementModal {
   elIndex: number;
@@ -45,7 +46,7 @@ const Modal: Component<ModalProps> = (props) => {
 
   onMount(() => {
     // Scroll to selected element in Modal
-    scrollToElement(current.elId);
+    scrollToModalElement(current.elId);
 
     // On close or clicked back button, remove the top state on the stack
     window.onpopstate = (event) => {
@@ -58,7 +59,7 @@ const Modal: Component<ModalProps> = (props) => {
     /** TO DO: Need to implement set target to the last target of element. */
 
     // scroll to view the current id
-    scrollToElementPV(current.elId);
+    scrollToViewElement(current.elId);
   });
 
   const modalMedias = () => getSublist(displayMedias, current.elIndex);
@@ -74,7 +75,7 @@ const Modal: Component<ModalProps> = (props) => {
   const updateCurrent = (newIndex: number): void => {
     if (newIndex < 0 || newIndex >= displayMedias.length) return; // Prevent out-of-bounds access
     setSelectCurrentItem(newIndex, displayMedias[newIndex].media_id);
-    scrollToElement(current.elId);
+    scrollToModalElement(current.elId);
   };
 
   const shiftUp = () => updateCurrent(current.elIndex - 1);
@@ -111,22 +112,18 @@ const Modal: Component<ModalProps> = (props) => {
           </div>
         </header>
 
-        <div
-          class={styles.modalImages}
-          id="modalImages"
-          // onScroll={(e) => {
-          //   console.log("Scrolling");
-
-          //   const newIndex = getIndexOfElementByPoint();
-          //   console.log(current.elIndex, newIndex);
-          // }}
-          onScrollEnd={() => {
-            console.log("Scolling DONE");
-          }}>
+        <div class={styles.modalImages} id="modalImages">
           <For each={modalMedias()}>
-            {(media, index) => (
-              <MediaDisplay media={media} index={index()} setShowImgOnly={setShowImgOnly} showImgOnly={showImageOnly} />
-            )}
+            {(media, index) => {
+              return (
+                <MediaDisplay
+                  media={media}
+                  // index={media.index}
+                  setShowImgOnly={setShowImgOnly}
+                  showImgOnly={showImageOnly}
+                />
+              );
+            }}
           </For>
         </div>
 
@@ -171,27 +168,18 @@ const formatTime = (timestamp: string): { date: string; time: string } => {
 
 /**
  * Scrolls to the specified element using its data-modalId attribute.
- *
  * @param modalId - The unique identifier of the target element.
  */
-const scrollToElement = (modalId: string): void => {
-  const targetElement = document.querySelector<HTMLElement>(`[data-modalId="${modalId}"]`);
-
-  if (targetElement) {
-    targetElement.scrollIntoView({ behavior: "instant", block: "start" });
-  }
+const scrollToModalElement = (modalId: string): void => {
+  scrollIntoViewFc("modalId", modalId);
 };
 
 /**
  * Scrolls to the specified element using its data-modalId attribute.
- *
  * @param mediaId - The unique identifier of the target element.
  */
-const scrollToElementPV = (mediaId: string): void => {
-  const el = document.querySelector<HTMLElement>(`[data-id="${mediaId}"]`);
-  if (el) {
-    el.scrollIntoView({ behavior: "instant", block: "center" });
-  }
+const scrollToViewElement = (mediaId: string): void => {
+  scrollIntoViewFc("id", mediaId);
 };
 
 /**
@@ -210,12 +198,6 @@ const calculateIndex = (targetIndex: number, currentIndex: number, arrayLength: 
     : targetIndex - Math.min(currentIndex, BUFFER_SIZE);
 };
 
-const getIndexOfElementByPoint = () => {
-  const el: HTMLElement = document.elementFromPoint(window.innerWidth / 3, window.innerHeight / 2) as HTMLElement;
-  if (!el) return;
-  return el.dataset.modalidx;
-};
-
 /**
  * Retrieves a sublist of elements centered around the current index, adjusting for boundaries.
  * @param elements - The full list of media elements.
@@ -223,12 +205,11 @@ const getIndexOfElementByPoint = () => {
  * @returns A sublist of elements, dynamically adjusted based on the current index.
  */
 const getSublist = (elements: MediaType[], currentIndex: number): MediaType[] => {
+  //(MediaType & { index: number })[]
   const totalElements = elements.length;
 
-  // Case 1: If the list has fewer elements than DISPLAY_SIZE, return the full list
-  if (totalElements <= DISPLAY_SIZE) {
-    return elements;
-  }
+  // If the list has fewer elements than DISPLAY_SIZE, return the full list
+  if (totalElements <= DISPLAY_SIZE) return elements; //elements.map((item, index) => ({ ...item, index }));
 
   // Define initial sublist range
   let startIndex = Math.max(0, currentIndex - BUFFER_SIZE);
@@ -243,6 +224,12 @@ const getSublist = (elements: MediaType[], currentIndex: number): MediaType[] =>
     }
   }
 
+  const subModalList = elements.slice(startIndex, endIndex + 1);
+  // const subModalList = Array.from({ length: endIndex - startIndex + 1 }, (_, i) => ({
+  //   ...elements[startIndex + i],
+  //   index: startIndex + i,
+  // }));
+
   // Return the sublist
-  return elements.slice(startIndex, endIndex + 1);
+  return subModalList;
 };

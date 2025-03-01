@@ -87,17 +87,6 @@ header > .modalTitle {
   transition: opaccity 0.3s linear;
 }
 
-.mediaContainer > .videoControler {
-  position: absolute;
-  display: flex;
-  flex-wrap: nowrap;
-
-  justify-content: space-between;
-  align-items: center;
-
-  width: 200px;
-  height: 50px;
-}
 /* /////////////////// THUMBNAIL //////////////////////// */
 .modalThumbs {
   position: fixed;

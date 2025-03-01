@@ -1,0 +1,17 @@
+/* /////////////////// VIDEO //////////////////////// */
+
+.videoControler {
+  position: absolute;
+  display: flex;
+  flex-wrap: nowrap;
+
+  justify-content: space-between;
+  align-items: center;
+
+  width: 200px;
+  height: 50px;
+}
+
+/* /////////////////// LIVE //////////////////////// */
+
+/* /////////////////// PHOTO //////////////////////// */

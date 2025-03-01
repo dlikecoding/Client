@@ -1,4 +1,4 @@
-import styles from "./../Modal.module.css";
+import styles from "./Types.module.css";
 
 import { Accessor, Component, createSignal, onCleanup, onMount, Setter, Show } from "solid-js";
 import { MediaType } from "../../../context/ViewContext";
@@ -36,13 +36,7 @@ const Video: Component<VideoProps> = (props) => {
             {"<<"}
           </button>
 
-          <button
-            onClick={() => {
-              toggleVideo(videoRef!);
-              setIsPlaying((prev) => !prev);
-            }}>
-            {isPlaying() ? "Pause" : "Play"}
-          </button>
+          <button onClick={() => toggleVideo(videoRef!)}>{isPlaying() ? "Pause" : "Play"}</button>
 
           <button
             style={{ visibility: isPlaying() ? "visible" : "hidden" }}
@@ -59,9 +53,8 @@ const Video: Component<VideoProps> = (props) => {
         inert
         ref={videoRef}
         poster={props.media.ThumbPath}
-        onPause={(e) => {
-          e.preventDefault();
-
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => {
           props.setShowImgOnly(false);
           setIsPlaying(false);
         }}
@@ -113,9 +106,11 @@ const seekVideo = (videoRef: HTMLVideoElement, seekAmount: number) => {
   if (isNaN(duration) || duration <= 0) return console.error("Invalid video duration.");
 
   const newTime = Math.min(Math.max(videoRef.currentTime + seekAmount, 0), duration);
+
   try {
     if (videoRef.currentTime === newTime) return;
-    videoRef.currentTime = newTime; //`Seeked to ${newTime}s`
+
+    videoRef.currentTime = newTime; //console.log(`Seeked to ${newTime}s`);
   } catch (err) {
     console.error("Error seeking video:", err);
   }
