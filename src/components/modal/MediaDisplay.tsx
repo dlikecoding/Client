@@ -7,29 +7,31 @@ import Live from "./Types/Live";
 
 interface MediaTypeProps {
   media: MediaType;
-  // index: number;
+
   // refSetter?: (el: HTMLElement) => void;
   showImgOnly: Accessor<boolean>;
   setShowImgOnly: Setter<boolean>;
 }
 
 const MediaDisplay: Component<MediaTypeProps> = (props) => {
+  const media = () => props.media;
+
   return (
     <div
       // ref={props.refSetter}
       class={styles.mediaContainer}
       // data-modalIdx={props.index}
-      data-modalId={props.media.media_id}
+      data-modalId={media().media_id}
       onClick={() => props.setShowImgOnly((prev) => !prev)}>
       <Switch fallback={<div>Unknown type</div>}>
-        <Match when={props.media.FileType === "Photo"}>
-          <Photo media={props.media} />
+        <Match when={media().FileType === "Photo"}>
+          <Photo media={media()} />
         </Match>
-        <Match when={props.media.FileType === "Video"}>
-          <Video media={props.media} showImgOnly={props.showImgOnly} setShowImgOnly={props.setShowImgOnly} />
+        <Match when={media().FileType === "Video"}>
+          <Video media={media()} showImgOnly={props.showImgOnly} setShowImgOnly={props.setShowImgOnly} />
         </Match>
-        <Match when={props.media.FileType === "Live"}>
-          <Live media={props.media} />
+        <Match when={media().FileType === "Live"}>
+          <Live media={media()} />
         </Match>
       </Switch>
     </div>

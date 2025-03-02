@@ -1,7 +1,7 @@
 import styles from "./Modal.module.css";
 
 import { Portal } from "solid-js/web";
-import { Component, createMemo, createSignal, For, Index, onCleanup, onMount, Setter } from "solid-js";
+import { Component, createMemo, createSignal, For, Index, onCleanup, onMount, Setter, Suspense } from "solid-js";
 import { createStore } from "solid-js/store";
 import { List } from "@solid-primitives/list";
 
@@ -12,8 +12,9 @@ import { GoBackIcon } from "../svgIcons";
 import ActionNav from "../photoview/actionNav/ActionNav";
 import MediaDisplay from "./MediaDisplay";
 import { scrollIntoViewFc } from "../extents/helper/helper";
+import NotFound from "../extents/NotFound";
 
-export interface ElementModal {
+interface ElementModal {
   elIndex: number;
   elId: string;
   // curEl?: HTMLElement | null;
@@ -42,6 +43,17 @@ const Modal: Component<ModalProps> = (props) => {
   const [current, setCurrent] = createStore<ElementModal>({
     elIndex: items().keys().next().value!, // Current selected index
     elId: items().values().next().value!, // Current Id of selected el
+  });
+
+  createMemo(() => {
+    if (items().size > 0) return; // If the selected item already in the list, return
+    if (displayMedias.length <= 0) return window.history.back(); // No more item to select, return previous page
+
+    if (current.elIndex === displayMedias.length)
+      return setSelectCurrentItem(current.elIndex - 1, displayMedias[current.elIndex - 1].media_id);
+
+    // console.log("Select new item after deleted", current.elIndex, displayMedias.length);
+    setSelectCurrentItem(current.elIndex, displayMedias[current.elIndex].media_id);
   });
 
   onMount(() => {
@@ -113,40 +125,40 @@ const Modal: Component<ModalProps> = (props) => {
         </header>
 
         <div class={styles.modalImages} id="modalImages">
-          <For each={modalMedias()}>
-            {(media, index) => {
-              return (
-                <MediaDisplay
-                  media={media}
-                  // index={media.index}
-                  setShowImgOnly={setShowImgOnly}
-                  showImgOnly={showImageOnly}
-                />
-              );
-            }}
-          </For>
+          {displayMedias.length === 0 ? (
+            <NotFound />
+          ) : (
+            <MediaDisplay
+              media={displayMedias[Math.min(current.elIndex, displayMedias.length - 1)]}
+              setShowImgOnly={setShowImgOnly}
+              showImgOnly={showImageOnly}
+            />
+          )}
         </div>
 
         <div class={`${styles.modalThumbs} ${showImageOnly() ? "hideButtons" : ""}`}>
-          <List each={modalMedias()}>
-            {(media, index) => (
-              <div
-                // CHECK if it's the last element, set to target
-                // ref={displayMedias[displayMedias.length - 1] === media() ? props.lastItem : undefined}
-                style={media().media_id === current.elId ? { width: "70px", height: "60px", margin: "0 5px" } : {}}
-                data-thumbId={media().media_id}
-                data-idx={index()}
-                onClick={() => {
-                  const numberOfSteps = calculateIndex(index(), current.elIndex, displayMedias.length);
-                  const navigateToIndex = current.elIndex + numberOfSteps;
+          <List each={modalMedias()} fallback={<NotFound />}>
+            {(media, index) => {
+              // console.log(media().media_id);
+              return (
+                <div
+                  // CHECK if it's the last element, set to target
+                  // ref={displayMedias[displayMedias.length - 1] === media() ? props.lastItem : undefined}
+                  style={media().media_id === current.elId ? { width: "70px", height: "60px", margin: "0 5px" } : {}}
+                  data-thumbId={media().media_id}
+                  data-idx={index()}
+                  onClick={() => {
+                    const numberOfSteps = calculateIndex(index(), current.elIndex, displayMedias.length);
+                    const navigateToIndex = current.elIndex + numberOfSteps;
 
-                  if (current.elIndex === navigateToIndex) return;
+                    if (current.elIndex === navigateToIndex) return;
 
-                  updateCurrent(navigateToIndex);
-                }}>
-                <img inert src={media().ThumbPath} />
-              </div>
-            )}
+                    updateCurrent(navigateToIndex);
+                  }}>
+                  <img inert src={media().ThumbPath} />
+                </div>
+              );
+            }}
           </List>
         </div>
 
