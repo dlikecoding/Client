@@ -19,13 +19,9 @@ import ActionNav from "./actionNav/ActionNav";
 import Loading from "../extents/Loading";
 import Select from "./buttons/Select";
 import ModalView from "../modal/ModalView";
+import { getElementBySelector } from "../extents/helper/helper";
 
 const HIDE_SELECT_BUTTON = 5; // Hide select button when number of column > 5
-
-// interface Elements {
-//   start?: HTMLElement | null;
-//   end?: HTMLElement | null;
-// }
 
 const ContextView = () => {
   const paramsUrl = useParams();
@@ -52,21 +48,21 @@ const ContextView = () => {
   });
 
   const [pageNumber, setPageNumber] = createSignal(0);
-  const [target, setTarget] = createSignal<HTMLElement | null>();
+  const [lastEl, setLastEl] = createSignal<HTMLElement | null>();
 
-  useIntersectionObserver(target, ([{ isIntersecting }]) => {
+  useIntersectionObserver(lastEl, ([{ isIntersecting }]) => {
     if (isIntersecting) {
-      setTarget(null);
+      setLastEl(null); //console.log("Hey, I'm visible");
       setPageNumber((prev) => prev + 1);
     }
   });
 
-  /** When last element is visible on the DOM, remove from the target,
+  /** When last element is visible on the DOM, remove from the lastEl,
    * and then load more element to dom (only ONCE)*/
   const lastElement = () => {
-    // if (target()) return; // If target exist, since setTarget inside Index loop, run return.
-    const lastEl = getLastElement(displayMedias.length - 1);
-    if (lastEl) setTarget(lastEl); // Set target everytime user change sort or filter.
+    // If lastEl exist, since setLastEl inside Index loop, return.
+    const lastEl = getElementBySelector("idx", (displayMedias.length - 1).toString());
+    if (lastEl) setLastEl(lastEl); // Set lastEl everytime user change sort or filter.
   };
 
   const [loadedMedias] = createResource(queries, async (searchParams: SearchQuery) => {
@@ -74,7 +70,7 @@ const ContextView = () => {
     if (newMedia) {
       setDisplayMedia(newMedia); // Reset displayMedia with new fetching data
       setPageNumber(0); // set the page to 0
-      lastElement(); // get the last element of the new fetched page as a new target
+      lastElement(); // get the last element of the new fetched page as a new lastEl
     }
   });
 
@@ -120,8 +116,7 @@ const ContextView = () => {
 
           const popovers = document.querySelectorAll<HTMLElement>("div[popover]");
           popovers.forEach((eachPopover: HTMLElement) => {
-            if (!eachPopover.checkVisibility()) return;
-            eachPopover.hidePopover();
+            if (eachPopover.checkVisibility()) eachPopover.hidePopover();
           });
         }}>
         <Show when={loadedMedias.loading || loadedMoreMedias.loading}>
@@ -133,7 +128,7 @@ const ContextView = () => {
           fallback={<NotFound errorCode={"Not Found"} message={"Page you're looking for could not be found"} />}>
           {(media, index) => (
             <PhotoCard
-              lastItem={displayMedias.length - 1 === index ? setTarget : undefined}
+              lastItem={displayMedias.length - 1 === index ? setLastEl : undefined}
               media={media()}
               index={index}
             />
@@ -146,7 +141,7 @@ const ContextView = () => {
       </Show>
 
       <Show when={openModal()}>
-        <ModalView />
+        <ModalView setLastEl={setLastEl} />
       </Show>
     </>
   );

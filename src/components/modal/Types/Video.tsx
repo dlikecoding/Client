@@ -1,11 +1,12 @@
 import styles from "./Types.module.css";
 
-import { Accessor, Component, createSignal, onCleanup, onMount, Setter, Show } from "solid-js";
+import { Accessor, Component, createMemo, createSignal, onCleanup, onMount, Setter, Show } from "solid-js";
 import { MediaType } from "../../../context/ViewContext";
-import { useIntersectionObserver } from "solidjs-use";
 
 interface VideoProps {
   media: MediaType;
+  isVisible: boolean;
+
   showImgOnly: Accessor<boolean>;
   setShowImgOnly: Setter<boolean>;
 }
@@ -16,11 +17,12 @@ const Video: Component<VideoProps> = (props) => {
   let videoRef: HTMLVideoElement | undefined;
   const [isPlaying, setIsPlaying] = createSignal<boolean>(false);
 
-  onMount(() => {
-    useIntersectionObserver(videoRef, ([{ isIntersecting }]) => {
-      if (isIntersecting) return;
-      if (videoRef && !videoRef.paused) videoRef.pause(); //Video is not visible, pausing...
-    });
+  const isVisible = () => props.isVisible;
+
+  /** Auto stop video playing when scroll to other element */
+  createMemo(() => {
+    if (isVisible()) return;
+    if (videoRef && !videoRef.paused) return videoRef.pause(); //Video is not visible, pausing...
   });
 
   return (
@@ -73,6 +75,8 @@ const Video: Component<VideoProps> = (props) => {
 
         <p>Your browser doesn't support the video tag.</p>
       </video>
+
+      {/* <footer style={{ "z-index": 1 }}></footer> */}
     </>
   );
 };

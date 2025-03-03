@@ -1,7 +1,7 @@
 import styles from "./ModalView.module.css";
 
 import { Portal } from "solid-js/web";
-import { Component, createMemo, createSignal, For, Index, onCleanup, onMount, Setter, Suspense } from "solid-js";
+import { Component, createMemo, createSignal, For, onMount, Setter } from "solid-js";
 import { createStore } from "solid-js/store";
 import { List } from "@solid-primitives/list";
 
@@ -17,14 +17,14 @@ import NotFound from "../extents/NotFound";
 interface ElementModal {
   elIndex: number;
   elId: string;
-  // curEl?: HTMLElement | null;
 }
 
 interface ModalProps {
-  // lastItem?: (el: HTMLElement) => void;
+  setLastEl: Setter<HTMLElement | null | undefined>;
 }
 
-const DISPLAY_SIZE = 7; // We want to show at least 7 elements
+// There is an issue when change displaySize to 10 or diffrent number, When clicked on specific item, it does not return the correct element.
+const DISPLAY_SIZE = 11; // We want to show at least 7 elements
 const BUFFER_SIZE = Math.floor(DISPLAY_SIZE / 2); // 3 elements before and after the current index
 
 const BUFFER_ITEM = 3;
@@ -51,6 +51,8 @@ const Modal: Component<ModalProps> = (props) => {
     elId: items().values().next().value!, // Current Id of selected el
   });
 
+  /** Memo that handle everytime delete an item, auto select the current on the screen.
+   * if there is no item after deleted, return to previous page */
   createMemo(() => {
     if (items().size > 0) return; // If the selected item already in the list, return
     if (displayMedias.length <= 0) return window.history.back(); // No more item to select, return previous page
@@ -58,11 +60,43 @@ const Modal: Component<ModalProps> = (props) => {
     if (current.elIndex === displayMedias.length)
       return setSelectCurrentItem(current.elIndex - 1, displayMedias[current.elIndex - 1].media_id);
 
-    // console.log("Select new item after deleted", current.elIndex, displayMedias.length);
     setSelectCurrentItem(current.elIndex, displayMedias[current.elIndex].media_id);
   });
 
   const modalMedias = () => getSublist(displayMedias, current.elIndex);
+
+  ///////////////// Virtualization Modal /////////////////////////////////////////////////
+  let containerRef!: HTMLDivElement;
+  const [scrollTop, setScrollTop] = createSignal(current.elIndex * ITEM_HEIGHT);
+
+  const startIndex = createMemo(() => Math.max(0, Math.floor(scrollTop() / ITEM_HEIGHT) - 1));
+  const endIndex = createMemo(() => Math.min(displayMedias.length - 1, startIndex() + VISIBLE_ITEM));
+
+  const visualModal = createMemo(() => displayMedias.slice(startIndex(), endIndex() + 1));
+  /** TO DO: Need to implement LOAD MORE as a target to the last element in ModalView */
+
+  const updateCurrent = (newIndex: number): void => {
+    if (newIndex < 0 || newIndex >= displayMedias.length) return; // Prevent out-of-bounds access
+    setSelectCurrentItem(newIndex, displayMedias[newIndex].media_id);
+    setScrollTop(newIndex * ITEM_HEIGHT);
+    scrollToModalElement(current.elId);
+  };
+
+  onMount(() => {
+    // Scroll to selected element in Modal
+    scrollToModalElement(current.elId);
+
+    // On close or clicked back button, remove the top state on the stack
+    window.onpopstate = (event) => {
+      if (!event.state) return;
+      handleCloseModal();
+      scrollToViewElement(current.elId); // scroll to view to the current id in PhotoView
+
+      /** Completed: Loadmore base on the last element of Modal
+       * lastEl target is set to equal element in ModalView in MediaDisplay
+       */
+    };
+  });
 
   const setSelectCurrentItem = (index: number, mediaId: string) => {
     setCurrent({
@@ -72,49 +106,11 @@ const Modal: Component<ModalProps> = (props) => {
     setOneItem(current.elIndex, current.elId);
   };
 
-  const updateCurrent = (newIndex: number): void => {
-    if (newIndex < 0 || newIndex >= displayMedias.length) return; // Prevent out-of-bounds access
-    setSelectCurrentItem(newIndex, displayMedias[newIndex].media_id);
-    scrollToModalElement(current.elId);
-  };
-
-  const shiftUp = () => updateCurrent(current.elIndex - 1);
-  const shiftDown = () => updateCurrent(current.elIndex + 1);
-
+  // Display time in header
   const displayTime = createMemo(() => {
     const curEl = displayMedias.at(current.elIndex);
     if (!curEl) return { date: "", time: "" };
     return formatTime(curEl.CreateDate);
-  });
-
-  // displayMedias[Math.min(current.elIndex, displayMedias.length - 1)]
-
-  ///////////////// Virtualization Modal /////////////////////////////////////////////////
-  let containerRef!: HTMLDivElement;
-  const [scrollTop, setScrollTop] = createSignal(current.elIndex * ITEM_HEIGHT);
-
-  const startIndex = createMemo(() => Math.max(0, Math.floor(scrollTop() / ITEM_HEIGHT) - 1));
-  const endIndex = createMemo(() => Math.min(displayMedias.length - 1, startIndex() + VISIBLE_ITEM));
-
-  const largeModal = createMemo(() => displayMedias.slice(startIndex(), endIndex() + 1));
-
-  /** TO DO: Need to implement LOAD MORE as a target to the last element in ModalView */
-
-  onMount(() => {
-    // Scroll to selected element in Modal
-    scrollToModalElement(current.elId);
-    // setScrollTop(current.elIndex * ITEM_HEIGHT);
-
-    // On close or clicked back button, remove the top state on the stack
-    window.onpopstate = (event) => {
-      if (event.state) handleCloseModal();
-    };
-  });
-
-  onCleanup(() => {
-    // scroll to view to the current id in PhotoView
-    scrollToViewElement(current.elId);
-    console.log("Modal cleaning up");
   });
 
   return (
@@ -133,11 +129,11 @@ const Modal: Component<ModalProps> = (props) => {
             <p style={{ "font-size": "12px" }}>{displayTime().time}</p>
           </div>
           <div class="buttonContainer">
-            <button class={styles.modalButtons} onClick={shiftUp}>
-              Up
+            <button class={styles.modalButtons} onClick={() => {}}>
+              View
             </button>
-            <button class={styles.modalButtons} onClick={shiftDown}>
-              Down
+            <button class={styles.modalButtons} onClick={() => {}}>
+              Cus
             </button>
           </div>
         </header>
@@ -146,13 +142,19 @@ const Modal: Component<ModalProps> = (props) => {
           class={styles.modalImages}
           ref={containerRef}
           id="modalImages"
-          onScroll={() => setScrollTop(containerRef.scrollTop)}>
+          onScroll={(event) => {
+            event.preventDefault();
+            setScrollTop(containerRef.scrollTop);
+          }}>
           <div class={styles.visualList} style={{ height: `${displayMedias.length * ITEM_HEIGHT}px` }}>
-            <For each={largeModal()}>
+            <For each={visualModal()}>
               {(media, index) => (
                 <MediaDisplay
+                  setLastEl={displayMedias.length - 1 === startIndex() + index() ? props.setLastEl : undefined}
                   topPos={(startIndex() + index()) * ITEM_HEIGHT}
+                  viewIndex={startIndex() + index()}
                   media={media}
+                  setSelectCurrentItem={setSelectCurrentItem}
                   setShowImgOnly={setShowImgOnly}
                   showImgOnly={showImageOnly}
                 />
@@ -163,27 +165,20 @@ const Modal: Component<ModalProps> = (props) => {
 
         <div class={`${styles.modalThumbs} ${showImageOnly() ? "hideButtons" : ""}`}>
           <List each={modalMedias()} fallback={<NotFound />}>
-            {(media, index) => {
-              // console.log(media().media_id);
-              return (
-                <div
-                  // CHECK if it's the last element, set to target
-                  // ref={displayMedias[displayMedias.length - 1] === media() ? props.lastItem : undefined}
-                  style={media().media_id === current.elId ? { width: "70px", height: "60px", margin: "0 5px" } : {}}
-                  data-thumbId={media().media_id}
-                  data-idx={index()}
-                  onClick={() => {
-                    const numberOfSteps = calculateIndex(index(), current.elIndex, displayMedias.length);
-                    const navigateToIndex = current.elIndex + numberOfSteps;
+            {(media, index) => (
+              <div
+                style={media().media_id === current.elId ? { width: "70px", height: "60px", margin: "0 5px" } : {}}
+                data-thumbId={media().media_id}
+                onClick={() => {
+                  const numberOfSteps = calculateIndex(index(), current.elIndex, displayMedias.length);
+                  const navigateToIndex = current.elIndex + numberOfSteps;
 
-                    if (current.elIndex === navigateToIndex) return;
-
-                    updateCurrent(navigateToIndex);
-                  }}>
-                  <img inert src={media().ThumbPath} />
-                </div>
-              );
-            }}
+                  if (current.elIndex === navigateToIndex) return;
+                  updateCurrent(navigateToIndex);
+                }}>
+                <img inert src={media().ThumbPath} />
+              </div>
+            )}
           </List>
         </div>
 
@@ -204,15 +199,15 @@ const formatTime = (timestamp: string): { date: string; time: string } => {
 };
 
 /**
- * Scrolls to the specified element using its data-modalId attribute.
- * @param modalId - The unique identifier of the target element.
+ * Scrolls to the specified element using its data-modalid attribute.
+ * @param modalid - The unique identifier of the target element.
  */
-const scrollToModalElement = (modalId: string): void => {
-  scrollIntoViewFc("modalId", modalId);
+const scrollToModalElement = (modalid: string): void => {
+  scrollIntoViewFc("modalid", modalid);
 };
 
 /**
- * Scrolls to the specified element using its data-modalId attribute.
+ * Scrolls to the specified element using its data-modalid attribute.
  * @param mediaId - The unique identifier of the target element.
  */
 const scrollToViewElement = (mediaId: string): void => {
