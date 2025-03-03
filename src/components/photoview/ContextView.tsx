@@ -17,8 +17,8 @@ import NotFound from "../extents/NotFound";
 import DeviceFilter from "./buttons/DeviceFilter";
 import ActionNav from "./actionNav/ActionNav";
 import Loading from "../extents/Loading";
-import Modal from "../modal/Modal";
 import Select from "./buttons/Select";
+import ModalView from "../modal/ModalView";
 
 const HIDE_SELECT_BUTTON = 5; // Hide select button when number of column > 5
 
@@ -146,7 +146,7 @@ const ContextView = () => {
       </Show>
 
       <Show when={openModal()}>
-        <Modal />
+        <ModalView />
       </Show>
     </>
   );

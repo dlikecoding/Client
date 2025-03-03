@@ -1,4 +1,4 @@
-import styles from "./Modal.module.css";
+import styles from "./ModalView.module.css";
 
 import { Portal } from "solid-js/web";
 import { Component, createMemo, createSignal, For, Index, onCleanup, onMount, Setter, Suspense } from "solid-js";
@@ -26,6 +26,12 @@ interface ModalProps {
 
 const DISPLAY_SIZE = 7; // We want to show at least 7 elements
 const BUFFER_SIZE = Math.floor(DISPLAY_SIZE / 2); // 3 elements before and after the current index
+
+const BUFFER_ITEM = 3;
+const ITEM_HEIGHT = window.innerHeight;
+const VIEWPORT_HEIGHT = window.innerHeight * BUFFER_ITEM;
+
+const VISIBLE_ITEM = Math.ceil(VIEWPORT_HEIGHT / ITEM_HEIGHT) + 2;
 
 const Modal: Component<ModalProps> = (props) => {
   const { setOpenModal, displayMedias } = useViewMediaContext();
@@ -56,26 +62,6 @@ const Modal: Component<ModalProps> = (props) => {
     setSelectCurrentItem(current.elIndex, displayMedias[current.elIndex].media_id);
   });
 
-  onMount(() => {
-    // Scroll to selected element in Modal
-    scrollToModalElement(current.elId);
-
-    // On close or clicked back button, remove the top state on the stack
-    window.onpopstate = (event) => {
-      if (event.state) handleCloseModal();
-    };
-  });
-
-  onCleanup(() => {
-    // Set target to the last element in PhotoView
-    /** TO DO: Need to implement set target to the last target of element. */
-
-    // scroll to view the current id
-    scrollToViewElement(current.elId);
-
-    console.log("Modal cleaning up");
-  });
-
   const modalMedias = () => getSublist(displayMedias, current.elIndex);
 
   const setSelectCurrentItem = (index: number, mediaId: string) => {
@@ -102,7 +88,34 @@ const Modal: Component<ModalProps> = (props) => {
   });
 
   // displayMedias[Math.min(current.elIndex, displayMedias.length - 1)]
-  const largeModal = () => displayMedias.slice(current.elIndex - 1, current.elIndex + 2);
+
+  ///////////////// Virtualization Modal /////////////////////////////////////////////////
+  let containerRef!: HTMLDivElement;
+  const [scrollTop, setScrollTop] = createSignal(current.elIndex * ITEM_HEIGHT);
+
+  const startIndex = createMemo(() => Math.max(0, Math.floor(scrollTop() / ITEM_HEIGHT) - 1));
+  const endIndex = createMemo(() => Math.min(displayMedias.length - 1, startIndex() + VISIBLE_ITEM));
+
+  const largeModal = createMemo(() => displayMedias.slice(startIndex(), endIndex() + 1));
+
+  /** TO DO: Need to implement LOAD MORE as a target to the last element in ModalView */
+
+  onMount(() => {
+    // Scroll to selected element in Modal
+    scrollToModalElement(current.elId);
+    // setScrollTop(current.elIndex * ITEM_HEIGHT);
+
+    // On close or clicked back button, remove the top state on the stack
+    window.onpopstate = (event) => {
+      if (event.state) handleCloseModal();
+    };
+  });
+
+  onCleanup(() => {
+    // scroll to view to the current id in PhotoView
+    scrollToViewElement(current.elId);
+    console.log("Modal cleaning up");
+  });
 
   return (
     <Portal>
@@ -131,17 +144,21 @@ const Modal: Component<ModalProps> = (props) => {
 
         <div
           class={styles.modalImages}
+          ref={containerRef}
           id="modalImages"
-          onScroll={() => {
-            console.log("Scrolling");
-          }}>
-          {displayMedias.length === 0 ? (
-            <NotFound />
-          ) : (
-            <List each={largeModal()}>
-              {(media) => <MediaDisplay media={media()} setShowImgOnly={setShowImgOnly} showImgOnly={showImageOnly} />}
-            </List>
-          )}
+          onScroll={() => setScrollTop(containerRef.scrollTop)}>
+          <div class={styles.visualList} style={{ height: `${displayMedias.length * ITEM_HEIGHT}px` }}>
+            <For each={largeModal()}>
+              {(media, index) => (
+                <MediaDisplay
+                  topPos={(startIndex() + index()) * ITEM_HEIGHT}
+                  media={media}
+                  setShowImgOnly={setShowImgOnly}
+                  showImgOnly={showImageOnly}
+                />
+              )}
+            </For>
+          </div>
         </div>
 
         <div class={`${styles.modalThumbs} ${showImageOnly() ? "hideButtons" : ""}`}>

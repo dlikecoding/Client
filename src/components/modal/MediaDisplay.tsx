@@ -1,4 +1,4 @@
-import styles from "./Modal.module.css";
+import styles from "./ModalView.module.css";
 import { MediaType } from "../../context/ViewContext";
 import { Accessor, Component, createSignal, Match, Setter, Show, Switch } from "solid-js";
 import Video from "./Types/Video";
@@ -7,7 +7,7 @@ import Live from "./Types/Live";
 
 interface MediaTypeProps {
   media: MediaType;
-
+  topPos: number;
   // refSetter?: (el: HTMLElement) => void;
   showImgOnly: Accessor<boolean>;
   setShowImgOnly: Setter<boolean>;
@@ -18,9 +18,8 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
 
   return (
     <div
-      // ref={props.refSetter}
       class={styles.mediaContainer}
-      // data-modalIdx={props.index}
+      style={{ top: `${props.topPos}px` }}
       data-modalId={media().media_id}
       onClick={() => props.setShowImgOnly((prev) => !prev)}>
       <Switch fallback={<div>Unknown type</div>}>

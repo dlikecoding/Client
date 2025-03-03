@@ -40,20 +40,27 @@ header > .modalTitle {
   align-items: center;
   justify-content: center;
 
-  overscroll-behavior-y: none;
   overflow-x: hidden;
-
   overflow-y: scroll;
-  scroll-snap-type: y mandatory;
 
+  scroll-snap-type: y mandatory;
   -webkit-overflow-scrolling: touch;
 }
 
-.mediaContainer {
+.visualList {
+  width: 100%;
   position: relative;
+}
 
-  min-width: 100%;
-  min-height: 100%;
+.mediaContainer {
+  position: absolute;
+
+  /* min-width: 100%;
+  min-height: 100%; */
+  /* width: 100%; */
+
+  height: 100%;
+  width: 100%;
 
   display: flex;
   justify-content: center;
