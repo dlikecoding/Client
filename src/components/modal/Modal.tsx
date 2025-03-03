@@ -72,6 +72,8 @@ const Modal: Component<ModalProps> = (props) => {
 
     // scroll to view the current id
     scrollToViewElement(current.elId);
+
+    console.log("Modal cleaning up");
   });
 
   const modalMedias = () => getSublist(displayMedias, current.elIndex);
@@ -99,6 +101,9 @@ const Modal: Component<ModalProps> = (props) => {
     return formatTime(curEl.CreateDate);
   });
 
+  // displayMedias[Math.min(current.elIndex, displayMedias.length - 1)]
+  const largeModal = () => displayMedias.slice(current.elIndex - 1, current.elIndex + 2);
+
   return (
     <Portal>
       <div class={styles.modalContainer} style={{ "z-index": 1 }}>
@@ -124,15 +129,18 @@ const Modal: Component<ModalProps> = (props) => {
           </div>
         </header>
 
-        <div class={styles.modalImages} id="modalImages">
+        <div
+          class={styles.modalImages}
+          id="modalImages"
+          onScroll={() => {
+            console.log("Scrolling");
+          }}>
           {displayMedias.length === 0 ? (
             <NotFound />
           ) : (
-            <MediaDisplay
-              media={displayMedias[Math.min(current.elIndex, displayMedias.length - 1)]}
-              setShowImgOnly={setShowImgOnly}
-              showImgOnly={showImageOnly}
-            />
+            <List each={largeModal()}>
+              {(media) => <MediaDisplay media={media()} setShowImgOnly={setShowImgOnly} showImgOnly={showImageOnly} />}
+            </List>
           )}
         </div>
 
