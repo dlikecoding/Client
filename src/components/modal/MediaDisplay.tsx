@@ -11,8 +11,8 @@ interface MediaTypeProps {
   topPos: number;
   viewIndex: number;
 
-  showImgOnly: Accessor<boolean>;
-  setShowImgOnly: Setter<boolean>;
+  showImageOnly: Accessor<boolean>;
+  setShowImageOnly: Setter<boolean>;
 
   setSelectCurrentItem: (index: number, mediaId: string) => void;
   setLastEl?: Setter<HTMLElement | null | undefined>;
@@ -31,8 +31,8 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
       mediaRef,
       ([{ isIntersecting }]) => {
         setIsVisible(isIntersecting); // pass intersection status to child components
-
         if (!isIntersecting) return;
+
         // Set the current index when the item is visible in Modal
         props.setSelectCurrentItem(viewIndex(), media().media_id);
 
@@ -48,9 +48,8 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
       ref={mediaRef}
       class={styles.mediaContainer}
       style={{ top: `${props.topPos}px` }}
-      // This media_id is needed to scrollIntoView
-      data-modalid={media().media_id}
-      onClick={() => props.setShowImgOnly((prev) => !prev)}>
+      data-modalid={media().media_id} // This media_id is needed to scrollIntoView
+      onClick={() => props.setShowImageOnly((prev) => !prev)}>
       <Switch fallback={<div>Unknown type</div>}>
         <Match when={media().FileType === "Photo"}>
           <Photo media={media()} />
@@ -59,8 +58,8 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
           <Video
             media={media()}
             isVisible={isVisible()}
-            showImgOnly={props.showImgOnly}
-            setShowImgOnly={props.setShowImgOnly}
+            showImageOnly={props.showImageOnly}
+            setShowImageOnly={props.setShowImageOnly}
           />
         </Match>
         <Match when={media().FileType === "Live"}>

@@ -7,8 +7,8 @@ interface VideoProps {
   media: MediaType;
   isVisible: boolean;
 
-  showImgOnly: Accessor<boolean>;
-  setShowImgOnly: Setter<boolean>;
+  showImageOnly: Accessor<boolean>;
+  setShowImageOnly: Setter<boolean>;
 }
 
 const SEEK_AMOUNT = 10; //Amount seek video
@@ -27,12 +27,12 @@ const Video: Component<VideoProps> = (props) => {
 
   return (
     <>
-      <Show when={!props.showImgOnly()}>
+      <Show when={!props.showImageOnly()}>
         <div class={styles.videoControler}>
           <button
             style={{ visibility: isPlaying() ? "visible" : "hidden" }}
             onClick={() => {
-              props.setShowImgOnly(true);
+              props.setShowImageOnly(true);
               seekBackward(videoRef);
             }}>
             {BackwardButtonIcon()}
@@ -45,7 +45,7 @@ const Video: Component<VideoProps> = (props) => {
           <button
             style={{ visibility: isPlaying() ? "visible" : "hidden" }}
             onClick={() => {
-              props.setShowImgOnly(true);
+              props.setShowImageOnly(true);
               seekForward(videoRef);
             }}>
             {ForwardButtonIcon()}
@@ -59,7 +59,7 @@ const Video: Component<VideoProps> = (props) => {
         poster={props.media.ThumbPath}
         onPlay={() => setIsPlaying(true)}
         onPause={() => {
-          props.setShowImgOnly(false);
+          props.setShowImageOnly(false);
           setIsPlaying(false);
         }}
         preload="metadata"
@@ -76,7 +76,14 @@ const Video: Component<VideoProps> = (props) => {
         <p>Your browser doesn't support the video tag.</p>
       </video>
 
-      {/* <footer style={{ "z-index": 1 }}></footer> */}
+      {/* Design a videoPlayer control when video play, user able to control it */}
+
+      {/* backward forward pause -------------- 0:23 (duration) */}
+      {/* <footer class={styles.videoPlayer} style={{ "z-index": 1 }}>
+        <div>---------------</div>
+        <div>---------------</div>
+        <div>---------------</div>
+      </footer> */}
     </>
   );
 };

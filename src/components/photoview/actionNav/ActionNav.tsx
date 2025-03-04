@@ -21,10 +21,6 @@ type ButtonConfig = {
   default: string[];
 };
 
-interface ActionNavProps {
-  showImageOnly?: boolean;
-}
-
 export const buttonConfig: ButtonConfig = {
   default: ["favorite", "share", "more", "delete"],
   deleted: ["recover", "permanentDelete"],
@@ -32,7 +28,7 @@ export const buttonConfig: ButtonConfig = {
   duplicate: ["merge", "delete"],
 };
 
-const ActionNav = (props: ActionNavProps) => {
+const ActionNav = () => {
   const { items, setItems, setIsSelected } = useMediaContext();
   const params = useParams();
 
@@ -46,13 +42,13 @@ const ActionNav = (props: ActionNavProps) => {
     hide: () => updateMediaStatus("Hidden", true),
     unhide: () => updateMediaStatus("Hidden", false),
 
-    delete: () => updateMediaStatus("DeletedStatus", true),
-    recovery: () => updateMediaStatus("DeletedStatus", false),
+    delete: () => updateMediaStatus("Deleted", true),
+    recovery: () => updateMediaStatus("Deleted", false),
 
     merge: () => console.log("Merge Images"),
   };
 
-  const updateMediaStatus = async (updateKey: "Favorite" | "Hidden" | "DeletedStatus", updateValue?: boolean) => {
+  const updateMediaStatus = async (updateKey: "Favorite" | "Hidden" | "Deleted", updateValue?: boolean) => {
     if (items().size < 1) return;
     const listOfIds = new Set(items().values());
     const listOfIndex = [...items().keys()];
@@ -81,14 +77,9 @@ const ActionNav = (props: ActionNavProps) => {
   // Disable all action buttons when there is no selected item
   const disableButtons = () => items().size < 1;
 
-  const showImageOnly = () => props.showImageOnly;
-
   return (
     <>
-      <footer
-        inert={disableButtons()}
-        style={{ "z-index": 1 }}
-        class={`${showImageOnly() ? "hideButtons" : ""} ${disableButtons() ? "footerDisabled" : ""}`}>
+      <footer inert={disableButtons()} style={{ "z-index": 1 }} class={`${disableButtons() ? "footerDisabled" : ""}`}>
         <div class="actions__toolbar__column is_left">
           <Switch fallback={<Share action={actions.share} />}>
             <Match when={currentPage.includes("unhide")}>

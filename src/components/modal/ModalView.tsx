@@ -1,7 +1,7 @@
 import styles from "./ModalView.module.css";
 
 import { Portal } from "solid-js/web";
-import { Component, createMemo, createSignal, For, onMount, Setter } from "solid-js";
+import { Component, createMemo, createSignal, For, onMount, Setter, Show } from "solid-js";
 import { createStore } from "solid-js/store";
 import { List } from "@solid-primitives/list";
 
@@ -9,10 +9,10 @@ import { MediaType, useViewMediaContext } from "../../context/ViewContext";
 import { useMediaContext } from "../../context/Medias";
 import { GoBackIcon } from "../svgIcons";
 
-import ActionNav from "../photoview/actionNav/ActionNav";
 import MediaDisplay from "./MediaDisplay";
 import { scrollIntoViewFc } from "../extents/helper/helper";
 import NotFound from "../extents/NotFound";
+import ActionNav from "../photoview/actionNav/ActionNav";
 
 interface ElementModal {
   elIndex: number;
@@ -22,10 +22,6 @@ interface ElementModal {
 interface ModalProps {
   setLastEl: Setter<HTMLElement | null | undefined>;
 }
-
-// There is an issue when change displaySize to 10 or diffrent number, When clicked on specific item, it does not return the correct element.
-const DISPLAY_SIZE = 11; // We want to show at least 7 elements
-const BUFFER_SIZE = Math.floor(DISPLAY_SIZE / 2); // 3 elements before and after the current index
 
 const BUFFER_ITEM = 3;
 const ITEM_HEIGHT = window.innerHeight;
@@ -37,7 +33,7 @@ const Modal: Component<ModalProps> = (props) => {
   const { setOpenModal, displayMedias } = useViewMediaContext();
   const { items, setItems, setOneItem } = useMediaContext();
 
-  const [showImageOnly, setShowImgOnly] = createSignal(false);
+  const [showImageOnly, setShowImageOnly] = createSignal(false);
 
   // when this modal close
   const handleCloseModal = () => {
@@ -57,9 +53,10 @@ const Modal: Component<ModalProps> = (props) => {
     if (items().size > 0) return; // If the selected item already in the list, return
     if (displayMedias.length <= 0) return window.history.back(); // No more item to select, return previous page
 
-    if (current.elIndex === displayMedias.length)
+    if (current.elIndex === displayMedias.length) {
+      console.log("Run memo", current.elIndex, displayMedias.length);
       return setSelectCurrentItem(current.elIndex - 1, displayMedias[current.elIndex - 1].media_id);
-
+    }
     setSelectCurrentItem(current.elIndex, displayMedias[current.elIndex].media_id);
   });
 
@@ -91,10 +88,6 @@ const Modal: Component<ModalProps> = (props) => {
       if (!event.state) return;
       handleCloseModal();
       scrollToViewElement(current.elId); // scroll to view to the current id in PhotoView
-
-      /** Completed: Loadmore base on the last element of Modal
-       * lastEl target is set to equal element in ModalView in MediaDisplay
-       */
     };
   });
 
@@ -148,17 +141,22 @@ const Modal: Component<ModalProps> = (props) => {
           }}>
           <div class={styles.visualList} style={{ height: `${displayMedias.length * ITEM_HEIGHT}px` }}>
             <For each={visualModal()}>
-              {(media, index) => (
-                <MediaDisplay
-                  setLastEl={displayMedias.length - 1 === startIndex() + index() ? props.setLastEl : undefined}
-                  topPos={(startIndex() + index()) * ITEM_HEIGHT}
-                  viewIndex={startIndex() + index()}
-                  media={media}
-                  setSelectCurrentItem={setSelectCurrentItem}
-                  setShowImgOnly={setShowImgOnly}
-                  showImgOnly={showImageOnly}
-                />
-              )}
+              {(media, index) => {
+                console.log(index());
+                return (
+                  <MediaDisplay
+                    /** Loadmore base on the last element of Modal:
+                     * lastEl target is set to equal element in ModalView in MediaDisplay */
+                    setLastEl={displayMedias.length - 1 === startIndex() + index() ? props.setLastEl : undefined}
+                    topPos={(startIndex() + index()) * ITEM_HEIGHT}
+                    viewIndex={startIndex() + index()}
+                    media={media}
+                    setSelectCurrentItem={setSelectCurrentItem}
+                    setShowImageOnly={setShowImageOnly}
+                    showImageOnly={showImageOnly}
+                  />
+                );
+              }}
             </For>
           </div>
         </div>
@@ -169,20 +167,21 @@ const Modal: Component<ModalProps> = (props) => {
               <div
                 style={media().media_id === current.elId ? { width: "70px", height: "60px", margin: "0 5px" } : {}}
                 data-thumbId={media().media_id}
-                onClick={() => {
-                  const numberOfSteps = calculateIndex(index(), current.elIndex, displayMedias.length);
-                  const navigateToIndex = current.elIndex + numberOfSteps;
+                // onClick={() => {
+                //   const numberOfSteps = calculateIndex(index(), current.elIndex, displayMedias.length);
+                //   const navigateToIndex = current.elIndex + numberOfSteps;
 
-                  if (current.elIndex === navigateToIndex) return;
-                  updateCurrent(navigateToIndex);
-                }}>
+                //   if (current.elIndex === navigateToIndex) return;
+                //   updateCurrent(navigateToIndex);
+                // }}
+              >
                 <img inert src={media().ThumbPath} />
               </div>
             )}
           </List>
         </div>
 
-        <ActionNav showImageOnly={showImageOnly()} />
+        <ActionNav />
       </div>
     </Portal>
   );
@@ -214,21 +213,9 @@ const scrollToViewElement = (mediaId: string): void => {
   scrollIntoViewFc("id", mediaId);
 };
 
-/**
- * Calculates the step difference required to move from the current index
- * to the target index based on buffer constraints.
- * @param targetIndex - The index of the clicked thumbnail.
- * @param currentIndex - The current active index.
- * @param arrayLength - The total length of the array.
- * @returns The computed step difference for navigation.
- */
-const calculateIndex = (targetIndex: number, currentIndex: number, arrayLength: number): number => {
-  const isAtEnd = currentIndex + BUFFER_SIZE >= arrayLength;
-
-  return isAtEnd
-    ? targetIndex - 2 * BUFFER_SIZE - currentIndex + arrayLength - 1
-    : targetIndex - Math.min(currentIndex, BUFFER_SIZE);
-};
+// There is an issue when change displaySize to 10 or diffrent number, When clicked on specific item, it does not return the correct element.
+const DISPLAY_SIZE = 11; // We want to show at least 7 elements
+const BUFFER_SIZE = Math.floor(DISPLAY_SIZE / 2); // 3 elements before and after the current index
 
 /**
  * Retrieves a sublist of elements centered around the current index, adjusting for boundaries.
@@ -257,11 +244,33 @@ const getSublist = (elements: MediaType[], currentIndex: number): MediaType[] =>
   }
 
   const subModalList = elements.slice(startIndex, endIndex + 1);
-  // const subModalList = Array.from({ length: endIndex - startIndex + 1 }, (_, i) => ({
+  // const subModalListIds = Array.from({ length: endIndex - startIndex + 1 }, (_, i) => ({
   //   ...elements[startIndex + i],
   //   index: startIndex + i,
   // }));
 
-  // Return the sublist
   return subModalList;
 };
+
+// /**
+//  * Calculates the step difference required to move from the current index
+//  * to the target index based on buffer constraints.
+//  * @param targetIndex - The index of the clicked thumbnail.
+//  * @param currentIndex - The current active index.
+//  * @param arrayLength - The total length of the array.
+//  * @returns The computed step difference for navigation.
+//  */
+// const calculateIndex = (targetIndex: number, currentIndex: number, arrayLength: number): number => {
+//   if (targetIndex === currentIndex) return 0; // No movement needed
+
+//   const isAtEnd = currentIndex + BUFFER_SIZE >= arrayLength;
+//   const isAtStart = currentIndex - BUFFER_SIZE < 0;
+
+//   if (isAtEnd) {
+//     return targetIndex - (arrayLength - BUFFER_SIZE - 1);
+//   } else if (isAtStart) {
+//     return targetIndex;
+//   }
+
+//   return targetIndex - currentIndex;
+// };
