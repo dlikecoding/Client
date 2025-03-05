@@ -47,18 +47,7 @@ const Modal: Component<ModalProps> = (props) => {
     elId: items().values().next().value!, // Current Id of selected el
   });
 
-  /** Memo that handle everytime delete an item, auto select the current on the screen.
-   * if there is no item after deleted, return to previous page */
-  createMemo(() => {
-    if (items().size > 0) return; // If the selected item already in the list, return
-    if (displayMedias.length <= 0) return window.history.back(); // No more item to select, return previous page
-
-    if (current.elIndex === displayMedias.length) {
-      console.log("Run memo", current.elIndex, displayMedias.length);
-      return setSelectCurrentItem(current.elIndex - 1, displayMedias[current.elIndex - 1].media_id);
-    }
-    setSelectCurrentItem(current.elIndex, displayMedias[current.elIndex].media_id);
-  });
+  createMemo(() => {});
 
   const modalMedias = () => getSublist(displayMedias, current.elIndex);
 
@@ -67,17 +56,37 @@ const Modal: Component<ModalProps> = (props) => {
   const [scrollTop, setScrollTop] = createSignal(current.elIndex * ITEM_HEIGHT);
 
   const startIndex = createMemo(() => Math.max(0, Math.floor(scrollTop() / ITEM_HEIGHT) - 1));
+
+  // const startIndex = createMemo(() => {
+  //   const minIdx = Math.min(
+  //     Math.floor(scrollTop() / ITEM_HEIGHT) - 1,
+  //     displayMedias.length - 1
+  //   );
+  //   return Math.max(0, minIdx);
+  // });
+
   const endIndex = createMemo(() => Math.min(displayMedias.length - 1, startIndex() + VISIBLE_ITEM));
 
-  const visualModal = createMemo(() => displayMedias.slice(startIndex(), endIndex() + 1));
-  /** TO DO: Need to implement LOAD MORE as a target to the last element in ModalView */
+  const visualModal = createMemo(() => {
+    if (displayMedias.length === 0) {
+      window.history.back();
+      return [];
+    }
+    return displayMedias.slice(startIndex(), endIndex() + 1);
+  });
 
-  const updateCurrent = (newIndex: number): void => {
-    if (newIndex < 0 || newIndex >= displayMedias.length) return; // Prevent out-of-bounds access
-    setSelectCurrentItem(newIndex, displayMedias[newIndex].media_id);
-    setScrollTop(newIndex * ITEM_HEIGHT);
-    scrollToModalElement(current.elId);
-  };
+  /** If the last item is removed, and we are scrolled past the new end of the list,
+   * we should adjust the scroll: */
+  createMemo(() => {
+    if (startIndex() >= displayMedias.length - 1) setScrollTop((displayMedias.length - 1) * ITEM_HEIGHT);
+  });
+
+  // const updateCurrent = (newIndex: number): void => {
+  //   if (newIndex < 0 || newIndex >= displayMedias.length) return; // Prevent out-of-bounds access
+  //   setSelectCurrentItem(newIndex, displayMedias[newIndex].media_id);
+  //   setScrollTop(newIndex * ITEM_HEIGHT);
+  //   scrollToModalElement(current.elId);
+  // };
 
   onMount(() => {
     // Scroll to selected element in Modal
@@ -141,27 +150,24 @@ const Modal: Component<ModalProps> = (props) => {
           }}>
           <div class={styles.visualList} style={{ height: `${displayMedias.length * ITEM_HEIGHT}px` }}>
             <For each={visualModal()}>
-              {(media, index) => {
-                console.log(index());
-                return (
-                  <MediaDisplay
-                    /** Loadmore base on the last element of Modal:
-                     * lastEl target is set to equal element in ModalView in MediaDisplay */
-                    setLastEl={displayMedias.length - 1 === startIndex() + index() ? props.setLastEl : undefined}
-                    topPos={(startIndex() + index()) * ITEM_HEIGHT}
-                    viewIndex={startIndex() + index()}
-                    media={media}
-                    setSelectCurrentItem={setSelectCurrentItem}
-                    setShowImageOnly={setShowImageOnly}
-                    showImageOnly={showImageOnly}
-                  />
-                );
-              }}
+              {(media, index) => (
+                <MediaDisplay
+                  /** Loadmore base on the last element of Modal:
+                   * lastEl target is set to equal element in ModalView in MediaDisplay */
+                  setLastEl={displayMedias.length - 1 === startIndex() + index() ? props.setLastEl : undefined}
+                  topPos={(startIndex() + index()) * ITEM_HEIGHT}
+                  viewIndex={startIndex() + index()}
+                  media={media}
+                  setSelectCurrentItem={setSelectCurrentItem}
+                  setShowImageOnly={setShowImageOnly}
+                  showImageOnly={showImageOnly}
+                />
+              )}
             </For>
           </div>
         </div>
 
-        <div class={`${styles.modalThumbs} ${showImageOnly() ? "hideButtons" : ""}`}>
+        <div class={`${styles.modalThumbs} ${showImageOnly() || displayMedias.length <= 1 ? "hideButtons" : ""}`}>
           <List each={modalMedias()} fallback={<NotFound />}>
             {(media, index) => (
               <div
@@ -180,8 +186,9 @@ const Modal: Component<ModalProps> = (props) => {
             )}
           </List>
         </div>
-
-        <ActionNav />
+        <Show when={!showImageOnly()}>
+          <ActionNav />
+        </Show>
       </div>
     </Portal>
   );
@@ -192,8 +199,16 @@ export default Modal;
 const formatTime = (timestamp: string): { date: string; time: string } => {
   const date = new Date(timestamp);
   return {
-    date: new Intl.DateTimeFormat("en-US", { year: "numeric", month: "long", day: "numeric" }).format(date),
-    time: new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "numeric", hour12: true }).format(date),
+    date: new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(date),
+    time: new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    }).format(date),
   };
 };
 
