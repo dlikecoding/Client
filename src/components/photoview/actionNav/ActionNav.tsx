@@ -7,7 +7,7 @@ import { forUpdating } from "../../extents/request/fetching";
 
 import { Favorite } from "./buttons/Favotire";
 import { MoreAction } from "./buttons/MoreAction";
-import { Share } from "./buttons/Share";
+import { Save } from "./buttons/Save";
 import { Recover } from "./buttons/Recover";
 import { Unhide } from "./buttons/Unhide";
 import { Delete } from "./buttons/Delete";
@@ -21,12 +21,23 @@ type ButtonConfig = {
   default: string[];
 };
 
-export const buttonConfig: ButtonConfig = {
-  default: ["favorite", "share", "more", "delete"],
+const buttonConfig: ButtonConfig = {
+  default: ["favorite", "save", "more", "delete"],
   deleted: ["recover", "permanentDelete"],
   hidden: ["unhide", "delete"],
   duplicate: ["merge", "delete"],
 };
+
+const getButtonConfig = (isModalOpen: boolean): ButtonConfig => ({
+  default: isModalOpen
+    ? ["save", "favorite", "info", "edit", "delete"]
+    : ["favorite", "save", "count", "more", "delete"],
+  deleted: isModalOpen
+    ? ["recover", "permanentDelete"]
+    : ["recover", "recoverAll", "count", "permanentDeleteAll", "permanentDelete"],
+  hidden: isModalOpen ? ["unhide", "delete"] : ["unhide", "count", "delete"],
+  duplicate: isModalOpen ? ["delete"] : ["merge", "count", "delete"],
+});
 
 const ActionNav = () => {
   const { items, setItems, setIsSelected } = useMediaContext();
@@ -35,7 +46,7 @@ const ActionNav = () => {
   const { openModal, displayMedias, setDisplayMedia } = useViewMediaContext();
 
   const actions = {
-    share: () => console.log("Share clicked"),
+    save: () => console.log("save clicked"),
 
     favorite: () => updateMediaStatus("Favorite"),
 
@@ -64,15 +75,17 @@ const ActionNav = () => {
       setDisplayMedia((prev) => prev.filter((item, _) => !listOfIds.has(item.media_id)));
     }
 
-    setIsSelected(false);
-    setItems(new Map());
-
     const res = await forUpdating([...listOfIds], updateKey, updateValue!);
     if (!res.ok) console.error(`Failed to update ${updateKey}:`, res);
+
+    if (openModal()) return;
+    setIsSelected(false);
+    setItems(new Map());
   };
 
   // Get current pages: Album, Library, ...
-  const currentPage = buttonConfig[params.pages as keyof ButtonConfig] || buttonConfig.default;
+  const currentPage =
+    getButtonConfig(openModal())[params.pages as keyof ButtonConfig] || getButtonConfig(openModal()).default;
 
   // Disable all action buttons when there is no selected item
   const disableButtons = () => items().size < 1;
@@ -81,7 +94,7 @@ const ActionNav = () => {
     <>
       <footer inert={disableButtons()} style={{ "z-index": 1 }} class={`${disableButtons() ? "footerDisabled" : ""}`}>
         <div class="actions__toolbar__column is_left">
-          <Switch fallback={<Share action={actions.share} />}>
+          <Switch fallback={<Save action={actions.save} />}>
             <Match when={currentPage.includes("unhide")}>
               <Unhide action={actions.unhide} />
             </Match>
@@ -100,16 +113,18 @@ const ActionNav = () => {
           <Show when={currentPage.includes("favorite")}>
             <Favorite action={actions.favorite} />
           </Show>
+
           {/* //////////////////////////////////////////////// */}
-          <Show when={openModal()}>
+          <Show when={currentPage.includes("info")}>
             <button>{InfoButtonIcon()}</button>
+          </Show>
+
+          <Show when={currentPage.includes("edit")}>
             <button>{EditButtonIcon()}</button>
           </Show>
 
-          <Show when={!openModal()}>
-            <button title="item size" inert>
-              {items().size}
-            </button>
+          <Show when={currentPage.includes("count")}>
+            <button inert>{items().size}</button>
           </Show>
 
           <Show when={currentPage.includes("more") && !openModal()}>

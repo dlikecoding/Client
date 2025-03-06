@@ -1,7 +1,7 @@
 import { lazy } from "solid-js";
 import { A } from "@solidjs/router";
 
-import { CameraIcon, CollectionIcon, LibraryIcon, SearchIcon, SettingIcon } from "../../components/svgIcons";
+import { CameraIcon, CollectionIcon, LibraryIcon, SettingIcon } from "../../components/svgIcons";
 
 const Upload = lazy(() => import("../upload/Upload"));
 const Setting = lazy(() => import("../setting/Setting"));

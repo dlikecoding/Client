@@ -12,8 +12,6 @@
   width: 100dvw;
   height: 100dvh;
   background: var(--bg-primary);
-
-  overscroll-behavior-y: none;
   overflow: hidden;
 }
 
@@ -24,10 +22,17 @@ header > .modalTitle {
   text-align: center;
 }
 
-.buttonContainer > .modalButtons {
-  background: none;
-  font-size: larger;
+/* .modalButtons {
+  display: flex;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
 }
+
+.modalButtons > svg {
+  width: 50px;
+  height: 50px;
+} */
 
 .modalImages {
   width: 100%;
@@ -42,6 +47,7 @@ header > .modalTitle {
 
   overflow-x: hidden;
   overflow-y: scroll;
+  overscroll-behavior-y: smooth;
 
   scroll-snap-type: y mandatory;
   -webkit-overflow-scrolling: touch;
@@ -107,8 +113,6 @@ header > .modalTitle {
 
   gap: 2px;
   z-index: 1;
-
-  transition: opacity 0.3s linear;
 }
 
 .modalThumbs > div {
@@ -129,4 +133,9 @@ header > .modalTitle {
   aspect-ratio: 9/16;
   object-fit: cover;
   border-radius: 2px;
+}
+
+.fadeOut {
+  opacity: 0;
+  transition: opacity 0.3s linear;
 }

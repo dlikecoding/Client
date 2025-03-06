@@ -1,8 +1,8 @@
 import { useMediaContext } from "../../../../context/Medias";
-import { ShareButtonIcon } from "../../../svgIcons";
+import { SaveButtonIcon } from "../../../svgIcons";
 import { ButtonProps } from "./ButtonProps";
 
-export const Share = (props: ButtonProps) => {
+export const Save = (props: ButtonProps) => {
   const { items } = useMediaContext();
 
   return (
@@ -10,7 +10,7 @@ export const Share = (props: ButtonProps) => {
       onClick={() => {
         props.action;
       }}>
-      {ShareButtonIcon()}
+      {SaveButtonIcon()}
     </button>
   );
 };

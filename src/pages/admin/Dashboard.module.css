@@ -1,0 +1,45 @@
+body {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.main-container {
+  margin: 0 10px;
+}
+
+h1 {
+  text-align: center;
+  color: #e0e0e0;
+}
+.table-container {
+  overflow-x: auto;
+  margin-bottom: 40px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow-x: scroll;
+}
+th,
+td {
+  border: 1px solid #333;
+  padding: 8px;
+  text-align: left;
+  white-space: nowrap;
+  max-width: 170px;
+  font: var(--font-info);
+}
+td {
+  overflow-x: scroll;
+}
+
+th {
+  background-color: #1e1e1e;
+}
+tr:nth-child(even) {
+  background-color: #2a2a2a;
+}
+tr:hover {
+  background-color: #333;
+}

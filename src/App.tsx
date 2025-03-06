@@ -80,7 +80,7 @@ const App = () => {
             <Route path="/:pages" component={PhotoView} matchFilters={filters.UTILITIES} />
           </Route>
 
-          <Route path="/:pages" component={PhotoView} matchFilters={filters.SEARCH} />
+          <Route path="/:pages/:keywords" component={PhotoView} matchFilters={filters.SEARCH} />
 
           <Route path="/admin">
             <Route path="/" component={Dashboard} />

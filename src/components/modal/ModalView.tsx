@@ -7,7 +7,7 @@ import { List } from "@solid-primitives/list";
 
 import { MediaType, useViewMediaContext } from "../../context/ViewContext";
 import { useMediaContext } from "../../context/Medias";
-import { GoBackIcon } from "../svgIcons";
+import { CustomButtonIcon, GoBackIcon, ObjectFitIcon } from "../svgIcons";
 
 import MediaDisplay from "./MediaDisplay";
 import { scrollIntoViewFc } from "../extents/helper/helper";
@@ -41,30 +41,17 @@ const Modal: Component<ModalProps> = (props) => {
     setOpenModal(false);
   };
 
-  /////////////////////////////////////////////////////////////
+  /** Tracking current index display on the screen */
   const [current, setCurrent] = createStore<ElementModal>({
     elIndex: items().keys().next().value!, // Current selected index
     elId: items().values().next().value!, // Current Id of selected el
   });
-
-  createMemo(() => {});
-
-  const modalMedias = () => getSublist(displayMedias, current.elIndex);
 
   ///////////////// Virtualization Modal /////////////////////////////////////////////////
   let containerRef!: HTMLDivElement;
   const [scrollTop, setScrollTop] = createSignal(current.elIndex * ITEM_HEIGHT);
 
   const startIndex = createMemo(() => Math.max(0, Math.floor(scrollTop() / ITEM_HEIGHT) - 1));
-
-  // const startIndex = createMemo(() => {
-  //   const minIdx = Math.min(
-  //     Math.floor(scrollTop() / ITEM_HEIGHT) - 1,
-  //     displayMedias.length - 1
-  //   );
-  //   return Math.max(0, minIdx);
-  // });
-
   const endIndex = createMemo(() => Math.min(displayMedias.length - 1, startIndex() + VISIBLE_ITEM));
 
   const visualModal = createMemo(() => {
@@ -81,13 +68,6 @@ const Modal: Component<ModalProps> = (props) => {
     if (startIndex() >= displayMedias.length - 1) setScrollTop((displayMedias.length - 1) * ITEM_HEIGHT);
   });
 
-  // const updateCurrent = (newIndex: number): void => {
-  //   if (newIndex < 0 || newIndex >= displayMedias.length) return; // Prevent out-of-bounds access
-  //   setSelectCurrentItem(newIndex, displayMedias[newIndex].media_id);
-  //   setScrollTop(newIndex * ITEM_HEIGHT);
-  //   scrollToModalElement(current.elId);
-  // };
-
   onMount(() => {
     // Scroll to selected element in Modal
     scrollToModalElement(current.elId);
@@ -101,10 +81,7 @@ const Modal: Component<ModalProps> = (props) => {
   });
 
   const setSelectCurrentItem = (index: number, mediaId: string) => {
-    setCurrent({
-      elId: mediaId,
-      elIndex: index,
-    });
+    setCurrent({ elId: mediaId, elIndex: index });
     setOneItem(current.elIndex, current.elId);
   };
 
@@ -115,10 +92,13 @@ const Modal: Component<ModalProps> = (props) => {
     return formatTime(curEl.CreateDate);
   });
 
+  /** Create sublist for thumbnails */
+  const modalMedias = () => getSublist(displayMedias, current.elIndex);
+
   return (
     <Portal>
       <div class={styles.modalContainer} style={{ "z-index": 1 }}>
-        <header class={`${showImageOnly() ? "hideButtons" : ""}`} style={{ "z-index": 1 }}>
+        <header classList={{ [styles.fadeOut]: showImageOnly() }} style={{ "z-index": 1 }}>
           <button
             onClick={() => {
               window.history.back();
@@ -131,11 +111,19 @@ const Modal: Component<ModalProps> = (props) => {
             <p style={{ "font-size": "12px" }}>{displayTime().time}</p>
           </div>
           <div class="buttonContainer">
-            <button class={styles.modalButtons} onClick={() => {}}>
-              View
+            <button
+              class={styles.modalButtons}
+              onClick={() => {
+                console.log("ObjectFitIcon");
+              }}>
+              {ObjectFitIcon()}
             </button>
-            <button class={styles.modalButtons} onClick={() => {}}>
-              Cus
+            <button
+              class={styles.modalButtons}
+              onClick={() => {
+                console.log("CustomButtonIcon");
+              }}>
+              {CustomButtonIcon()}
             </button>
           </div>
         </header>
@@ -167,7 +155,7 @@ const Modal: Component<ModalProps> = (props) => {
           </div>
         </div>
 
-        <div class={`${styles.modalThumbs} ${showImageOnly() || displayMedias.length <= 1 ? "hideButtons" : ""}`}>
+        <div classList={{ [styles.modalThumbs]: true, [styles.fadeOut]: showImageOnly() || displayMedias.length <= 1 }}>
           <List each={modalMedias()} fallback={<NotFound />}>
             {(media, index) => (
               <div
@@ -186,9 +174,10 @@ const Modal: Component<ModalProps> = (props) => {
             )}
           </List>
         </div>
-        <Show when={!showImageOnly()}>
+
+        <div classList={{ [styles.fadeOut]: showImageOnly() }}>
           <ActionNav />
-        </Show>
+        </div>
       </div>
     </Portal>
   );
@@ -199,16 +188,8 @@ export default Modal;
 const formatTime = (timestamp: string): { date: string; time: string } => {
   const date = new Date(timestamp);
   return {
-    date: new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }).format(date),
-    time: new Intl.DateTimeFormat("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    }).format(date),
+    date: new Intl.DateTimeFormat("en-US", { year: "numeric", month: "long", day: "numeric" }).format(date),
+    time: new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "numeric", hour12: true }).format(date),
   };
 };
 
@@ -289,3 +270,18 @@ const getSublist = (elements: MediaType[], currentIndex: number): MediaType[] =>
 
 //   return targetIndex - currentIndex;
 // };
+
+// const updateCurrent = (newIndex: number): void => {
+//   if (newIndex < 0 || newIndex >= displayMedias.length) return; // Prevent out-of-bounds access
+//   setSelectCurrentItem(newIndex, displayMedias[newIndex].media_id);
+//   setScrollTop(newIndex * ITEM_HEIGHT);
+//   scrollToModalElement(current.elId);
+// };
+
+// const startIndex = createMemo(() => {
+//   const minIdx = Math.min(
+//     Math.floor(scrollTop() / ITEM_HEIGHT) - 1,
+//     displayMedias.length - 1
+//   );
+//   return Math.max(0, minIdx);
+// });

@@ -15,6 +15,7 @@ export const MoreAction = (props: MoreActionsProps) => {
   const { items } = useMediaContext();
 
   const [addToAlbum, setAddToAlbum] = createSignal<boolean>(false);
+  const [addToDataset, setAddToDataset] = createSignal<boolean>(false);
 
   const handleAddToAlbum = () => {
     setAddToAlbum(true);
@@ -22,8 +23,8 @@ export const MoreAction = (props: MoreActionsProps) => {
   };
 
   const handleAddToDataset = () => {
-    // setAddToAlbum(true);
-    // document.getElementById("actions_contents")?.hidePopover();
+    setAddToDataset(true);
+    document.getElementById("actions_contents")?.hidePopover();
   };
 
   return (
@@ -31,19 +32,26 @@ export const MoreAction = (props: MoreActionsProps) => {
       <button popovertarget="actions_contents">{MoreActionButtonIcon()}</button>
 
       <div popover="auto" id="actions_contents" class="popover-container actions_contents">
-        {params.pages === "album" && <div>Remove from Album</div>}
-        {params.pages === "dataset" && <div>Remove from Dataset</div>}
+        <Show when={params.pages === "album"}>
+          <div onClick={() => console.log("Remove album: ", items())}>Remove from Album</div>
+        </Show>
+        <Show when={params.pages === "dataset"}>
+          <div onClick={() => console.log("Remove dataset: ", items())}>Remove from Dataset</div>
+        </Show>
 
-        <div onClick={handleAddToAlbum}>Add to Album</div>
-        <div onClick={handleAddToDataset}>Add to Data</div>
+        <Show when={params.pages !== "album"}>
+          <div onClick={handleAddToAlbum}>Add to Album</div>
+        </Show>
+
+        <Show when={params.pages !== "dataset"}>
+          <div onClick={handleAddToDataset}>Add to Dataset</div>
+        </Show>
+
         <div onClick={props.hide}>Hide</div>
-
         <div>Slideshow (...)</div>
       </div>
 
       <Show when={addToAlbum()}>
-        {/* <AddToAlbum setAddToAlbum={setAddToAlbum} /> */}
-
         <AddToCollection
           setAddToCollection={setAddToAlbum}
           entityType="Album"
@@ -51,6 +59,15 @@ export const MoreAction = (props: MoreActionsProps) => {
           updateItems={fetchAlbumUpdating}
         />
       </Show>
+
+      {/* <Show when={addToDataset()}>
+        <AddToCollection
+          setAddToCollection={setAddToDataset}
+          entityType="Dataset"
+          fetchItems={fetchAlbum}
+          updateItems={fetchAlbumUpdating}
+        />
+      </Show> */}
     </>
   );
 };

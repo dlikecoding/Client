@@ -37,12 +37,7 @@ const OverView = () => {
         <div class={style.cards}>
           <For each={loadedAlbums()}>
             {(album, _) => (
-              <A
-                href={`/collection/album/${album.album_id}`}
-                class={style.albumCard}
-                onClick={() => {
-                  console.log(album.album_id);
-                }}>
+              <A href={`/collection/album/${album.album_id}`} class={style.albumCard}>
                 <img src={album.ThumbPath} alt="Focus Playlist" />
                 <div> {album.title}</div>
                 <p>{album.media_count}</p>
@@ -61,13 +56,7 @@ const OverView = () => {
         <div class={style.cards}>
           <For each={loadedAlbums()}>
             {(album, _) => (
-              <A
-                href={`/collection/dataset/${album.album_id}`}
-                class={style.card}
-                // onClick={() => {
-                //   console.log(album.album_id);
-                // }}
-              >
+              <A href={`/collection/dataset/${album.album_id}`} class={style.card}>
                 <img src={album.ThumbPath} alt="Focus Playlist" />
 
                 <div class={style.cardFooter}>
