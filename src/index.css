@@ -1,6 +1,6 @@
 /* ================== ROOT VARIABLES ================== */
 :root {
-  --font-info: 500 12px/12px system-ui, "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif;
+  --font-info: 500 12px/12px sans-serif, system-ui, "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif;
   /* --font-navigate: 500 17px/16px system-ui, "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif; */
   /* --font-headers: 600 45px/45px system-ui, "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif; */
   --svg-color: rgb(239, 239, 239);
@@ -308,6 +308,8 @@ button:disabled {
   -webkit-backdrop-filter: blur(50px) brightness(0.2);
   backdrop-filter: blur(50px) brightness(0.2);
 
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3), -3px -3px 5px rgba(0, 0, 0, 0.1);
+
   color: #fff;
   inset: unset;
   padding: 0;
@@ -317,7 +319,7 @@ button:disabled {
   bottom: 0;
   left: 0;
 
-  width: 95%;
+  width: 97%;
   height: 100%;
   animation: slideIn 0.3s ease;
 }

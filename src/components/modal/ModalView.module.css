@@ -139,3 +139,16 @@ header > .modalTitle {
   opacity: 0;
   transition: opacity 0.3s linear;
 }
+
+@media (orientation: landscape) {
+  .modalThumbs {
+    opacity: 0;
+    transition: opacity 0.4s linear;
+  }
+}
+@media (orientation: portrait) {
+  .modalThumbs {
+    opacity: 1;
+    transition: opacity 0.4s linear;
+  }
+}

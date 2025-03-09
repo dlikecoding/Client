@@ -69,9 +69,9 @@ const Video: Component<VideoProps> = (props) => {
         crossorigin="anonymous">
         <source src={`http://localhost:8080${props.media.SourceFile}`} type={props.media.MIMEType} />
 
-        {/* // Need to change to  "use-credentials" - Remove localhost:8080 */}
         {/* crossorigin="use-credentials">
         <source src={props.media.SourceFile} type={props.media.MIMEType} /> */}
+        {/* // Need to change to  "use-credentials" - Remove localhost:8080 */}
 
         <p>Your browser doesn't support the video tag.</p>
       </video>

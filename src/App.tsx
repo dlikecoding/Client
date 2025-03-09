@@ -39,6 +39,7 @@ const App = () => {
   // Login and signup page
   const Login = lazy(() => import("./pages/auth/Login"));
   const Signup = lazy(() => import("./pages/auth/Signup"));
+  const ForgetPW = lazy(() => import("./pages/auth/ForgetPW"));
 
   const filters = {
     COLLECTION: {
@@ -61,6 +62,8 @@ const App = () => {
       {/* Unprotected Routes */}
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
+      <Route path="/forget" component={ForgetPW} />
+
       <Route path="*" component={NotFound} />
 
       {/* Protected Routes (Wrapped Inside a Route) */}

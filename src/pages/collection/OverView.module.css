@@ -21,16 +21,18 @@ h3 {
 
 /* Album Section Styles ==================================*/
 .albumCard {
-  min-width: 190px;
+  width: 190px;
   height: auto;
   border-radius: 15px;
+
   display: flex;
   flex-direction: column;
 }
 
 .albumCard > img {
   width: 100%;
-  height: auto;
+  height: 100%;
+
   aspect-ratio: 1;
   object-fit: cover;
   border-radius: 15px;

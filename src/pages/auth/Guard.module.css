@@ -10,7 +10,6 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #111;
   width: 100%;
   overflow: hidden;
 }
@@ -92,13 +91,14 @@ body {
   box-shadow: none;
   outline: none;
 }
-.login .inputBx input[type="submit"] {
+.login .inputBx input[type="button"] {
   width: 100%;
   background: #0078ff;
   background: linear-gradient(45deg, #3549ff, #b472ff);
   border: none;
   cursor: pointer;
 }
+
 .login .inputBx input::placeholder {
   color: rgba(255, 255, 255, 0.75);
 }
