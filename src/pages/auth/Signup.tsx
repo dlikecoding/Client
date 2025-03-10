@@ -1,7 +1,6 @@
 import { A } from "@solidjs/router";
 import styles from "./Guard.module.css";
 import { startRegistration, WebAuthnError, type RegistrationResponseJSON } from "@simplewebauthn/browser";
-import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 
 interface UserInput {
@@ -15,14 +14,12 @@ const Signup = () => {
 
   const createAccount = async () => {
     // 1. Get challenge from server
-    const initResponse = await fetch(`api/v1/users/init-register?email=${user.email}&username=${user.name}`, {
+    const initResponse = await fetch(`api/v1/auth/init-register?email=${user.email}&username=${user.name}`, {
       credentials: "include",
     });
 
     const options = await initResponse.json();
-    if (!initResponse.ok) {
-      return setMessage(options.error); // Stop further execution
-    }
+    if (!initResponse.ok) return setMessage({ status: false, msg: options.error }); // Stop further execution
 
     // 2. Create passkey
     // const registrationJSON = await startRegistration(options); // Make sure startRegistration is defined elsewhere
@@ -32,15 +29,16 @@ const Signup = () => {
       registrationJSON = await startRegistration({ optionsJSON: options });
     } catch (error) {
       if (error instanceof WebAuthnError) {
-        return error.message === "NotAllowedError"
-          ? setMessage({ status: false, msg: "Authenticator was probably already registered by user" })
-          : setMessage({ status: false, msg: "An unknown error occurred during registration." });
+        console.log(error.message); //error.cause, error.code, error.name, error.message, error.stack
+        return error.name === "NotAllowedError"
+          ? setMessage({ status: false, msg: "Authenticator was missing biometric verification." })
+          : setMessage({ status: false, msg: "Unknown error occurred during registration." });
       }
       return console.log(error);
     }
 
     // 3. Save passkey in DB
-    const verifyResponse = await fetch(`api/v1/users/verify-register`, {
+    const verifyResponse = await fetch(`api/v1/auth/verify-register`, {
       credentials: "include",
       method: "POST",
       headers: {
@@ -68,21 +66,23 @@ const Signup = () => {
 
         <div class={styles.inputBx}>
           <input
-            onInput={(e) => setUser("name", e.target.value)}
-            type="text"
-            name="username"
-            placeholder="Your Name"
-            minLength="10"
-            autocomplete="off"
-            required
-          />
-        </div>
-        <div class={styles.inputBx}>
-          <input
             onInput={(e) => setUser("email", e.target.value)}
             type="email"
             name="email"
-            placeholder="Email"
+            placeholder="Email*"
+            autocomplete="off"
+            autofocus
+            required
+          />
+        </div>
+
+        <div class={styles.inputBx}>
+          <input
+            onInput={(e) => setUser("name", e.target.value)}
+            type="text"
+            name="username"
+            placeholder="Your Name (Optional)"
+            minLength="10"
             autocomplete="off"
             required
           />

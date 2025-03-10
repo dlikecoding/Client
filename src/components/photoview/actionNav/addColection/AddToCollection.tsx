@@ -83,11 +83,11 @@ const AddToCollection = (props: AddToCollectionProps) => {
 
         <h4>{props.entityType}s</h4>
         <div class={styles.listOfAlbums}>
-          <For each={loadedEntities() ?? []}>
+          <For each={loadedEntities()}>
             {(entity) => (
               <div
                 onClick={async () => {
-                  await addItemsToCollection(entity.id);
+                  await addItemsToCollection(entity[props.entityType === "Album" ? "album_id" : "class_id"]);
                 }}>
                 <img src={entity.ThumbPath} alt={entity.title} />
                 <div>{entity.title}</div>

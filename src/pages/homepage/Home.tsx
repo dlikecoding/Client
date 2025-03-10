@@ -30,7 +30,8 @@ const Home = (props: any) => {
             <h1>Photos</h1>
           </div>
           <div class="buttonContainer">
-            <button>{TestAccountIcon()}</button>
+            <button onClick={() => {}}>{TestAccountIcon()}</button>
+            {/* <div popover></div> */}
           </div>
         </header>
 

@@ -6,15 +6,6 @@ const Setting = () => {
 
   return (
     <>
-      {/* <h1>Setting</h1>
-      <div> Display storage ===================</div>
-      <div> Reindex ===================</div>
-      <div>Link</div>
-      <div>Link</div>
-      <div>Link</div>
-      <div>Link</div>
-       */}
-
       <>
         <h1>Setting</h1>
         {/* <div class={styles.barChart}>
@@ -54,77 +45,42 @@ const Setting = () => {
         {/* =================================================== */}
 
         <h3>ReIndex</h3>
-        <form class={styles["form-container"]} action="/setting" method="post">
+        <div class={styles.reindexForm}>
           <fieldset>
             <legend>Select preferred index for medias:</legend>
-
-            <ul>
-              <li>
-                <label for="importPath">Folder's name:</label>
-                <input
-                  id="importPath"
-                  type="text"
-                  name="importPath"
-                  autocomplete="off"
-                  placeholder="~/Sonomas/2020-20 ... "
-                  value={"importPath"}
-                  // onInput={(e) => setImportPath(e.target.value)}
-                />
-              </li>
-              <li>
-                <input
-                  type="checkbox"
-                  id="importMedias"
-                  name="importMedias"
-                  value="importMedias"
-                  // checked={importMedias()}
-                  // onChange={() => setImportMedias(!importMedias())}
-                />
-                <label for="importMedias">Import All Data to Photo TSX</label>
-              </li>
-              <li>
-                <input
-                  type="checkbox"
-                  id="importClient"
-                  name="importClient"
-                  value="importClient"
-                  // checked={importClient()}
-                  // onChange={() => setImportClient(!importClient())}
-                />
-                <label for="importClient">Import data for client DB</label>
-
-                <ul>
-                  <li>
-                    <input
-                      type="checkbox"
-                      id="hashKey"
-                      name="hashKey"
-                      value="hashKey"
-                      // checked={hashKey()}
-                      // onChange={() => setHashKey(!hashKey())}
-                    />
-                    <label for="hashKey">Hash 256 Generate</label>
-                  </li>
-                </ul>
-              </li>
-
-              <li>
-                <input
-                  type="checkbox"
-                  id="detectModel"
-                  name="detectModel"
-                  value="detectModel"
-                  // checked={detectModel()}
-                  // onChange={() => setDetectModel(!detectModel())}
-                />
-                <label for="detectModel">AI Detection Mode</label>
-              </li>
-            </ul>
+            <div>
+              <label for="importPath">Enter Main Directory:</label>
+              <input
+                type="text"
+                name="importPath"
+                autocomplete="off"
+                placeholder="/Home/Sonomas"
+                // onInput={(e) => setImportPath(e.target.value)}
+              />
+            </div>
+            <div>
+              <input
+                type="checkbox"
+                name="importMedias"
+                value="importMedias"
+                // checked={importMedias()}
+                // onChange={() => setImportMedias(!importMedias())}
+              />
+              <label for="importMedias">Import All Data to Photo TSX</label>
+            </div>
+            <div>
+              <input
+                type="checkbox"
+                name="detectModel"
+                value="detectModel"
+                // checked={detectModel()}
+                // onChange={() => setDetectModel(!detectModel())}
+              />
+              <label for="detectModel">AI Detection Mode</label>
+            </div>
+            <button class={styles.processButtons}>Progress</button>
           </fieldset>
-          <button class={styles.buttons} type="submit">
-            Progress
-          </button>
-        </form>
+        </div>
 
         <button
           class={styles.closeButton}

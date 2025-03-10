@@ -1,7 +1,7 @@
 import { A } from "@solidjs/router";
 import styles from "./Guard.module.css";
 import { createSignal } from "solid-js";
-import { startAuthentication, WebAuthnError } from "@simplewebauthn/browser";
+import { AuthenticationResponseJSON, startAuthentication, WebAuthnError } from "@simplewebauthn/browser";
 import { createStore } from "solid-js/store";
 
 const Login = () => {
@@ -10,35 +10,31 @@ const Login = () => {
   const [email, setEmail] = createSignal<string>();
   const signInAccount = async () => {
     // 1. Get challenge from server
-    const initResponse = await fetch(`api/v1/users/init-auth?email=${email()}`, {
+    const initResponse = await fetch(`api/v1/auth/init-auth?email=${email()}`, {
       credentials: "include",
     });
 
     const options = await initResponse.json();
-    if (!initResponse.ok) return setMessage({ status: false, msg: "error.message" });
+    if (!initResponse.ok) return setMessage({ status: false, msg: options.error });
 
     // 2. Get passkey
-    // const authenticationJSON = await startAuthentication({ optionsJSON: options });
     // console.log(authenticationJSON);
-    let authenticationJSON: any;
+    let authenticationJSON: AuthenticationResponseJSON;
     try {
       // Pass the options to the authenticator and wait for a response
-      authenticationJSON = await startAuthentication({
-        optionsJSON: options,
-        useBrowserAutofill: false,
-        verifyBrowserAutofillInput: false,
-      });
+      authenticationJSON = await startAuthentication({ optionsJSON: options });
     } catch (error) {
       if (error instanceof WebAuthnError) {
-        return error.message === "NotAllowedError"
-          ? setMessage({ status: false, msg: "Authenticator was probably already registered by user" })
-          : setMessage({ status: false, msg: "An unknown error occurred during registration." });
+        console.log(error.message); //error.cause, error.code, error.name, error.message, error.stack
+        return error.name === "NotAllowedError"
+          ? setMessage({ status: false, msg: "Authenticator was missing biometric verification." })
+          : setMessage({ status: false, msg: "Unknown error occurred during registration." });
       }
       return console.log(error);
     }
 
     // 3. Save passkey in DB
-    const verifyResponse = await fetch(`api/v1/users/verify-auth`, {
+    const verifyResponse = await fetch(`api/v1/auth/verify-auth`, {
       credentials: "include",
       method: "POST",
       headers: {
@@ -62,7 +58,7 @@ const Login = () => {
       <i style={{ "--clr": "#0051ff" }}></i>
       <i style={{ "--clr": "#fb00ff" }}></i>
       <i style={{ "--clr": "#41de2f" }}></i>
-      <form class={styles.login} action="/login" method="post">
+      <form class={styles.login}>
         <h2>Login</h2>
 
         <p style={{ color: message.status ? "green" : "red" }}>{message.msg}</p>
@@ -74,6 +70,7 @@ const Login = () => {
             name="email"
             placeholder="Email"
             autocomplete="off"
+            autofocus
             required
           />
         </div>
@@ -82,7 +79,7 @@ const Login = () => {
           <input type="button" onClick={signInAccount} value="Sign In" />
         </div>
         <div class={styles.links}>
-          <A href="#">Forget Password</A>
+          <A href="#">Lost key</A>
           <A href="/signup">Need an account?</A>
         </div>
       </form>
