@@ -1,3 +1,7 @@
+:root {
+  --objectFitModal: contain;
+}
+
 .modalContainer {
   position: fixed;
   top: 0;
@@ -74,19 +78,6 @@ header > .modalTitle {
 
   scroll-snap-align: start;
   scroll-snap-stop: always;
-}
-
-.mediaContainer > img {
-  /* position: absolute; */
-  width: 100%;
-  height: 100%;
-
-  aspect-ratio: 1;
-  object-fit: contain;
-  display: block;
-
-  opacity: 1;
-  transition: opaccity 0.3s linear;
 }
 
 .mediaContainer > video {

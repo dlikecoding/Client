@@ -114,7 +114,8 @@ const Modal: Component<ModalProps> = (props) => {
             <button
               class={styles.modalButtons}
               onClick={() => {
-                console.log("ObjectFitIcon");
+                const obFit = document.documentElement.style.getPropertyValue("--objectFitModal");
+                document.documentElement.style.setProperty("--objectFitModal", obFit === "cover" ? "contain" : "cover");
               }}>
               {ObjectFitIcon()}
             </button>
