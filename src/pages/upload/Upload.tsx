@@ -29,8 +29,6 @@ const Upload = () => {
     fileUploaded();
   };
 
-  // console.log("MOUNT UPLOAD");
-
   return (
     <>
       <button
@@ -45,10 +43,11 @@ const Upload = () => {
       <div popover="auto" id="uploadPopover" class={styles.uploadDialog}>
         <div class={styles.checkboxLabel}>
           <h2 class={styles.dialogTitle}>Upload Instructions</h2>
-          <label>
-            <input type="checkbox" required onChange={handleCheckboxChange} class={styles.checkboxInput} />
-            Don't show again.
-          </label>
+
+          <div class={styles.checkboxInput}>
+            <input type="checkbox" id="dontShowAgain" name="dontShowAgain" />
+            <label for="dontShowAgain">Don't show again.</label>
+          </div>
         </div>
 
         <div class={styles.instructionsContent}>

@@ -9,7 +9,6 @@ const buildQueryString = (params: object): string =>
 const fetchData = async <T>(url: string, options: RequestInit = {}): Promise<T | null> => {
   const defaultHeaders = {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${localStorage.getItem("token") || ""}`, // Example for auth tokens
   };
 
   const mergedOptions: RequestInit = {
@@ -17,16 +16,12 @@ const fetchData = async <T>(url: string, options: RequestInit = {}): Promise<T |
     headers: { ...defaultHeaders, ...options.headers }, // Merge default and custom headers
   };
 
-  try {
-    const res = await fetch(url, mergedOptions);
-    if (!res.ok) {
-      throw Error(`Error: ${res.status} ${res.statusText}`);
-    }
-    return await res.json();
-  } catch (error) {
-    console.error("Fetch failed:", error);
-    return null;
+  const res = await fetch(url, mergedOptions);
+
+  if (!res.ok) {
+    throw new Error(`${res.status} ${res.statusText}`);
   }
+  return await res.json();
 };
 
 export const fetchMediaYears = async () => fetchData<any[]>(`/api/v1/medias`);

@@ -26,18 +26,6 @@ header > .modalTitle {
   text-align: center;
 }
 
-/* .modalButtons {
-  display: flex;
-  justify-content: center;
-  width: 50px;
-  height: 50px;
-}
-
-.modalButtons > svg {
-  width: 50px;
-  height: 50px;
-} */
-
 .modalImages {
   width: 100%;
   height: 100%;
@@ -65,10 +53,6 @@ header > .modalTitle {
 .mediaContainer {
   position: absolute;
 
-  /* min-width: 100%;
-  min-height: 100%; */
-  /* width: 100%; */
-
   height: 100%;
   width: 100%;
 
@@ -87,7 +71,7 @@ header > .modalTitle {
   max-width: 100%;
 
   opacity: 1;
-  transition: opaccity 0.3s linear;
+  transition: opacity 0.3s linear;
 }
 
 /* /////////////////// THUMBNAIL //////////////////////// */

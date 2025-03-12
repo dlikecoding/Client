@@ -248,7 +248,11 @@ button:disabled {
 /* ================== POPOVER CONTAINER ================== */
 .popover-container {
   inset: unset;
-  background: var(--bg-primary);
+
+  background: var(--popup-bground);
+  backdrop-filter: blur(20px) brightness(1.5);
+  -webkit-backdrop-filter: blur(20px) brightness(1.5);
+
   max-height: 300px;
   min-width: 120px;
   max-width: 200px;
@@ -260,12 +264,20 @@ button:disabled {
   animation: zoomIn 0.3s ease;
 }
 
-.popover-container > div {
+.popover-container > div,
+.popover-container > A {
   padding: 10px;
   cursor: pointer;
   color: rgb(219, 219, 219);
   border-bottom: 1px solid rgb(49, 49, 49);
   border-radius: 5px;
+
+  text-decoration: none;
+  width: auto;
+}
+
+.popover-container > A {
+  display: block;
 }
 
 /* Specific popovers */
@@ -286,7 +298,8 @@ button:disabled {
 
 .devices_filter_popover {
   transform-origin: top right;
-  margin: 32px 10px 0 0;
+  top: 62px;
+  right: 15px;
 }
 
 /* Clear filter button */

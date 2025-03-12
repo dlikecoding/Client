@@ -42,7 +42,7 @@ const Login = () => {
       },
       body: JSON.stringify(authenticationJSON),
     });
-    61;
+
     const verifyData = await verifyResponse.json();
     if (!verifyResponse.ok) return setMessage({ status: false, msg: verifyData.error });
 
@@ -58,7 +58,7 @@ const Login = () => {
       <i style={{ "--clr": "#0051ff" }}></i>
       <i style={{ "--clr": "#fb00ff" }}></i>
       <i style={{ "--clr": "#41de2f" }}></i>
-      <form class={styles.login}>
+      <div class={styles.login}>
         <h2>Login</h2>
 
         <p style={{ color: message.status ? "green" : "red" }}>{message.msg}</p>
@@ -82,7 +82,7 @@ const Login = () => {
           <A href="#">Lost key</A>
           <A href="/signup">Need an account?</A>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

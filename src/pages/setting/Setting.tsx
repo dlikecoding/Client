@@ -51,8 +51,10 @@ const Setting = () => {
             <div>
               <label for="importPath">Enter Main Directory:</label>
               <input
+                class={styles.importPath}
                 type="text"
                 name="importPath"
+                id="importPath"
                 autocomplete="off"
                 placeholder="/Home/Sonomas"
                 // onInput={(e) => setImportPath(e.target.value)}
@@ -62,6 +64,7 @@ const Setting = () => {
               <input
                 type="checkbox"
                 name="importMedias"
+                id="importMedias"
                 value="importMedias"
                 // checked={importMedias()}
                 // onChange={() => setImportMedias(!importMedias())}
@@ -72,6 +75,7 @@ const Setting = () => {
               <input
                 type="checkbox"
                 name="detectModel"
+                id="detectModel"
                 value="detectModel"
                 // checked={detectModel()}
                 // onChange={() => setDetectModel(!detectModel())}

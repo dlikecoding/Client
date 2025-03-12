@@ -99,33 +99,34 @@ const Modal: Component<ModalProps> = (props) => {
     <Portal>
       <div class={styles.modalContainer} style={{ "z-index": 1 }}>
         <header classList={{ [styles.fadeOut]: showImageOnly() }} style={{ "z-index": 1 }}>
-          <button
-            onClick={() => {
-              window.history.back();
-              handleCloseModal();
-            }}>
-            {GoBackIcon()}
-          </button>
+          <div class="buttonContainer">
+            <button
+              onClick={() => {
+                window.history.back();
+                handleCloseModal();
+              }}>
+              {GoBackIcon()}
+            </button>
+          </div>
+
           <div class={styles.modalTitle}>
             <p>{displayTime().date}</p>
             <p style={{ "font-size": "12px" }}>{displayTime().time}</p>
           </div>
           <div class="buttonContainer">
             <button
-              class={styles.modalButtons}
               onClick={() => {
                 const obFit = document.documentElement.style.getPropertyValue("--objectFitModal");
                 document.documentElement.style.setProperty("--objectFitModal", obFit === "cover" ? "contain" : "cover");
               }}>
               {ObjectFitIcon()}
             </button>
-            <button
-              class={styles.modalButtons}
-              onClick={() => {
-                console.log("CustomButtonIcon");
-              }}>
-              {CustomButtonIcon()}
-            </button>
+            <button popoverTarget="more-modal-popover">{CustomButtonIcon()}</button>
+            <div popover="auto" id="more-modal-popover" class="popover-container devices_filter_popover">
+              <div class="">TESTING...</div>
+              <div class="">TESTING...</div>
+              <div class="">TESTING...</div>
+            </div>
           </div>
         </header>
 

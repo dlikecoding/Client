@@ -59,7 +59,7 @@ const Signup = () => {
       <i style={{ "--clr": "#0051ff" }}></i>
       <i style={{ "--clr": "#fb00ff" }}></i>
       <i style={{ "--clr": "#41de2f" }}></i>
-      <form class={styles.login}>
+      <div class={styles.login}>
         <h2>Register</h2>
 
         <p style={{ color: message.status ? "green" : "red" }}>{message.msg}</p>
@@ -97,7 +97,7 @@ const Signup = () => {
             Already have an account?
           </A>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

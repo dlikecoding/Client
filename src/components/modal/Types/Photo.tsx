@@ -9,8 +9,11 @@ const Photo: Component<PhotoProps> = (props) => {
   const [imgLoading, setImgLoading] = createSignal<boolean>(true);
 
   return (
-    <div class={styles.blurLoad} style={{ "background-image": imgLoading() ? `url(${props.media.ThumbPath})` : "" }}>
-      <img onLoad={() => setImgLoading(false)} inert loading="lazy" src={props.media.SourceFile} alt={`Modal Image`} />
+    <div
+      inert
+      class={styles.blurLoad}
+      style={{ "background-image": imgLoading() ? `url(${props.media.ThumbPath})` : "" }}>
+      <img onLoad={() => setImgLoading(false)} loading="lazy" src={props.media.SourceFile} alt={`Modal Image`} />
     </div>
   );
 };

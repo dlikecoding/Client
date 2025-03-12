@@ -32,6 +32,7 @@ const App = () => {
 
   // Admin Dashboard
   const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
+  const Profile = lazy(() => import("./pages/user/Profile"));
 
   // Catch all unknown URL
   const NotFound = lazy(() => import("./components/extents/NotFound"));
@@ -85,8 +86,9 @@ const App = () => {
 
           <Route path="/:pages/:keywords" component={PhotoView} matchFilters={filters.SEARCH} />
 
-          <Route path="/admin">
-            <Route path="/" component={Dashboard} />
+          <Route path="/user">
+            <Route path="/" component={Profile} />
+            <Route path="/admin" component={Dashboard} />
           </Route>
         </Route>
       </Route>

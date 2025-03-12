@@ -4,7 +4,7 @@ import Footer from "./Footer";
 
 import { TestAccountIcon } from "../../components/svgIcons";
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
-import { useLocation, useNavigate } from "@solidjs/router";
+import { A, useLocation, useNavigate } from "@solidjs/router";
 
 const Home = (props: any) => {
   // Goto previous page if any:
@@ -30,19 +30,38 @@ const Home = (props: any) => {
             <h1>Photos</h1>
           </div>
           <div class="buttonContainer">
-            <button onClick={() => {}}>{TestAccountIcon()}</button>
-            {/* <div popover></div> */}
+            <button popoverTarget="account-popover" onClick={() => {}}>
+              {TestAccountIcon()}
+            </button>
+
+            <div popover="auto" id="account-popover" class="popover-container devices_filter_popover">
+              <A href="/user" class="">
+                Profile
+              </A>
+              <A href="" class="">
+                More
+              </A>
+              <A href="/user/admin" class="">
+                Dashboard
+              </A>
+              <A href="/login" class="">
+                Login
+              </A>
+              <A href="/logout" class="">
+                Logout
+              </A>
+            </div>
           </div>
         </header>
 
-        <form class="group-search">
+        <div class="group-search">
           <input
             id="searchInput"
             type="text"
             placeholder="Places, Objects, Devices, Years ... "
             oninput={(e) => setPageNumber(parseInt(e.target.value))}
           />
-        </form>
+        </div>
 
         <div class="search-result">
           <Show when={loadedMedias.length > 0}>
