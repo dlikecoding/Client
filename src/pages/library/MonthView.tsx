@@ -20,7 +20,7 @@ const MonthView = () => {
           <Loading />
         </Show>
 
-        <Index each={loadedMedias()} fallback={<NotFound errorCode={loadedMedias.error.message} />}>
+        <Index each={loadedMedias()} fallback={<NotFound />}>
           {(photo) => (
             <A
               class={styles.monthViewContainer}
