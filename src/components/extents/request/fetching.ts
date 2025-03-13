@@ -6,28 +6,30 @@ const buildQueryString = (params: object): string =>
     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
     .join("&");
 
-const fetchData = async <T>(url: string, options: RequestInit = {}): Promise<T | null> => {
-  const defaultHeaders = {
-    "Content-Type": "application/json",
-  };
+const errorHandler = (res: Response) => {
+  switch (res.status) {
+    case 401:
+      alert("Unauthoried, please signin to your account!");
+      window.location.replace("/login");
+      break;
 
-  const mergedOptions: RequestInit = {
-    ...options,
-    headers: { ...defaultHeaders, ...options.headers }, // Merge default and custom headers
-  };
+    case 400:
+      throw new Error(`${res.status} ${res.statusText}`);
 
-  const res = await fetch(url, mergedOptions);
-
-  if (!res.ok) {
-    throw new Error(`${res.status} ${res.statusText}`);
+    default:
+      throw new Error(`Something went wrong`);
   }
-  return await res.json();
+};
+
+const fetchData = async <T>(url: string): Promise<T | undefined> => {
+  const res = await fetch(url);
+
+  if (res.ok) return await res.json();
+  errorHandler(res);
 };
 
 export const fetchMediaYears = async () => fetchData<any[]>(`/api/v1/medias`);
 export const fetchMediaMonths = async (year: string) => fetchData<any[]>(`/api/v1/medias?year=${year}`);
-// =>
-// fetchData<any[]>(`/api/v1/medias?year=${year}&month=${month}`);
 
 export const fetchMedias = (queries: SearchQuery, pageNumber: number = 0) => {
   const queryString = buildQueryString({ ...queries, pageNumber });

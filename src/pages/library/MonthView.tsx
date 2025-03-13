@@ -20,29 +20,20 @@ const MonthView = () => {
           <Loading />
         </Show>
 
-        <Switch>
-          <Match when={loadedMedias.error}>
-            <NotFound errorCode={loadedMedias.error.message} />
-          </Match>
-
-          <Match when={loadedMedias()}>
-            <Index each={loadedMedias()}>
-              {(photo) => (
-                <A
-                  class={styles.monthViewContainer}
-                  onClick={() => {
-                    updatePage({ year: photo().createAtYear, month: photo().createAtMonth });
-                  }}
-                  href="/library/all">
-                  <h3 class={styles.titleMonthView}>{photo().timeFormat}</h3>
-                  <div class={styles.overlayDay}>{photo().createAtDate}</div>
-                  <img loading="lazy" alt="Month Photos" src={photo().ThumbPath} />
-                </A>
-              )}
-            </Index>
-            ;
-          </Match>
-        </Switch>
+        <Index each={loadedMedias()} fallback={<NotFound errorCode={loadedMedias.error.message} />}>
+          {(photo) => (
+            <A
+              class={styles.monthViewContainer}
+              onClick={() => {
+                updatePage({ year: photo().createAtYear, month: photo().createAtMonth });
+              }}
+              href="/library/all">
+              <h3 class={styles.titleMonthView}>{photo().timeFormat}</h3>
+              <div class={styles.overlayDay}>{photo().createAtDate}</div>
+              <img loading="lazy" alt="Month Photos" src={photo().ThumbPath} />
+            </A>
+          )}
+        </Index>
       </div>
     </>
   );
