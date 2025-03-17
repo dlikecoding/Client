@@ -213,6 +213,11 @@ footer {
   text-decoration: none;
 }
 
+.inactive_button_disable {
+  text-decoration: none;
+  opacity: 0.5;
+}
+
 .actions__toolbar__column.is_right {
   justify-content: flex-end;
 }

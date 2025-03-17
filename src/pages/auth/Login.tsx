@@ -65,7 +65,10 @@ const Login = () => {
 
         <div class={styles.inputBx}>
           <input
-            onInput={(e) => setEmail(e.target.value)}
+            onInput={(e) => {
+              setMessage("msg", "");
+              setEmail(e.target.value);
+            }}
             type="email"
             name="email"
             placeholder="Email"
