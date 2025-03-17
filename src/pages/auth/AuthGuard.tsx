@@ -1,8 +1,13 @@
 import { useNavigate } from "@solidjs/router";
-import { createEffect } from "solid-js";
+import { createEffect, onMount } from "solid-js";
 
 const AuthGuard = (props: any) => {
   const navigate = useNavigate();
+
+  // onMount(async () => {
+  //   const response = await fetch("/api/v1/auth/check", { credentials: "include" });
+  //   if (!response.ok) navigate("/login");
+  // });
 
   // createEffect(() => {
   //   const user = localStorage.getItem("user-session");

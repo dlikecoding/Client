@@ -7,7 +7,7 @@ import { List } from "@solid-primitives/list";
 
 import { MediaType, useViewMediaContext } from "../../context/ViewContext";
 import { useMediaContext } from "../../context/Medias";
-import { CustomButtonIcon, GoBackIcon, ObjectFitIcon } from "../svgIcons";
+import { CustomButtonIcon, GoBackIcon, ObjectFitContainIcon, ObjectFitCoverIcon } from "../svgIcons";
 
 import MediaDisplay from "./MediaDisplay";
 import { scrollIntoViewFc } from "../extents/helper/helper";
@@ -24,8 +24,8 @@ interface ModalProps {
 }
 
 const BUFFER_ITEM = 3;
-const ITEM_HEIGHT = window.innerHeight;
-const VIEWPORT_HEIGHT = window.innerHeight * BUFFER_ITEM;
+const ITEM_HEIGHT = window.innerHeight + 100; // Full innerHeight + 100px for gap
+const VIEWPORT_HEIGHT = ITEM_HEIGHT * BUFFER_ITEM;
 
 const VISIBLE_ITEM = Math.ceil(VIEWPORT_HEIGHT / ITEM_HEIGHT) + 2;
 
@@ -78,6 +78,9 @@ const Modal: Component<ModalProps> = (props) => {
       handleCloseModal();
       scrollToViewElement(current.elId); // scroll to view to the current id in PhotoView
     };
+
+    // viewModal control object fit and contain
+    setViewModal(document.documentElement.style.getPropertyValue("--objectFitModal"));
   });
 
   const setSelectCurrentItem = (index: number, mediaId: string) => {
@@ -87,13 +90,14 @@ const Modal: Component<ModalProps> = (props) => {
 
   // Display time in header
   const displayTime = createMemo(() => {
-    const curEl = displayMedias.at(current.elIndex);
+    const curEl = displayMedias[current.elIndex];
     if (!curEl) return { date: "", time: "" };
     return formatTime(curEl.CreateDate);
   });
 
   /** Create sublist for thumbnails */
   const modalMedias = () => getSublist(displayMedias, current.elIndex);
+  const [viewModal, setViewModal] = createSignal<string>("");
 
   return (
     <Portal>
@@ -115,17 +119,18 @@ const Modal: Component<ModalProps> = (props) => {
           </div>
           <div class="buttonContainer">
             <button
+              style={{ visibility: displayMedias[current.elIndex]?.FileType !== "Photo" ? "hidden" : "visible" }}
               onClick={() => {
-                const obFit = document.documentElement.style.getPropertyValue("--objectFitModal");
-                document.documentElement.style.setProperty("--objectFitModal", obFit === "cover" ? "contain" : "cover");
+                setViewModal((prev) => (prev === "contain" ? "cover" : "contain"));
+                document.documentElement.style.setProperty("--objectFitModal", viewModal());
               }}>
-              {ObjectFitIcon()}
+              {viewModal() === "contain" ? ObjectFitCoverIcon() : ObjectFitContainIcon()}
             </button>
             <button popoverTarget="more-modal-popover">{CustomButtonIcon()}</button>
             <div popover="auto" id="more-modal-popover" class="popover-container devices_filter_popover">
-              <div class="">TESTING...</div>
-              <div class="">TESTING...</div>
-              <div class="">TESTING...</div>
+              <div>TESTING...</div>
+              <div>TESTING...</div>
+              <div>TESTING...</div>
             </div>
           </div>
         </header>

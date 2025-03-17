@@ -13,7 +13,13 @@ const Photo: Component<PhotoProps> = (props) => {
       inert
       class={styles.blurLoad}
       style={{ "background-image": imgLoading() ? `url(${props.media.ThumbPath})` : "" }}>
-      <img onLoad={() => setImgLoading(false)} loading="lazy" src={props.media.SourceFile} alt={`Modal Image`} />
+      <img
+        onLoad={() => setImgLoading(false)}
+        onError={() => setImgLoading(true)}
+        loading="lazy"
+        src={props.media.SourceFile}
+        alt={`Modal Image`}
+      />
     </div>
   );
 };

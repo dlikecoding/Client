@@ -1,4 +1,5 @@
 import { SearchQuery } from "../../../context/ManageUrl";
+import { MediaType } from "../../../context/ViewContext";
 
 const buildQueryString = (params: object): string =>
   Object.entries(params)
@@ -33,12 +34,12 @@ export const fetchMediaMonths = async (year: string) => fetchData<any[]>(`/api/v
 
 export const fetchMedias = (queries: SearchQuery, pageNumber: number = 0) => {
   const queryString = buildQueryString({ ...queries, pageNumber });
-  return fetchData<any[]>(`/api/v1/stream?${queryString}`);
+  return fetchData<MediaType[]>(`/api/v1/stream?${queryString}`);
 };
 
-export const fetchPhotoInfo = async (mediaId: string) => {
-  return fetchData<any[]>(`/api/v1/media/${mediaId}`);
-};
+// export const fetchPhotoInfo = async (mediaId: string) => {
+//   return fetchData<any[]>(`/api/v1/media/${mediaId}`);
+// };
 
 export const fetchListOfDevices = () => fetchData<any[]>(`/api/v1/medias/devices`);
 

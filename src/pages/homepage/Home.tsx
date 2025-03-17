@@ -19,7 +19,7 @@ const Home = (props: any) => {
 
   // Create search items for media
   const [pageNumber, setPageNumber] = createSignal(0);
-  const loadedMedias: any[] | null | undefined = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+  const loadedMedias: any[] | undefined = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 
   return (
     <>
@@ -35,21 +35,11 @@ const Home = (props: any) => {
             </button>
 
             <div popover="auto" id="account-popover" class="popover-container devices_filter_popover">
-              <A href="/user" class="">
-                Profile
-              </A>
-              <A href="" class="">
-                More
-              </A>
-              <A href="/user/admin" class="">
-                Dashboard
-              </A>
-              <A href="/login" class="">
-                Login
-              </A>
-              <A href="/logout" class="">
-                Logout
-              </A>
+              <A href="/user">Profile</A>
+              <A href="">More</A>
+              <A href="/user/admin">Dashboard</A>
+              <A href="/login">Login</A>
+              <A href="/logout">Logout</A>
             </div>
           </div>
         </header>
@@ -91,7 +81,7 @@ const Home = (props: any) => {
           <Show when={loadedMedias.length > 0}>
             <For each={loadedMedias}>
               {(media, index) => {
-                return index() < 9 ? <img src="{media}" alt="Image 1" /> : "";
+                return index() < 9 ? <img src="" alt="Image 1" /> : "";
               }}
             </For>
           </Show>

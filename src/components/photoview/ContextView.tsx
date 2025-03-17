@@ -66,7 +66,7 @@ const ContextView = () => {
   };
 
   const [loadedMedias] = createResource(queries, async (searchParams: SearchQuery) => {
-    const newMedia: MediaType[] | null = await fetchMedias(searchParams);
+    const newMedia: MediaType[] | undefined = await fetchMedias(searchParams);
     if (newMedia) {
       setDisplayMedia(newMedia); // Reset displayMedia with new fetching data
       setPageNumber(0); // set the page to 0
@@ -76,7 +76,7 @@ const ContextView = () => {
 
   const [loadedMoreMedias] = createResource(pageNumber, async (currentPage) => {
     if (currentPage === 0) return;
-    const newMedia: MediaType[] | null = await fetchMedias(queries(), currentPage);
+    const newMedia: MediaType[] | undefined = await fetchMedias(queries(), currentPage);
     if (newMedia) setDisplayMedia((prev) => [...prev!, ...newMedia]);
   });
 
