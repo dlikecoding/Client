@@ -1,7 +1,3 @@
-:root {
-  --objectFitModal: cover;
-}
-
 .modalContainer {
   position: fixed;
   top: 0;

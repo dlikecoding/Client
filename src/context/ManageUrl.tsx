@@ -21,6 +21,8 @@ export type SearchQuery = {
 export type ZoomAndAspect = {
   nColumn: number;
   objectFit: boolean;
+
+  modalObjFit: boolean;
 };
 
 interface ManageURLContextProviderProps {
@@ -50,6 +52,8 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
     JSON.parse(localZoomAndAspect!) || {
       nColumn: 3,
       objectFit: true,
+
+      modalObjFit: true,
     }
   );
 

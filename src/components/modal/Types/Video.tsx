@@ -94,9 +94,12 @@ export default Video;
  */
 const toggleVideo = (videoRef: HTMLVideoElement | null) => {
   if (!videoRef) return;
-  if (videoRef.paused) return videoRef.play().catch((e) => console.error("Autoplay blocked", e));
+  if (videoRef.paused) {
+    // videoRef.requestFullscreen();
+    return videoRef.play().catch((e) => console.error("Autoplay blocked", e));
+  }
 
-  return videoRef.pause(); // if (videoRef.requestFullscreen) videoRef.requestFullscreen();
+  return videoRef.pause(); // if (videoRef.requestFullscreen)
 };
 
 /**

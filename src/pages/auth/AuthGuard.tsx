@@ -1,20 +1,13 @@
 import { useNavigate } from "@solidjs/router";
-import { createEffect, onMount } from "solid-js";
+import { onMount } from "solid-js";
 
 const AuthGuard = (props: any) => {
   const navigate = useNavigate();
 
-  // onMount(async () => {
-  //   const response = await fetch("/api/v1/auth/check", { credentials: "include" });
-  //   if (!response.ok) navigate("/login");
-  // });
-
-  // createEffect(() => {
-  //   const user = localStorage.getItem("user-session");
-  //   if (!user) return navigate("/login", { replace: true }); // Redirect unauthenticated users
-
-  //   navigate("/");
-  // });
+  onMount(async () => {
+    const response = await fetch("/api/v1/auth/check", { credentials: "include" });
+    if (!response.ok) navigate("/login", { replace: true });
+  });
 
   return props.children; // Render content only if authenticated
 };

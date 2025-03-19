@@ -1,10 +1,10 @@
-import "./Home.css";
+import styles from "./Home.module.css";
 
 import Footer from "./Footer";
 
 import { TestAccountIcon } from "../../components/svgIcons";
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
-import { A, useLocation, useNavigate } from "@solidjs/router";
+import { A, reload, useLocation, useNavigate } from "@solidjs/router";
 
 const Home = (props: any) => {
   // Goto previous page if any:
@@ -30,7 +30,9 @@ const Home = (props: any) => {
             <h1>Photos</h1>
           </div>
           <div class="buttonContainer">
-            <button popoverTarget="account-popover" onClick={() => {}}>
+            <button
+              style={{ "background-color": true ? "rgb(51,94,168)" : "rgb(236,106,94)" }}
+              popoverTarget="account-popover">
               {TestAccountIcon()}
             </button>
 
@@ -39,21 +41,30 @@ const Home = (props: any) => {
               <A href="">More</A>
               <A href="/user/admin">Dashboard</A>
               <A href="/login">Login</A>
-              <A href="/logout">Logout</A>
+              <A
+                href="#"
+                onclick={async () => {
+                  const res = await fetch("api/v1/auth/logout");
+                  if (!res.ok) console.log(res);
+                  navigate("/login");
+                }}>
+                Logout
+              </A>
             </div>
           </div>
         </header>
 
-        <div class="group-search">
+        <div class={styles.groupSearch}>
           <input
             id="searchInput"
+            class="inputSearch"
             type="text"
             placeholder="Places, Objects, Devices, Years ... "
             oninput={(e) => setPageNumber(parseInt(e.target.value))}
           />
         </div>
 
-        <div class="search-result">
+        <div class={styles.searchResult}>
           <Show when={loadedMedias.length > 0}>
             <For each={loadedMedias}>
               {(_, index) => {
@@ -77,7 +88,7 @@ const Home = (props: any) => {
           </h3>
         </Show>
 
-        <div class="library-grid">
+        <div class={styles.libraryGrid}>
           <Show when={loadedMedias.length > 0}>
             <For each={loadedMedias}>
               {(media, index) => {

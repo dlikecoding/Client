@@ -1,7 +1,6 @@
 import { Portal } from "solid-js/web";
 import Navbar from "../../components/navbar/Navbar";
 import { ManageURLContextProvider } from "../../context/ManageUrl";
-import "../homepage/Home.css";
 
 const Library = (props: any) => {
   return (

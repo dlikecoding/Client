@@ -443,6 +443,35 @@ button:disabled {
   background-color: rgba(63, 164, 241, 0.166);
 }
 
+/* ================== SEARCH INPUT ================== */
+.inputSearch {
+  outline: none;
+  background-color: hsl(231, 14%, 10%);
+  border: 2px solid #2b2c37;
+  border-radius: 10px;
+  color: #fff;
+}
+
+.inputSearch::placeholder {
+  color: #727884;
+}
+
+.inputSearch:focus {
+  border: 2px solid rgb(87, 148, 246);
+  box-shadow: 0 0 7px hsla(217, 100%, 50%, 0.7);
+}
+
+.inputSearch::placeholder {
+  color: #727884;
+}
+
+.closeButton {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 20px;
+}
+
 /* ================== ANIMATIONS ================== */
 @keyframes zoomIn {
   from {

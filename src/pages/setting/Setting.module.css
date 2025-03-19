@@ -11,13 +11,6 @@
   backdrop-filter: var(--backdrop-filter);
 } */
 
-.closeButton {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  padding: 20px;
-}
-
 /* ------------------ Bar Chart section  ------------------*/
 .barChart {
   display: flex;
@@ -130,19 +123,16 @@
 
 .reindexForm > fieldset > div {
   margin: 10px 0;
+  padding: 0 15px;
 }
 
 .reindexForm > fieldset > div > input {
   margin: 0px 10px;
+  padding: 10px;
 }
 
-.importPath {
-  border: none;
-  border-radius: 7px;
-  padding: 7px;
-}
 .processButtons {
-  margin: 10px 10px 0 10px;
+  margin: 20px;
   padding: 10px;
   background-color: #4f34eb;
   border-radius: 7px;

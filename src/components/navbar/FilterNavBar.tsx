@@ -33,10 +33,6 @@ const FilterTimeline = () => {
     setView("nColumn", (prev: number) => prev + input);
   };
 
-  const changeGrid = () => {
-    setView("objectFit", (prev: boolean) => !prev);
-  };
-
   return (
     <div popover="auto" id="filter-timeline" class="popover-container filter_timeline">
       <div class="media_type_contents">
@@ -48,7 +44,9 @@ const FilterTimeline = () => {
           {ZoomOutIcon()}
         </button>
       </div>
-      <div onClick={changeGrid}>{view.objectFit ? "Aspect Ratio Grid" : "Square Photo Grid"}</div>
+      <div onClick={() => setView("objectFit", (prev: boolean) => !prev)}>
+        {view.objectFit ? "Aspect Ratio Grid" : "Square Photo Grid"}
+      </div>
 
       <div
         style={{ "font-size": "smaller", "text-decoration": "underline", border: "none", padding: "10px 0 5px 15px" }}

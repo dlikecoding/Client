@@ -5,12 +5,13 @@ import { Component, createMemo, createSignal, For, onMount, Setter, Show } from 
 import { createStore } from "solid-js/store";
 import { List } from "@solid-primitives/list";
 
+import { useManageURLContext } from "../../context/ManageUrl";
 import { MediaType, useViewMediaContext } from "../../context/ViewContext";
 import { useMediaContext } from "../../context/Medias";
-import { CustomButtonIcon, GoBackIcon, ObjectFitContainIcon, ObjectFitCoverIcon } from "../svgIcons";
+import { CompressIcon, CustomButtonIcon, ExpandIcon, GoBackIcon } from "../svgIcons";
 
-import MediaDisplay from "./MediaDisplay";
 import { scrollIntoViewFc } from "../extents/helper/helper";
+import MediaDisplay from "./MediaDisplay";
 import NotFound from "../extents/NotFound";
 import ActionNav from "../photoview/actionNav/ActionNav";
 
@@ -34,6 +35,8 @@ const Modal: Component<ModalProps> = (props) => {
   const { items, setItems, setOneItem } = useMediaContext();
 
   const [showImageOnly, setShowImageOnly] = createSignal(false);
+
+  const { view, setView } = useManageURLContext();
 
   // when this modal close
   const handleCloseModal = () => {
@@ -78,9 +81,6 @@ const Modal: Component<ModalProps> = (props) => {
       handleCloseModal();
       scrollToViewElement(current.elId); // scroll to view to the current id in PhotoView
     };
-
-    // viewModal control object fit and contain
-    setViewModal(document.documentElement.style.getPropertyValue("--objectFitModal"));
   });
 
   const setSelectCurrentItem = (index: number, mediaId: string) => {
@@ -97,7 +97,6 @@ const Modal: Component<ModalProps> = (props) => {
 
   /** Create sublist for thumbnails */
   const modalMedias = () => getSublist(displayMedias, current.elIndex);
-  const [viewModal, setViewModal] = createSignal<string>("");
 
   return (
     <Portal>
@@ -120,11 +119,8 @@ const Modal: Component<ModalProps> = (props) => {
           <div class="buttonContainer">
             <button
               style={{ visibility: displayMedias[current.elIndex]?.FileType !== "Photo" ? "hidden" : "visible" }}
-              onClick={() => {
-                setViewModal((prev) => (prev === "contain" ? "cover" : "contain"));
-                document.documentElement.style.setProperty("--objectFitModal", viewModal());
-              }}>
-              {viewModal() === "contain" ? ObjectFitCoverIcon() : ObjectFitContainIcon()}
+              onClick={() => setView("modalObjFit", (prev) => !prev)}>
+              {view.modalObjFit ? CompressIcon() : ExpandIcon()}
             </button>
             <button popoverTarget="more-modal-popover">{CustomButtonIcon()}</button>
             <div popover="auto" id="more-modal-popover" class="popover-container devices_filter_popover">

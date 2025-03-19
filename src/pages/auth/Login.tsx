@@ -49,7 +49,7 @@ const Login = () => {
     if (!verifyData.verified) return setMessage({ status: false, msg: `Failed to Sign In` });
 
     // `Successfully Logged In ${email()}`
-    localStorage.setItem("user-session", email() || "");
+    // localStorage.setItem("user-session", email() || "");
     window.location.href = "/";
   };
 

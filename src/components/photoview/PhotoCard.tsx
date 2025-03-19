@@ -21,7 +21,7 @@ const PhotoCard: Component<PhotoProps> = (props) => {
 
   const handleImageClick = (idx: number, mediaId: string) => {
     if (!isSelected()) {
-      window.history.pushState({ state: "Photo Detail" }, "", window.location.href);
+      window.history.pushState({ state: "Photo Modal" }, "", window.location.href);
 
       setOneItem(idx, mediaId);
       return setOpenModal(true);

@@ -51,7 +51,7 @@ const Setting = () => {
             <div>
               <label for="importPath">Enter Main Directory:</label>
               <input
-                class={styles.importPath}
+                class="inputSearch"
                 type="text"
                 name="importPath"
                 id="importPath"
@@ -87,7 +87,7 @@ const Setting = () => {
         </div>
 
         <button
-          class={styles.closeButton}
+          class="closeButton"
           onClick={() => {
             const popover = document.getElementById("setting-contents");
             if (popover) popover.hidePopover();

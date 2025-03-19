@@ -1,7 +1,7 @@
 import { lazy } from "solid-js";
 import { A } from "@solidjs/router";
 
-import { CameraIcon, CollectionIcon, LibraryIcon, SettingIcon } from "../../components/svgIcons";
+import { SearchIcon, CollectionIcon, LibraryIcon, SettingIcon } from "../../components/svgIcons";
 
 const Upload = lazy(() => import("../upload/Upload"));
 const Setting = lazy(() => import("../setting/Setting"));
@@ -12,7 +12,7 @@ const Footer = () => {
       <div class="actions__toolbar__column is_left">{LinkTag("library", LibraryIcon)}</div>
       <div class="actions__toolbar__column is_middle">
         {LinkTag("collection", CollectionIcon)}
-        {LinkTag("search", CameraIcon)}
+        {LinkTag("search", SearchIcon)}
         <Upload />
       </div>
       <div class="actions__toolbar__column is_right">

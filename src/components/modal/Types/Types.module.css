@@ -31,7 +31,7 @@
 .blurLoad {
   width: 100%;
   height: 100%;
-  background-size: var(--objectFitModal);
+  /* background-size: var(--objectFitModal); */
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -39,8 +39,8 @@
 .blurLoad > img {
   width: 100%;
   height: 100%;
-
+  max-height: calc(100dvh + 100px);
   aspect-ratio: 1;
-  object-fit: var(--objectFitModal);
+  /* object-fit: var(--objectFitModal); */
   display: block;
 }

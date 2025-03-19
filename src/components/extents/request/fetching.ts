@@ -10,11 +10,10 @@ const buildQueryString = (params: object): string =>
 const errorHandler = (res: Response) => {
   switch (res.status) {
     case 401:
-      alert("Unauthoried, please signin to your account!");
-      window.location.replace("/login");
-      break;
+      return window.location.replace("/login"); // alert("Unauthoried, please signin to your account!");
 
     case 400:
+      alert(`${res.statusText}, please try again!`);
       throw new Error(`${res.status} ${res.statusText}`);
 
     default:
@@ -23,7 +22,10 @@ const errorHandler = (res: Response) => {
 };
 
 const fetchData = async <T>(url: string): Promise<T | undefined> => {
-  const res = await fetch(url);
+  const res = await fetch(url, {
+    method: "GET",
+    credentials: "same-origin",
+  });
 
   if (res.ok) return await res.json();
   errorHandler(res);
@@ -37,10 +39,6 @@ export const fetchMedias = (queries: SearchQuery, pageNumber: number = 0) => {
   return fetchData<MediaType[]>(`/api/v1/stream?${queryString}`);
 };
 
-// export const fetchPhotoInfo = async (mediaId: string) => {
-//   return fetchData<any[]>(`/api/v1/media/${mediaId}`);
-// };
-
 export const fetchListOfDevices = () => fetchData<any[]>(`/api/v1/medias/devices`);
 
 export const fetchStatistic = async () => {
@@ -53,6 +51,7 @@ export const fetchAlbum = () => fetchData<any[]>(`/api/v1/album`);
 export const fetchAlbumUpdating = async (mediaIds: string[], albumId?: number, albumTitle?: string) => {
   return await fetch(`/api/v1/album/add`, {
     method: "PUT",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -67,6 +66,7 @@ export const fetchAlbumUpdating = async (mediaIds: string[], albumId?: number, a
 export const forUpdating = async (mediaIds: string[], updateKey: string, updateValue: boolean) => {
   return await fetch(`/api/v1/medias`, {
     method: "PUT",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -81,9 +81,28 @@ export const forUpdating = async (mediaIds: string[], updateKey: string, updateV
 export const forDeleting = async (mediaIds: string[]) => {
   return await fetch(`/api/v1/medias`, {
     method: "DELETE",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ mediasToDel: mediaIds }),
   });
 };
+
+// export const fetchPhotoInfo = async (mediaId: string) => {
+//   return fetchData<any[]>(`/api/v1/media/${mediaId}`);
+// };
+
+// const fetchDatas = async <T>(url: string, options: RequestInit = {}): Promise<T | undefined> => {
+//   const defaultHeaders = {
+//     "Content-Type": "application/json",
+//   };
+
+//   const mergedOptions: RequestInit = {
+//     ...options,
+//     headers: { ...defaultHeaders, ...options.headers }, // Merge default and custom headers
+//   };
+
+//   const res = await fetch(url, mergedOptions);
+//   return;
+// };
