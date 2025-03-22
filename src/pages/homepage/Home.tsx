@@ -1,20 +1,19 @@
 import styles from "./Home.module.css";
+import { createMemo, createSignal, For, onMount, Show } from "solid-js";
+import { useLocation, useNavigate } from "@solidjs/router";
 
 import Footer from "./Footer";
-
-import { TestAccountIcon } from "../../components/svgIcons";
-import { createMemo, createSignal, For, onMount, Show } from "solid-js";
-import { A, reload, useLocation, useNavigate } from "@solidjs/router";
+import AccountButton from "../../components/photoview/buttons/AccountButton";
 
 const Home = (props: any) => {
   // Goto previous page if any:
   const pramsUrl = useLocation();
-  const navigate = useNavigate();
-  const prevState = localStorage.getItem("LastVisited") || "";
+  // const navigate = useNavigate();
+  // const prevState = localStorage.getItem("LastVisited") || "";
 
-  onMount(() => {
-    if (prevState && prevState !== "/") navigate(prevState);
-  });
+  // onMount(() => {
+  //   if (prevState && prevState !== "/") navigate(prevState);
+  // });
   createMemo(() => localStorage.setItem("LastVisited", pramsUrl.pathname.toString()));
 
   // Create search items for media
@@ -30,27 +29,7 @@ const Home = (props: any) => {
             <h1>Photos</h1>
           </div>
           <div class="buttonContainer">
-            <button
-              style={{ "background-color": true ? "rgb(51,94,168)" : "rgb(236,106,94)" }}
-              popoverTarget="account-popover">
-              {TestAccountIcon()}
-            </button>
-
-            <div popover="auto" id="account-popover" class="popover-container devices_filter_popover">
-              <A href="/user">Profile</A>
-              <A href="">More</A>
-              <A href="/user/admin">Dashboard</A>
-              <A href="/login">Login</A>
-              <A
-                href="#"
-                onclick={async () => {
-                  const res = await fetch("api/v1/auth/logout");
-                  if (!res.ok) console.log(res);
-                  navigate("/login");
-                }}>
-                Logout
-              </A>
-            </div>
+            <AccountButton />
           </div>
         </header>
 

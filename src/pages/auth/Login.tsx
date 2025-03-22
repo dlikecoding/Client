@@ -18,7 +18,6 @@ const Login = () => {
     if (!initResponse.ok) return setMessage({ status: false, msg: options.error });
 
     // 2. Get passkey
-    // console.log(authenticationJSON);
     let authenticationJSON: AuthenticationResponseJSON;
     try {
       // Pass the options to the authenticator and wait for a response
@@ -48,8 +47,8 @@ const Login = () => {
 
     if (!verifyData.verified) return setMessage({ status: false, msg: `Failed to Sign In` });
 
-    // `Successfully Logged In ${email()}`
-    // localStorage.setItem("user-session", email() || "");
+    // const { setLoggedUser } = useAuth();
+    // setLoggedUser({ email: email(), isAuth: true });
     window.location.href = "/";
   };
 
@@ -66,9 +65,9 @@ const Login = () => {
         <div class={styles.inputBx}>
           <input
             onInput={(e) => {
-              setMessage("msg", "");
               setEmail(e.target.value);
             }}
+            // onFocus={() => setMessage("msg", "")}
             type="email"
             name="email"
             placeholder="Email"

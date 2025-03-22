@@ -18,7 +18,7 @@ export const getTitle = (key: string) => viewPages.get(key)?.title;
 const App = () => {
   const Homepage = lazy(() => import("./pages/homepage/Home"));
 
-  //Summary each year (Library)
+  // Summary each year (Library)
   const Library = lazy(() => import("./pages/library/Library"));
   const YearView = lazy(() => import("./pages/library/YearView"));
   const MonthView = lazy(() => import("./pages/library/MonthView"));
@@ -26,6 +26,9 @@ const App = () => {
   // For viewing Albums and Ai recognition dataset (Collection)
   const Collection = lazy(() => import("./pages/collection/Collection"));
   const OverView = lazy(() => import("./pages/collection/OverView")); // Collection Summanry page
+
+  // For Searching dataset (Search)
+  const Search = lazy(() => import("./pages/search/Search"));
 
   // View medias (Use for Library and Collection)
   const PhotoView = lazy(() => import("./components/photoview/PhotoView"));
@@ -55,6 +58,7 @@ const App = () => {
     },
     SEARCH: {
       pages: ["search"],
+      keyworks: /^[a-zA-Z0-9\s]*$/,
     },
   };
 
@@ -64,8 +68,6 @@ const App = () => {
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
       <Route path="/forget" component={ForgetPW} />
-
-      <Route path="*" component={NotFound} />
 
       {/* Protected Routes (Wrapped Inside a Route) */}
       <Route path="/" component={AuthGuard}>
@@ -84,7 +86,10 @@ const App = () => {
             <Route path="/:pages" component={PhotoView} matchFilters={filters.UTILITIES} />
           </Route>
 
-          <Route path="/:pages/:keywords" component={PhotoView} matchFilters={filters.SEARCH} />
+          <Route path="/search">
+            <Route path="/" component={Search} />
+            <Route path="/:pages/:keywords" component={PhotoView} matchFilters={filters.SEARCH} />
+          </Route>
 
           <Route path="/user">
             <Route path="/" component={Profile} />
@@ -92,6 +97,8 @@ const App = () => {
           </Route>
         </Route>
       </Route>
+
+      <Route path="*" component={NotFound} />
     </Router>
   );
 };

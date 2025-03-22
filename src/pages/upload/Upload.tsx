@@ -78,11 +78,11 @@ const Upload = () => {
         </div> */}
 
         <div class={styles.dialogActions}>
-          <button class={styles.confirmButton} onClick={handleConfirmation}>
-            Confirm
-          </button>
           <button class={styles.cancelButton} onClick={() => document.getElementById("uploadPopover")?.hidePopover()}>
             Cancel
+          </button>
+          <button class={styles.confirmButton} onClick={handleConfirmation}>
+            Confirm
           </button>
         </div>
       </div>
