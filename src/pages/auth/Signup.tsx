@@ -83,8 +83,8 @@ const Signup = () => {
             onFocus={() => setMessage("msg", "")}
             type="text"
             name="username"
-            placeholder="Your Name (Optional)"
-            minLength="10"
+            placeholder="Full Name"
+            minLength="5"
             autocomplete="off"
             required
           />

@@ -1,6 +1,6 @@
 import { Portal } from "solid-js/web";
 import styles from "./Dashboard.module.css";
-import { adminFetchUsers } from "../../components/extents/request/fetching";
+import { adminFetchUsers, adminUpdateUserStatus } from "../../components/extents/request/fetching";
 import { createResource, createSignal, Index } from "solid-js";
 
 const Dashboard = () => {
@@ -8,13 +8,17 @@ const Dashboard = () => {
 
   const [isChecked, setIsChecked] = createSignal(false);
 
-  const handleChange = (accountId: number) => {
+  const handleChange = async (userId: string) => {
     setIsChecked(!isChecked());
     if (isChecked()) {
-      console.log(`Checkbox ${accountId} is unchecked`);
+      console.log(`Checkbox ${userId} is unchecked`);
     } else {
-      console.log(`Checkbox ${accountId} is checked`);
+      console.log(`Checkbox ${userId} is checked`);
     }
+
+    const res = await adminUpdateUserStatus(userId);
+    console.log(res);
+    refetch();
   };
   return (
     <Portal>
@@ -32,7 +36,7 @@ const Dashboard = () => {
         <div class={styles.userContainer}>
           <Index each={users()}>
             {(user, index) => {
-              // console.log(user());
+              console.log(user());
               return (
                 <div class={styles.userCard}>
                   <img src={`https://randomuser.me/api/portraits/women/${index + 20}.jpg`} alt="User 1" />
@@ -42,16 +46,16 @@ const Dashboard = () => {
                     <a href="#">View Profile</a>
                   </div>
                   <div class={styles.userStatus}>
-                    <p> {user().status === "active" ? "Active" : "Suspended"}</p>
+                    <p> {user().status ? "Active" : "Suspended"}</p>
 
                     <div class={styles.toggleStatus}>
                       <input
-                        checked={user().status === "active"}
-                        onInput={() => handleChange(user().account_id)}
+                        checked={user().status}
+                        onInput={() => handleChange(user().reg_user_id)}
                         type="checkbox"
-                        id={`mode-toggle-${index}`}
+                        id={`toggle-${user().reg_user_id}`}
                       />
-                      <label for={`mode-toggle-${index}`}></label>
+                      <label for={`toggle-${user().reg_user_id}`}></label>
                     </div>
                   </div>
                 </div>

@@ -92,14 +92,14 @@ export const forDeleting = async (mediaIds: string[]) => {
 
 ///////////////// For ADMIN //////////////////////////////////////////
 export const adminFetchUsers = async () => fetchData<any[]>(`/api/v1/admin/dashboard`);
-export const adminUpdateUserStatus = async (accountId: number, status: string) => {
-  return await fetch(`/api/v1/medias`, {
+export const adminUpdateUserStatus = async (userId: string) => {
+  return await fetch(`/api/v1/admin/changeStatus`, {
     method: "PUT",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ accountId: accountId, status: status }),
+    body: JSON.stringify({ userId: userId }),
   });
 };
 
