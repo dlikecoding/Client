@@ -1,16 +1,19 @@
 import { useNavigate } from "@solidjs/router";
 import { onMount } from "solid-js";
-import { AuthProvider } from "../../context/AuthProvider";
+import { useAuthContext } from "../../context/AuthProvider";
 
 const AuthGuard = (props: any) => {
   const navigate = useNavigate();
+  const { setLoggedUser } = useAuthContext();
+  onMount(async () => {
+    const response = await fetch("/api/v1/user/verified", { credentials: "include" });
+    if (!response.ok) navigate("/login", { replace: true });
 
-  // onMount(async () => {
-  //   const response = await fetch("/api/v1/auth/check", { credentials: "include" });
-  //   if (!response.ok) navigate("/login", { replace: true });
-  // });
+    const user = await response.json();
+    if (!user.error) setLoggedUser(user);
+  });
 
-  return <AuthProvider>{props.children}</AuthProvider>;
+  return props.children;
 };
 
 export default AuthGuard;

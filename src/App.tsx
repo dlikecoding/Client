@@ -1,6 +1,7 @@
 import { Route, Router } from "@solidjs/router";
 import { lazy } from "solid-js";
 import AuthGuard from "./pages/auth/AuthGuard";
+import { AuthProvider } from "./context/AuthProvider";
 
 const viewPages = new Map([
   ["favorite", { title: "Favorite" }],
@@ -64,41 +65,43 @@ const App = () => {
 
   return (
     <Router>
-      {/* Unprotected Routes */}
-      <Route path="/login" component={Login} />
-      <Route path="/signup" component={Signup} />
-      <Route path="/forget" component={ForgetPW} />
+      <Route component={AuthProvider}>
+        {/* Unprotected Routes */}
+        <Route path="/login" component={Login} />
+        <Route path="/signup" component={Signup} />
+        <Route path="/forget" component={ForgetPW} />
 
-      {/* Protected Routes (Wrapped Inside a Route) */}
-      <Route path="/" component={AuthGuard}>
-        <Route path="/" component={Homepage}>
-          <Route path="/" />
+        {/* Protected Routes (Wrapped Inside a Route) */}
+        <Route path="/" component={AuthGuard}>
+          <Route path="/" component={Homepage}>
+            <Route path="/" />
 
-          <Route path="/library" component={Library}>
-            <Route path="/" component={YearView} />
-            <Route path="/month" component={MonthView} />
-            <Route path="/:pages" component={PhotoView} matchFilters={filters.LIBRARY} />
-          </Route>
+            <Route path="/library" component={Library}>
+              <Route path="/" component={YearView} />
+              <Route path="/month" component={MonthView} />
+              <Route path="/:pages" component={PhotoView} matchFilters={filters.LIBRARY} />
+            </Route>
 
-          <Route path="/collection" component={Collection}>
-            <Route path="/" component={OverView} />
-            <Route path="/:pages/:id" component={PhotoView} matchFilters={filters.COLLECTION} />
-            <Route path="/:pages" component={PhotoView} matchFilters={filters.UTILITIES} />
-          </Route>
+            <Route path="/collection" component={Collection}>
+              <Route path="/" component={OverView} />
+              <Route path="/:pages/:id" component={PhotoView} matchFilters={filters.COLLECTION} />
+              <Route path="/:pages" component={PhotoView} matchFilters={filters.UTILITIES} />
+            </Route>
 
-          <Route path="/search">
-            <Route path="/" component={Search} />
-            <Route path="/:pages/:keywords" component={PhotoView} matchFilters={filters.SEARCH} />
-          </Route>
+            <Route path="/search">
+              <Route path="/" component={Search} />
+              <Route path="/:pages/:keywords" component={PhotoView} matchFilters={filters.SEARCH} />
+            </Route>
 
-          <Route path="/user">
-            <Route path="/" component={Profile} />
-            <Route path="/admin" component={Dashboard} />
+            <Route path="/user">
+              <Route path="/" component={Profile} />
+              <Route path="/admin" component={Dashboard} />
+            </Route>
           </Route>
         </Route>
-      </Route>
 
-      <Route path="*" component={NotFound} />
+        <Route path="*" component={NotFound} />
+      </Route>
     </Router>
   );
 };

@@ -7,14 +7,15 @@ const buildQueryString = (params: object): string =>
     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
     .join("&");
 
-const errorHandler = (res: Response) => {
+const errorHandler = async (res: Response) => {
   switch (res.status) {
     case 401:
       return window.location.replace("/login"); // alert("Unauthoried, please signin to your account!");
 
     case 400:
-      alert(`${res.statusText}, please try again!`);
-      throw new Error(`${res.status} ${res.statusText}`);
+      const response = await res.json();
+      alert(`${response.error}, please try again!`);
+      throw new Error(`${res.status} ${response.error}`);
 
     default:
       throw new Error(`Something went wrong`);
@@ -86,6 +87,19 @@ export const forDeleting = async (mediaIds: string[]) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ mediasToDel: mediaIds }),
+  });
+};
+
+///////////////// For ADMIN //////////////////////////////////////////
+export const adminFetchUsers = async () => fetchData<any[]>(`/api/v1/admin/dashboard`);
+export const adminUpdateUserStatus = async (accountId: number, status: string) => {
+  return await fetch(`/api/v1/medias`, {
+    method: "PUT",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ accountId: accountId, status: status }),
   });
 };
 

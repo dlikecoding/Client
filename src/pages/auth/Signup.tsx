@@ -67,6 +67,7 @@ const Signup = () => {
         <div class={styles.inputBx}>
           <input
             onInput={(e) => setUser("email", e.target.value)}
+            onFocus={() => setMessage("msg", "")}
             type="email"
             name="email"
             placeholder="Email*"
@@ -79,6 +80,7 @@ const Signup = () => {
         <div class={styles.inputBx}>
           <input
             onInput={(e) => setUser("name", e.target.value)}
+            onFocus={() => setMessage("msg", "")}
             type="text"
             name="username"
             placeholder="Your Name (Optional)"

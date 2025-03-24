@@ -1,4 +1,4 @@
-import { createEffect, createMemo } from "solid-js";
+import { createMemo } from "solid-js";
 import { useMediaContext } from "../../../context/Medias";
 
 const Select = () => {
@@ -6,7 +6,7 @@ const Select = () => {
 
   const footerBar = document.getElementById("navigationBar") as HTMLElement;
 
-  createEffect(() => {
+  createMemo(() => {
     // Hide navigation bar when Select button clicked
     if (isSelected()) {
       footerBar.style.display = "none";

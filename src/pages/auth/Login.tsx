@@ -24,7 +24,7 @@ const Login = () => {
       authenticationJSON = await startAuthentication({ optionsJSON: options });
     } catch (error) {
       if (error instanceof WebAuthnError) {
-        console.log(error.message); //error.cause, error.code, error.name, error.message, error.stack
+        // console.log(error.message); //error.cause, error.code, error.name, error.message, error.stack
         return error.name === "NotAllowedError"
           ? setMessage({ status: false, msg: "Authenticator was missing biometric verification." })
           : setMessage({ status: false, msg: "Unknown error occurred during registration." });
@@ -46,9 +46,6 @@ const Login = () => {
     if (!verifyResponse.ok) return setMessage({ status: false, msg: verifyData.error });
 
     if (!verifyData.verified) return setMessage({ status: false, msg: `Failed to Sign In` });
-
-    // const { setLoggedUser } = useAuth();
-    // setLoggedUser({ email: email(), isAuth: true });
     window.location.href = "/";
   };
 
@@ -67,7 +64,7 @@ const Login = () => {
             onInput={(e) => {
               setEmail(e.target.value);
             }}
-            // onFocus={() => setMessage("msg", "")}
+            onFocus={() => setMessage("msg", "")}
             type="email"
             name="email"
             placeholder="Email"

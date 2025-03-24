@@ -5,6 +5,7 @@
   --color-others: rgb(80, 172, 222);
   --color-freeStorage: rgb(55, 55, 55);
 }
+
 /* ::backdrop {
   background: var(--popup-bground);
   -webkit-backdrop-filter: blur(20px) brightness(1);

@@ -1,8 +1,12 @@
 import { A, useNavigate } from "@solidjs/router";
 import { TestAccountIcon } from "../../svgIcons";
+import { useAuthContext } from "../../../context/AuthProvider";
+import { Show } from "solid-js";
 
 const AccountButton = () => {
   const navigate = useNavigate();
+
+  const { loggedUser } = useAuthContext();
   return (
     <>
       <button
@@ -12,9 +16,11 @@ const AccountButton = () => {
       </button>
       <div popover="auto" id="account-popover" class="popover-container devices_filter_popover">
         <A href="/user">Profile</A>
-        <A href="">More</A>
-        <A href="/user/admin">Dashboard</A>
-        <A href="/login">Login</A>
+
+        <Show when={loggedUser.roleType === "admin"}>
+          <A href="/user/admin">Dashboard</A>
+        </Show>
+
         <A
           href="#"
           onclick={async () => {

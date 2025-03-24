@@ -4,10 +4,14 @@ import { useLocation, useNavigate } from "@solidjs/router";
 
 import Footer from "./Footer";
 import AccountButton from "../../components/photoview/buttons/AccountButton";
+import { useAuthContext } from "../../context/AuthProvider";
 
 const Home = (props: any) => {
   // Goto previous page if any:
   const pramsUrl = useLocation();
+
+  const { loggedUser } = useAuthContext();
+  console.log(loggedUser.userEmail);
   // const navigate = useNavigate();
   // const prevState = localStorage.getItem("LastVisited") || "";
 

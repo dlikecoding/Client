@@ -1,28 +1,117 @@
-/* (A) TABLE WRAPPER */
-.tableContainer {
-  max-height: 200px;
-  overflow: auto;
+.userContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+
+  max-height: 400px;
+  overflow-y: scroll;
 }
 
-/* (B) STICKY HEADERS */
-.tableStyle thead,
-.tableStyle th {
-  position: sticky;
-}
-.tableStyle thead {
-  top: 0;
-  z-index: 2;
-}
-.tableStyle th {
-  left: 0;
-  z-index: 1;
+.userCard {
+  background-color: rgb(28, 28, 30);
+  padding: 15px;
+  width: 350px;
+  max-width: 350px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s;
 }
 
-/* (X) COSMETICS - NOT IMPORTANT */
-.tableStyle th,
-.tableStyle td {
-  font-size: 20px;
-  padding: 10px;
-  text-align: left;
-  min-width: 300px;
+.userCard:hover {
+  transform: translateY(-5px);
+}
+
+.userCard img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+.userInfo {
+  flex: 1;
+}
+
+.userInfo h3 {
+  font-size: 1.2rem;
+  color: #adadad;
+  margin-bottom: 5px;
+}
+
+.userInfo p {
+  font-size: 1rem;
+  color: #a9a9a9;
+  margin-bottom: 10px;
+}
+
+.userInfo a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.userInfo a:hover {
+  color: #0056b3;
+}
+
+.userStatus {
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.userStatus > p {
+  color: #999;
+  /* margin: 5px 0; */
+}
+
+:root {
+  --toggle-suspended: #5e5e5e;
+  --toggle-active: #34c759;
+}
+
+.toggleStatus {
+  position: relative;
+  display: inline-block;
+}
+
+.toggleStatus input {
+  display: none;
+}
+
+.toggleStatus label {
+  display: block;
+  width: 50px;
+  height: 24px;
+  background-color: var(--toggle-suspended);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.toggleStatus input:checked + label {
+  background-color: var(--toggle-active);
+}
+
+.toggleStatus label::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  transition: left 0.3s;
+}
+
+.toggleStatus input:checked + label::after {
+  left: 28px;
 }

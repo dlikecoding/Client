@@ -69,7 +69,7 @@ const Setting = () => {
                 // checked={importMedias()}
                 // onChange={() => setImportMedias(!importMedias())}
               />
-              <label for="importMedias">Import All Data to Photo TSX</label>
+              <label for="importMedias">Import to Photo TSX</label>
             </div>
             <div>
               <input
