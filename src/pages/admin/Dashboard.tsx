@@ -1,22 +1,13 @@
 import { Portal } from "solid-js/web";
 import styles from "./Dashboard.module.css";
 import { adminFetchUsers, adminUpdateUserStatus } from "../../components/extents/request/fetching";
-import { createResource, createSignal, Index } from "solid-js";
+import { createResource, Index } from "solid-js";
 
 const Dashboard = () => {
   const [users, { refetch }] = createResource(adminFetchUsers);
 
-  const [isChecked, setIsChecked] = createSignal(false);
-
-  const handleChange = async (userId: string) => {
-    setIsChecked(!isChecked());
-    if (isChecked()) {
-      console.log(`Checkbox ${userId} is unchecked`);
-    } else {
-      console.log(`Checkbox ${userId} is checked`);
-    }
-
-    const res = await adminUpdateUserStatus(userId);
+  const handleChange = async (user: any) => {
+    const res = await adminUpdateUserStatus(user.user_email);
     console.log(res);
     refetch();
   };
@@ -51,7 +42,7 @@ const Dashboard = () => {
                     <div class={styles.toggleStatus}>
                       <input
                         checked={user().status}
-                        onInput={() => handleChange(user().reg_user_id)}
+                        onInput={() => handleChange(user())}
                         type="checkbox"
                         id={`toggle-${user().reg_user_id}`}
                       />
