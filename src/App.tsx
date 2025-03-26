@@ -3,19 +3,6 @@ import { lazy } from "solid-js";
 import AuthGuard from "./pages/auth/AuthGuard";
 import { AuthProvider } from "./context/AuthProvider";
 
-const viewPages = new Map([
-  ["favorite", { title: "Favorite" }],
-  ["deleted", { title: "Recently Deleted" }],
-  ["hidden", { title: "Hidden" }],
-  ["duplicate", { title: "Duplicate" }],
-  ["all", { title: "Library" }],
-  ["album", { title: "Album" }],
-  ["dataset", { title: "Dataset" }],
-  ["search", { title: "Search" }],
-]);
-
-export const getTitle = (key: string) => viewPages.get(key)?.title;
-
 const App = () => {
   const Homepage = lazy(() => import("./pages/homepage/Home"));
 
@@ -74,7 +61,13 @@ const App = () => {
         {/* Protected Routes (Wrapped Inside a Route) */}
         <Route path="/" component={AuthGuard}>
           <Route path="/" component={Homepage}>
-            <Route path="/" />
+            <Route path="/" component={Search} />
+            <Route path="/:pages/:keywords" component={PhotoView} matchFilters={filters.SEARCH} />
+
+            <Route path="/user">
+              <Route path="/" component={Profile} />
+              <Route path="/admin" component={Dashboard} />
+            </Route>
 
             <Route path="/library" component={Library}>
               <Route path="/" component={YearView} />
@@ -86,16 +79,6 @@ const App = () => {
               <Route path="/" component={OverView} />
               <Route path="/:pages/:id" component={PhotoView} matchFilters={filters.COLLECTION} />
               <Route path="/:pages" component={PhotoView} matchFilters={filters.UTILITIES} />
-            </Route>
-
-            <Route path="/search">
-              <Route path="/" component={Search} />
-              <Route path="/:pages/:keywords" component={PhotoView} matchFilters={filters.SEARCH} />
-            </Route>
-
-            <Route path="/user">
-              <Route path="/" component={Profile} />
-              <Route path="/admin" component={Dashboard} />
             </Route>
           </Route>
         </Route>

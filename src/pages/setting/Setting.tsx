@@ -33,7 +33,7 @@ const Setting = () => {
               <div class={`${styles.coloricon} ${styles.lives}`}></div> Lives
               <div class={`${styles.coloricon} ${styles.videos}`}></div> Videos
               <div class={`${styles.coloricon} ${styles.others}`}></div> Others
-              <div class={`${styles.coloricon} ${styles.freeStorages}`}></div> Free storage
+              <div class={`${styles.coloricon} ${styles.freeStorages}`}></div> Free
             </div>
           </div>
         </div>
@@ -49,18 +49,18 @@ const Setting = () => {
           <fieldset>
             <legend>Select preferred index for medias:</legend>
             <div>
-              <label for="importPath">Enter Main Directory:</label>
+              <label for="importPath">External Drive:</label>
               <input
                 class="inputSearch"
                 type="text"
                 name="importPath"
                 id="importPath"
                 autocomplete="off"
-                placeholder="/Home/Sonomas"
+                placeholder="/Volumes/External/Photos"
                 // onInput={(e) => setImportPath(e.target.value)}
               />
             </div>
-            <div>
+            {/* <div>
               <input
                 type="checkbox"
                 name="importMedias"
@@ -70,7 +70,7 @@ const Setting = () => {
                 // onChange={() => setImportMedias(!importMedias())}
               />
               <label for="importMedias">Import to Photo TSX</label>
-            </div>
+            </div> */}
             <div>
               <input
                 type="checkbox"

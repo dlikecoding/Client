@@ -12,6 +12,9 @@ const errorHandler = async (res: Response) => {
     case 401:
       return window.location.replace("/login"); // alert("Unauthoried, please signin to your account!");
 
+    case 403:
+      return window.location.replace("/");
+
     case 400:
       const response = await res.json();
       alert(`${response.error}, please try again!`);
@@ -92,6 +95,9 @@ export const forDeleting = async (mediaIds: string[]) => {
 
 ///////////////// For ADMIN //////////////////////////////////////////
 export const adminFetchUsers = async () => fetchData<any[]>(`/api/v1/admin/dashboard`);
+
+export const adminIntegrateData = async () => fetchData<any[]>(`/api/v1/admin/import`);
+
 export const adminUpdateUserStatus = async (userEmail: string) => {
   return await fetch(`/api/v1/admin/changeStatus`, {
     method: "PUT",

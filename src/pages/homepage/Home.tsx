@@ -1,24 +1,32 @@
 import styles from "./Home.module.css";
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
-import { useLocation, useNavigate } from "@solidjs/router";
+import { useLocation } from "@solidjs/router";
 
 import Footer from "./Footer";
 import AccountButton from "../../components/photoview/buttons/AccountButton";
-import { useAuthContext } from "../../context/AuthProvider";
+
+// import { useAuthContext } from "../../context/AuthProvider";
+
+const mainPages = new Map([
+  ["/user/admin", "Dashboard"],
+  ["/user", "Profile"],
+  ["/", "Photos"],
+]);
 
 const Home = (props: any) => {
   // Goto previous page if any:
-  const pramsUrl = useLocation();
+  const location = useLocation();
 
-  const { loggedUser } = useAuthContext();
-  console.log(loggedUser.userEmail);
+  // const { loggedUser } = useAuthContext();
+  // console.log(loggedUser.userEmail);
+
   // const navigate = useNavigate();
   // const prevState = localStorage.getItem("LastVisited") || "";
 
   // onMount(() => {
   //   if (prevState && prevState !== "/") navigate(prevState);
   // });
-  createMemo(() => localStorage.setItem("LastVisited", pramsUrl.pathname.toString()));
+  createMemo(() => localStorage.setItem("LastVisited", location.pathname.toString()));
 
   // Create search items for media
   const [pageNumber, setPageNumber] = createSignal(0);
@@ -26,60 +34,17 @@ const Home = (props: any) => {
 
   return (
     <>
-      {props.children}
       <main class="mainHomePage">
         <header style={{ position: "relative" }}>
           <div>
-            <h1>Photos</h1>
+            <h1>{mainPages.get(location.pathname)}</h1>
           </div>
           <div class="buttonContainer">
             <AccountButton />
           </div>
         </header>
 
-        <div class={styles.groupSearch}>
-          <input
-            id="searchInput"
-            class="inputSearch"
-            type="text"
-            placeholder="Places, Objects, Devices, Years ... "
-            oninput={(e) => setPageNumber(parseInt(e.target.value))}
-          />
-        </div>
-
-        <div class={styles.searchResult}>
-          <Show when={loadedMedias.length > 0}>
-            <For each={loadedMedias}>
-              {(_, index) => {
-                return index() < 4 ? (
-                  <button class="inactive">
-                    <span>dog</span>
-                    <span>102</span>
-                  </button>
-                ) : (
-                  ""
-                );
-              }}
-            </For>
-          </Show>
-        </div>
-
-        <Show when={loadedMedias.length > 0}>
-          <h3>
-            1031 Photos
-            <button class="atag_group_views">See All</button>
-          </h3>
-        </Show>
-
-        <div class={styles.libraryGrid}>
-          <Show when={loadedMedias.length > 0}>
-            <For each={loadedMedias}>
-              {(media, index) => {
-                return index() < 9 ? <img src="" alt="Image 1" /> : "";
-              }}
-            </For>
-          </Show>
-        </div>
+        {props.children}
       </main>
 
       <Footer />

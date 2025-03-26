@@ -27,4 +27,5 @@ const Footer = () => {
 
 export default Footer;
 
-const LinkTag = (page: string, icon: any) => <A href={`/${page}/`}>{icon}</A>;
+const LinkTag = (page: string, icon: any) =>
+  page === "search" ? <A href="/">{icon}</A> : <A href={`/${page}/`}>{icon}</A>;

@@ -7,6 +7,7 @@ type AuthContextType = {
 };
 
 type UserLogged = {
+  userId: string;
   userEmail: string;
   userName: string;
   roleType: "user" | "admin";
@@ -14,6 +15,7 @@ type UserLogged = {
 };
 
 const defaultUser: UserLogged = {
+  userId: "",
   userEmail: "",
   userName: "",
   roleType: "user",

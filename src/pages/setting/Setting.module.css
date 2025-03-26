@@ -32,15 +32,18 @@
 .storageContainer {
   display: flex;
   justify-content: center;
-  width: auto;
-  margin: 30px 20px 0 20px;
+  max-width: 100%;
+  margin: 30px 10px 0 10px;
 }
 
 .storageChart {
   text-align: left;
   display: inline-block;
   padding: 14px;
+
   width: 100%;
+  max-width: 500px;
+
   background: rgb(28, 28, 30);
   border-radius: 9px;
 }
@@ -119,7 +122,7 @@
 
 .reindexForm > fieldset {
   border-radius: 10px;
-  width: 80%;
+  width: 90%;
 }
 
 .reindexForm > fieldset > div {

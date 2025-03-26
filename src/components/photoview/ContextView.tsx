@@ -10,8 +10,6 @@ import { MediaType, useViewMediaContext } from "../../context/ViewContext";
 
 import { fetchMedias } from "../extents/request/fetching";
 
-import { getTitle } from "../../App";
-
 import PhotoCard from "./PhotoCard";
 import NotFound from "../extents/NotFound";
 import DeviceFilter from "./buttons/DeviceFilter";
@@ -20,6 +18,17 @@ import Loading from "../extents/Loading";
 import Select from "./buttons/Select";
 import ModalView from "../modal/ModalView";
 import { getElementBySelector } from "../extents/helper/helper";
+
+const viewPages = new Map([
+  ["favorite", "Favorite"],
+  ["deleted", "Recently Deleted"],
+  ["hidden", "Hidden"],
+  ["duplicate", "Duplicate"],
+  ["all", "Library"],
+  ["album", "Album"],
+  ["dataset", "Dataset"],
+  ["search", "Search"],
+]);
 
 const HIDE_SELECT_BUTTON = 5; // Hide select button when number of column > 5
 
@@ -98,7 +107,7 @@ const ContextView = () => {
     <>
       <header style={{ "z-index": 1 }}>
         <div inert>
-          <h1>{getTitle(paramsUrl.pages)}</h1>
+          <h1>{viewPages.get(paramsUrl.pages)}</h1>
           <p>{displayTime()}</p>
         </div>
         <div class="buttonContainer" style={{ "margin-top": "10px" }}>
