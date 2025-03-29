@@ -71,15 +71,19 @@ body {
   flex-direction: column;
   gap: 20px;
 }
-.login h2 {
+.login > h2 {
   font-size: 2em;
   color: #fff;
 }
-.login .inputBx {
+.login > p {
+  text-align: center;
+}
+
+.login > .inputBx {
   position: relative;
   width: 100%;
 }
-.login .inputBx input {
+.login > .inputBx > input {
   position: relative;
   width: 100%;
   padding: 12px 20px;
@@ -91,7 +95,7 @@ body {
   box-shadow: none;
   outline: none;
 }
-.login .inputBx input[type="button"] {
+.login > .inputBx > input[type="button"] {
   width: 100%;
   background: #0078ff;
   background: linear-gradient(45deg, #3549ff, #b472ff);
@@ -99,10 +103,10 @@ body {
   cursor: pointer;
 }
 
-.login .inputBx input::placeholder {
+.login > .inputBx > input::placeholder {
   color: rgba(255, 255, 255, 0.75);
 }
-.login .links {
+.login > .links {
   position: relative;
   width: 100%;
   display: flex;
@@ -110,7 +114,7 @@ body {
   justify-content: space-between;
   padding: 0 20px;
 }
-.login .links A {
+.login > .links > A {
   color: var(--button-active-color);
   font-size: 15px;
   text-decoration: none;

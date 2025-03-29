@@ -35,7 +35,7 @@
 .userInfo {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Aligns items in the vertical center */
+  justify-content: center;
 }
 
 .userInfo h3 {

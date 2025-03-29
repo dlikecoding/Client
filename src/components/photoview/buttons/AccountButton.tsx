@@ -24,7 +24,7 @@ const AccountButton = () => {
         <A
           href="#"
           onclick={async () => {
-            const res = await fetch("api/v1/auth/logout");
+            const res = await fetch("api/v1/user/logout");
             if (!res.ok) console.log(res);
             navigate("/login");
           }}>

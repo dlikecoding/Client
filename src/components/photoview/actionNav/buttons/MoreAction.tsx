@@ -15,17 +15,17 @@ export const MoreAction = (props: MoreActionsProps) => {
   const { items } = useMediaContext();
 
   const [addToAlbum, setAddToAlbum] = createSignal<boolean>(false);
-  const [addToDataset, setAddToDataset] = createSignal<boolean>(false);
+  // const [addToDataset, setAddToDataset] = createSignal<boolean>(false);
 
   const handleAddToAlbum = () => {
     setAddToAlbum(true);
     document.getElementById("actions_contents")?.hidePopover();
   };
 
-  const handleAddToDataset = () => {
-    setAddToDataset(true);
-    document.getElementById("actions_contents")?.hidePopover();
-  };
+  // const handleAddToDataset = () => {
+  //   setAddToDataset(true);
+  //   document.getElementById("actions_contents")?.hidePopover();
+  // };
 
   return (
     <>
@@ -35,17 +35,17 @@ export const MoreAction = (props: MoreActionsProps) => {
         <Show when={params.pages === "album"}>
           <div onClick={() => console.log("Remove album: ", items())}>Remove from Album</div>
         </Show>
-        <Show when={params.pages === "dataset"}>
+        {/* <Show when={params.pages === "dataset"}>
           <div onClick={() => console.log("Remove dataset: ", items())}>Remove from Dataset</div>
-        </Show>
+        </Show> */}
 
         <Show when={params.pages !== "album"}>
           <div onClick={handleAddToAlbum}>Add to Album</div>
         </Show>
 
-        <Show when={params.pages !== "dataset"}>
+        {/* <Show when={params.pages !== "dataset"}>
           <div onClick={handleAddToDataset}>Add to Dataset</div>
-        </Show>
+        </Show> */}
 
         <div onClick={props.hide}>Hide</div>
         <div>Slideshow (...)</div>

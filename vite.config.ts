@@ -21,7 +21,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "../Server/dist",
+    outDir: "../Server/serverBunX/dist",
     target: "esnext",
   },
 });
