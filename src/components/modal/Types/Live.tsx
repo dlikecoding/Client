@@ -7,18 +7,26 @@ interface LiveProps {
 
 const Live: Component<LiveProps> = (props) => {
   return (
-    <video
-      src={props.media.SourceFile}
-      poster={props.media.ThumbPath}
-      controls
-      autoplay
-      muted
-      preload="metadata"
-      playsinline
-      crossorigin="use-credentials">
-      <source src={props.media.SourceFile} type={props.media.MIMEType} />
-      <p>Your browser doesn't support the video tag.</p>
-    </video>
+    <>
+      <video
+        inert
+        // ref={videoRef}
+        poster={props.media.ThumbPath}
+        // onPlay={() => setIsPlaying(true)}
+        // onPause={() => {
+        //   props.setShowImageOnly(false);
+        //   setIsPlaying(false);
+        // }}
+        preload="metadata"
+        controls={false}
+        playsinline={true}
+        crossorigin="use-credentials">
+        <source src={`http://localhost:8080${props.media.SourceFile}`} type={props.media.MIMEType} />
+        {/* <source src={props.media.SourceFile} type={props.media.MIMEType} /> */}
+
+        <p>Your browser doesn't support the video tag.</p>
+      </video>
+    </>
   );
 };
 

@@ -113,11 +113,30 @@ header > div > * {
   margin-bottom: 5px;
 }
 
-header button {
-  pointer-events: visible;
+/* Reset button styles for consistent appearance */
+h3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 5px;
+}
+
+h3 > button,
+h3 > a {
+  all: unset;
+  color: rgb(53, 89, 250);
+  font-size: 17px;
+  font-weight: 500;
+  cursor: pointer;
 }
 
 /* ================== BUTTON CONTAINER ================== */
+button {
+  all: unset;
+  cursor: pointer;
+  pointer-events: visible;
+}
+
 .buttonContainer {
   display: flex;
   justify-content: space-between;
@@ -280,6 +299,11 @@ button:disabled {
   display: block;
 }
 
+.popover-container > div:last-child,
+.popover-container > A:last-child {
+  border-bottom: none;
+}
+
 /* Specific popovers */
 .actions_contents {
   transform-origin: bottom left;
@@ -419,8 +443,9 @@ button:disabled {
 }
 
 /* ================== ACTIVE FILTER ================== */
-.active_filter {
+.iconActiveFilter {
   filter: invert(34%) sepia(76%) saturate(2567%) hue-rotate(179deg) brightness(92%) contrast(106%);
+  transition: all 0.3s linear;
 }
 
 /* ================== SORT FILTER ================== */
@@ -432,10 +457,11 @@ button:disabled {
   padding: 10px;
 }
 
-.filter_timeline > .sort_filter.active {
+.activeFilter {
   color: white;
   font-weight: 500;
   background-color: rgba(63, 164, 241, 0.166);
+  transition: all 0.3s linear;
 }
 
 /* ================== SEARCH INPUT ================== */

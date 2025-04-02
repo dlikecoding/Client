@@ -1,4 +1,4 @@
-import styles from "../homepage/Home.module.css";
+import styles from "./Search.module.css";
 import { createSignal, For, Show } from "solid-js";
 import { ManageURLContextProvider } from "../../context/ManageUrl";
 

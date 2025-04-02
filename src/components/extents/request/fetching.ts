@@ -55,7 +55,6 @@ export const fetchAlbum = () => fetchData<any[]>(`/api/v1/album`);
 export const fetchAlbumUpdating = async (mediaIds: string[], albumId?: number, albumTitle?: string) => {
   return await fetch(`/api/v1/album/add`, {
     method: "PUT",
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -70,7 +69,6 @@ export const fetchAlbumUpdating = async (mediaIds: string[], albumId?: number, a
 export const forUpdating = async (mediaIds: string[], updateKey: string, updateValue: boolean) => {
   return await fetch(`/api/v1/medias`, {
     method: "PUT",
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -85,13 +83,24 @@ export const forUpdating = async (mediaIds: string[], updateKey: string, updateV
 export const forDeleting = async (mediaIds: string[]) => {
   return await fetch(`/api/v1/medias`, {
     method: "DELETE",
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ mediasToDel: mediaIds }),
   });
 };
+
+///////////////// For Uploading //////////////////////////////////////////
+// export const forUploadFiles = async () => {
+//   return await fetch(`/api/v1/upload`, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "multipart/form-data",
+//     },
+//     credentials: "include",
+//     // body: formData,
+//   });
+// };
 
 ///////////////// For ADMIN //////////////////////////////////////////
 export const adminFetchUsers = async () => fetchData<any[]>(`/api/v1/admin/dashboard`);
@@ -101,7 +110,6 @@ export const adminIntegrateData = async () => fetchData<any[]>(`/api/v1/admin/im
 export const adminUpdateUserStatus = async (userEmail: string) => {
   return await fetch(`/api/v1/admin/changeStatus`, {
     method: "PUT",
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },

@@ -58,7 +58,7 @@ const FilterTimeline = () => {
         <For each={filterOptions}>
           {({ className, label }) => (
             <button
-              class={`icon_type ${className} ${params.filterType === label ? "active_filter" : ""}`}
+              class={`icon_type ${className} ${params.filterType === label ? "iconActiveFilter" : ""}`}
               onClick={() => updateFilter(label)}></button>
           )}
         </For>
@@ -66,7 +66,7 @@ const FilterTimeline = () => {
 
       <For each={sortOptions}>
         {({ type, label }) => (
-          <div class={`sort_filter ${params.sortKey === type ? "active" : ""}`} onClick={() => toggleSort(type)}>
+          <div class={`sort_filter ${params.sortKey === type ? "activeFilter" : ""}`} onClick={() => toggleSort(type)}>
             <span>Sort by {label}</span>
             <Show when={params.sortKey === type}>
               <span>{params.sortOrder === 0 ? SortAscIcon() : SortDescIcon()}</span>

@@ -28,7 +28,7 @@ const DeviceFilter = () => {
         <For each={loadDevices()}>
           {(item) => (
             <div
-              class={selectedCamera() === item.camera_id ? "devices_active" : ""}
+              class={selectedCamera() === item.camera_id ? "activeFilter" : ""}
               onClick={(e) => {
                 e.stopPropagation();
                 setSelectedCamera(item.camera_id);

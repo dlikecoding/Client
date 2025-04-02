@@ -1,42 +1,69 @@
-import { createSignal } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import styles from "./Upload.module.css";
 import { UploadIcon } from "../../components/svgIcons";
+import Loading from "../../components/extents/Loading";
+// import { forUploadFiles } from "../../components/extents/request/fetching";
+
+const GB = 1024 * 1024 * 1024;
+
+const MAX_BODY_SIZE = 5 * GB; // limit total files size
+const MAX_UPLOAD_FILE_SIZE = 1 * GB; // limit per file
 
 const Upload = () => {
-  // Handle the confirmation to allow file upload
-  const handleConfirmation = () => {
+  const [files, setFiles] = createSignal<File[]>([]);
+
+  const handleFileChange = async (event: Event) => {
+    const input = event.target as HTMLInputElement;
+
+    if (input.files) setFiles(Array.from(input.files) as File[]);
+
+    const totalFileSize = 0;
+    files().forEach((f) => f.size + totalFileSize);
+    if (totalFileSize > MAX_BODY_SIZE) return;
+
+    const formData = new FormData();
+    files().forEach((file) => {
+      if (file.size >= MAX_UPLOAD_FILE_SIZE) return;
+      formData.append("uploadFiles", file);
+    });
+
+    setIsUploading(true);
+    try {
+      const response = await fetch("/api/v1/upload", {
+        method: "POST",
+        body: formData, // No Content-Type needed; fetch will set it automatically
+      });
+
+      const data = await response.json();
+      console.log("Response JSON:", data);
+      setIsUploading(false);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
+  const [isUploading, setIsUploading] = createSignal<boolean>(false);
+
+  const [hasAgreed, setHasAgreed] = createSignal<boolean>(localStorage.getItem("NoticeUpload") === "false");
+  const clickedConfirm = () => {
     document.getElementById("uploadPopover")?.hidePopover();
     fileUploaded();
   };
 
-  // Handle file upload event
-  const handleFileUpload = (event: any) => {
-    const files = event.target.files;
-    console.log("Files uploaded:", files);
-    // Handle the actual file upload logic here
-  };
-
-  // Check localStorage to see if the user has agreed
-  const [hasAgreed, setHasAgreed] = createSignal(localStorage.getItem("NoticeUpload") === "true");
-
-  // Handle the checkbox change event
-  const handleCheckboxChange = (event: any) => {
+  const changeCheckbox = (event: any) => {
     const isChecked = event.target.checked;
     setHasAgreed(isChecked);
-
-    // Store the user's choice in localStorage
-    localStorage.setItem("UploadInstruction", isChecked.toString());
-    fileUploaded();
+    localStorage.setItem("NoticeUpload", isChecked.toString());
   };
 
   return (
     <>
       <button
         onClick={() => {
-          document.getElementById("uploadPopover")?.showPopover();
-
-          if (hasAgreed()) return fileUploaded();
-        }}>
+          if (!hasAgreed()) return document.getElementById("uploadPopover")?.showPopover();
+          fileUploaded();
+        }}
+        disabled={isUploading()}>
         {UploadIcon()}
       </button>
 
@@ -45,7 +72,7 @@ const Upload = () => {
           <h2 class={styles.dialogTitle}>Upload Instructions</h2>
 
           <div class={styles.checkboxInput}>
-            <input type="checkbox" id="dontShowAgain" name="dontShowAgain" />
+            <input type="checkbox" id="dontShowAgain" name="dontShowAgain" onChange={changeCheckbox} />
             <label for="dontShowAgain">Don't show again.</label>
           </div>
         </div>
@@ -55,10 +82,10 @@ const Upload = () => {
             <b>Select</b> <u>Photos</u> or <u>Videos</u> to upload to your gallery.
           </p>
           <p>
-            + Files should have a <b>size</b> of less than <b>2 GB</b>.
+            + Files should have a <b>size</b> of less than <b>1 GB</b>.
           </p>
           <p>
-            + The total <b>size</b> of all files should not exceed <b>10 GB</b> per session.
+            + The total <b>size</b> of all files should not exceed <b>5 GB</b> per session.
           </p>
           <p>
             + Before uploading, select the <b>Most Compatible</b> option:
@@ -81,8 +108,8 @@ const Upload = () => {
           <button class={styles.cancelButton} onClick={() => document.getElementById("uploadPopover")?.hidePopover()}>
             Cancel
           </button>
-          <button class={styles.confirmButton} onClick={handleConfirmation}>
-            Confirm
+          <button class={styles.confirmButton} onClick={clickedConfirm}>
+            OK
           </button>
         </div>
       </div>
@@ -92,9 +119,10 @@ const Upload = () => {
         id="fileInput"
         style={{ display: "none" }}
         accept="image/*, video/*"
+        // accept="/*"
         multiple
         required
-        onChange={handleFileUpload}
+        onChange={handleFileChange}
       />
     </>
   );

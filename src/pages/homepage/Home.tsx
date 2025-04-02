@@ -1,9 +1,9 @@
-import styles from "./Home.module.css";
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
 import { useLocation } from "@solidjs/router";
 
 import Footer from "./Footer";
 import AccountButton from "../../components/photoview/buttons/AccountButton";
+import Loading from "../../components/extents/Loading";
 
 // import { useAuthContext } from "../../context/AuthProvider";
 
@@ -43,7 +43,6 @@ const Home = (props: any) => {
             <AccountButton />
           </div>
         </header>
-
         {props.children}
       </main>
 

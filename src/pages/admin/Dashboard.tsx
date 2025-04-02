@@ -11,14 +11,15 @@ const Dashboard = () => {
 
     refetch();
   };
+
+  const integrateMedias = async () => await adminIntegrateData();
   return (
     <>
       <div class={styles.userContainer}>
         <Index each={users()}>
           {(user, index) => (
             <div class={styles.userCard}>
-              {/* {`https://randomuser.me/api/portraits/men/${index + 20}.jpg`} */}
-              <img src="" style={{ "background-color": "royalblue", "background-position": "center" }} />
+              <img src="/src/assets/svgs/avatar.svg" style={{ "background-position": "center" }} />
               <div class={styles.userInfo}>
                 <h3>{user().user_name ? user().user_name : ""}</h3>
                 <p>{user().user_email}</p>
@@ -45,12 +46,7 @@ const Dashboard = () => {
       <div>
         <h3>Process Image to Server</h3>
       </div>
-      <button
-        onClick={async () => {
-          const integrateMedias = await adminIntegrateData();
-        }}>
-        Click
-      </button>
+      <button onClick={integrateMedias}>Click</button>
     </>
   );
 };
