@@ -12,3 +12,7 @@ export const scrollIntoViewFc = (classType: string, dataID: string): void => {
   const targetEl = getElementBySelector(classType, dataID);
   if (targetEl) targetEl.scrollIntoView({ behavior: "instant", block: "center" });
 };
+
+// export const sleepFunction = (ms: number): Promise<void> => {
+//   return new Promise((resolve) => setTimeout(resolve, ms));
+// };

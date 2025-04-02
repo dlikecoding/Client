@@ -4,7 +4,9 @@ import { ManageURLContextProvider } from "../../context/ManageUrl";
 
 const Search = (props: any) => {
   const [pageNumber, setPageNumber] = createSignal(0);
-  const loadedMedias: any[] | undefined = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+  const loadedMedias: any[] | undefined = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 1, 2, 3, 12, 3, 123, 123, 123, 123, 123, 1, 22, 2, 2, 2, 2, 3, 3, 3, 3, 0,
+  ];
   return (
     <ManageURLContextProvider>
       <div class={styles.groupSearch}>
@@ -43,11 +45,7 @@ const Search = (props: any) => {
 
       <div class={styles.libraryGrid}>
         <Show when={loadedMedias.length > 0}>
-          <For each={loadedMedias}>
-            {(media, index) => {
-              return index() < 9 ? <img src="" alt="Image 1" /> : "";
-            }}
-          </For>
+          <For each={loadedMedias}>{(media, index) => <img src="" alt="Image 1" />}</For>
         </Show>
       </div>
     </ManageURLContextProvider>

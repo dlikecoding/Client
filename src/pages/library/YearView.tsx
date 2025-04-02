@@ -1,6 +1,6 @@
 import styles from "./Group.module.css";
 
-import { createResource, Index, Match, Show, Switch } from "solid-js";
+import { createResource, Index, Match, Switch } from "solid-js";
 import NotFound from "../../components/extents/NotFound";
 
 import { A } from "@solidjs/router";
@@ -15,25 +15,33 @@ const YearView = () => {
   return (
     <>
       <div class={styles.groupContainer}>
-        <Show when={loadedMedias.loading}>
-          <Loading />
-        </Show>
+        <Switch fallback={<NotFound errorCode="Not Found 404" message="No data available for the selected period." />}>
+          <Match when={loadedMedias.loading}>
+            <Loading />
+          </Match>
 
-        <Index each={loadedMedias()} fallback={<NotFound />}>
-          {(photo) => (
-            <A
-              class={styles.mediaContainer}
-              onClick={() => {
-                updatePage({ year: photo().timeFormat });
-              }}
-              href="/library/month">
-              <div class={styles.overlayText}>
-                <h3>{photo().timeFormat}</h3>
-              </div>
-              <img loading="lazy" alt="Year Photos" src={photo().ThumbPath} />
-            </A>
-          )}
-        </Index>
+          <Match when={loadedMedias.error}>
+            <NotFound />
+          </Match>
+
+          <Match when={loadedMedias()}>
+            <Index each={loadedMedias()}>
+              {(photo) => (
+                <A
+                  class={styles.mediaContainer}
+                  onClick={() => {
+                    updatePage({ year: photo().timeFormat });
+                  }}
+                  href="/library/month">
+                  <div class={styles.overlayText}>
+                    <h3>{photo().timeFormat}</h3>
+                  </div>
+                  <img loading="lazy" alt="Year Photos" src={photo().ThumbPath} />
+                </A>
+              )}
+            </Index>
+          </Match>
+        </Switch>
       </div>
     </>
   );

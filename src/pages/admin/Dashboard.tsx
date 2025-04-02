@@ -1,22 +1,113 @@
 import styles from "./Dashboard.module.css";
-import { adminFetchUsers, adminIntegrateData, adminUpdateUserStatus } from "../../components/extents/request/fetching";
-import { createResource, Index } from "solid-js";
+import {
+  adminFetchAdminDashboard,
+  adminIntegrateData,
+  adminUpdateUserStatus,
+} from "../../components/extents/request/fetching";
+import { createResource, Index, Show } from "solid-js";
+import { createStore } from "solid-js/store";
+import ImportLoading from "../../components/extents/ImportLoading";
+import Loading from "../../components/extents/Loading";
+import NotFound from "../../components/extents/NotFound";
+
+export interface loadedDashboard {
+  users?: any[];
+  sysStatus: boolean;
+}
+
+export interface ProcessMesg {
+  mesg: string;
+  status: boolean;
+}
 
 const Dashboard = () => {
-  const [users, { refetch }] = createResource(adminFetchUsers);
+  const [dashboardData, { mutate, refetch }] = createResource<loadedDashboard>(adminFetchAdminDashboard);
 
   const handleChange = async (user: any) => {
     const res = await adminUpdateUserStatus(user.user_email);
     if (!res.ok) return alert("Failed to update user status!");
 
+    mutate((data) => {
+      if (!data?.users) return data;
+
+      const userIndex = data.users.findIndex((u) => u.user_email === user.user_email);
+      if (userIndex === -1) return data;
+
+      const newUsers = [...data.users];
+      newUsers[userIndex] = { ...newUsers[userIndex], status: !newUsers[userIndex].status };
+      return { ...data, users: newUsers };
+    });
+  };
+
+  const [streamMesg, setStreamMesg] = createStore<ProcessMesg>({ mesg: "", status: false });
+
+  const integrateMedias = async () => {
+    setStreamMesg("mesg", "Sent request to Server");
+    await adminIntegrateData(setStreamMesg);
     refetch();
   };
 
-  const integrateMedias = async () => await adminIntegrateData();
+  const externalMedias = async () => {
+    console.log("Import external medias");
+  };
+
+  const [importExternal, setImportExternal] = createStore({
+    path: "",
+    aiMode: false,
+  });
+
   return (
     <>
+      {dashboardData.loading && <Loading />}
+      {dashboardData.error && <NotFound />}
+
+      <h3>Import Medias From {!dashboardData()?.sysStatus ? "Internal Directory" : "External Drive"} </h3>
+      <div class={styles.reindexForm}>
+        <fieldset>
+          <legend>
+            {!dashboardData()?.sysStatus ? "Start importing media to server" : "Select preferred path for medias"}
+          </legend>
+
+          <Show when={dashboardData()?.sysStatus}>
+            <div>
+              <label for="importPath">External Drive:</label>
+              <input
+                class="inputSearch"
+                type="text"
+                name="importPath"
+                id="importPath"
+                autocomplete="off"
+                placeholder="/Volumes/External/Photos"
+                onInput={(e) => setImportExternal("path", e.target.value)}
+              />
+            </div>
+          </Show>
+
+          <div>
+            <input
+              type="checkbox"
+              name="detectModel"
+              id="detectModel"
+              value="detectModel"
+              onChange={() => setImportExternal("aiMode", !importExternal.aiMode)}
+            />
+            <label for="detectModel">AI Detection Mode ({importExternal.aiMode ? "enable" : "disabled"})</label>
+          </div>
+          <button
+            class={styles.processButtons}
+            onClick={!dashboardData()?.sysStatus ? integrateMedias : externalMedias}>
+            Start Progress
+          </button>
+        </fieldset>
+      </div>
+
+      <Show when={streamMesg.mesg}>
+        <ImportLoading streamMesg={streamMesg} setStreamMesg={setStreamMesg} />
+      </Show>
+
+      <h3 style={{ "margin-top": "50px" }}>Users Active Status</h3>
       <div class={styles.userContainer}>
-        <Index each={users()}>
+        <Index each={dashboardData()?.users}>
           {(user, index) => (
             <div class={styles.userCard}>
               <img src="/src/assets/svgs/avatar.svg" style={{ "background-position": "center" }} />
@@ -42,11 +133,6 @@ const Dashboard = () => {
           )}
         </Index>
       </div>
-
-      <div>
-        <h3>Process Image to Server</h3>
-      </div>
-      <button onClick={integrateMedias}>Click</button>
     </>
   );
 };

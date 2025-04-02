@@ -1,3 +1,8 @@
+:root {
+  --toggle-suspended: #5e5e5e;
+  --toggle-active: #34c759;
+}
+
 .userContainer {
   display: flex;
   flex-direction: column;
@@ -64,11 +69,6 @@
   color: #999;
 }
 
-:root {
-  --toggle-suspended: #5e5e5e;
-  --toggle-active: #34c759;
-}
-
 .toggleStatus {
   position: relative;
   display: inline-block;
@@ -106,4 +106,37 @@
 
 .toggleStatus > input:checked + label::after {
   left: 28px;
+}
+
+/* ------------------ Reindex section  ------------------*/
+.reindexForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  border-radius: 10px;
+}
+
+.reindexForm > fieldset {
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+}
+
+.reindexForm > fieldset > div {
+  margin: 10px 0;
+  padding: 0 15px;
+}
+
+.reindexForm > fieldset > div > input {
+  margin: 0px 10px;
+  padding: 10px;
+}
+
+.processButtons {
+  margin: 20px;
+  padding: 10px;
+  background-color: #4f34eb;
+  border-radius: 7px;
 }

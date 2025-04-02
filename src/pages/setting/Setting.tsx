@@ -44,48 +44,6 @@ const Setting = () => {
 
         {/* =================================================== */}
 
-        <h3>ReIndex</h3>
-        <div class={styles.reindexForm}>
-          <fieldset>
-            <legend>Select preferred index for medias:</legend>
-            <div>
-              <label for="importPath">External Drive:</label>
-              <input
-                class="inputSearch"
-                type="text"
-                name="importPath"
-                id="importPath"
-                autocomplete="off"
-                placeholder="/Volumes/External/Photos"
-                // onInput={(e) => setImportPath(e.target.value)}
-              />
-            </div>
-            {/* <div>
-              <input
-                type="checkbox"
-                name="importMedias"
-                id="importMedias"
-                value="importMedias"
-                // checked={importMedias()}
-                // onChange={() => setImportMedias(!importMedias())}
-              />
-              <label for="importMedias">Import to Photo TSX</label>
-            </div> */}
-            <div>
-              <input
-                type="checkbox"
-                name="detectModel"
-                id="detectModel"
-                value="detectModel"
-                // checked={detectModel()}
-                // onChange={() => setDetectModel(!detectModel())}
-              />
-              <label for="detectModel">AI Detection Mode</label>
-            </div>
-            <button class={styles.processButtons}>Progress</button>
-          </fieldset>
-        </div>
-
         <button
           class="closeButton"
           onClick={() => {

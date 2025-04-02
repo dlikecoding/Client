@@ -1,5 +1,7 @@
 import { SearchQuery } from "../../../context/ManageUrl";
 import { MediaType } from "../../../context/ViewContext";
+import { SetStoreFunction } from "solid-js/store";
+import { ProcessMesg } from "../../../pages/admin/Dashboard";
 
 const buildQueryString = (params: object): string =>
   Object.entries(params)
@@ -58,6 +60,7 @@ export const fetchAlbumUpdating = async (mediaIds: string[], albumId?: number, a
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "same-origin",
     body: JSON.stringify({
       mediaIds: mediaIds,
       albumId: albumId,
@@ -72,6 +75,7 @@ export const forUpdating = async (mediaIds: string[], updateKey: string, updateV
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "same-origin",
     body: JSON.stringify({
       mediaIds: mediaIds,
       updateKey: updateKey,
@@ -86,26 +90,54 @@ export const forDeleting = async (mediaIds: string[]) => {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "same-origin",
     body: JSON.stringify({ mediasToDel: mediaIds }),
   });
 };
 
 ///////////////// For Uploading //////////////////////////////////////////
-// export const forUploadFiles = async () => {
-//   return await fetch(`/api/v1/upload`, {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "multipart/form-data",
-//     },
-//     credentials: "include",
-//     // body: formData,
-//   });
-// };
+const fetchStreamData = async (response: Response, setMessages: SetStoreFunction<ProcessMesg>) => {
+  try {
+    if (!response.body) throw new Error("Stream response body is empty");
 
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      setMessages("mesg", chunk);
+    }
+
+    setMessages("status", true);
+  } catch (error) {
+    console.log("Error import media", error);
+
+    setMessages("mesg", `⚠️ Error: ${error}`);
+    setMessages("status", true);
+  }
+};
+
+export const forUploadFiles = async (setMessages: SetStoreFunction<ProcessMesg>, formData: FormData) => {
+  const response = await fetch("/api/v1/upload", {
+    method: "POST",
+    credentials: "same-origin",
+    body: formData,
+  });
+  await fetchStreamData(response, setMessages);
+};
 ///////////////// For ADMIN //////////////////////////////////////////
-export const adminFetchUsers = async () => fetchData<any[]>(`/api/v1/admin/dashboard`);
+export const adminFetchAdminDashboard = async () => fetchData<any>(`/api/v1/admin/dashboard`);
 
-export const adminIntegrateData = async () => fetchData<any[]>(`/api/v1/admin/import`);
+export const adminIntegrateData = async (setMessages: SetStoreFunction<ProcessMesg>) => {
+  const response = await fetch("/api/v1/admin/import", {
+    method: "GET",
+    credentials: "same-origin",
+  });
+  await fetchStreamData(response, setMessages);
+};
 
 export const adminUpdateUserStatus = async (userEmail: string) => {
   return await fetch(`/api/v1/admin/changeStatus`, {
@@ -113,6 +145,7 @@ export const adminUpdateUserStatus = async (userEmail: string) => {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "same-origin",
     body: JSON.stringify({ userEmail: userEmail }),
   });
 };

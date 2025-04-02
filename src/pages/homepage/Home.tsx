@@ -30,7 +30,9 @@ const Home = (props: any) => {
 
   // Create search items for media
   const [pageNumber, setPageNumber] = createSignal(0);
-  const loadedMedias: any[] | undefined = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+  const loadedMedias: any[] | undefined = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 1, 2, 3, 12, 3, 123, 123, 123, 123, 123, 1, 22, 2, 2, 2, 2, 3, 3, 3, 3, 0,
+  ];
 
   return (
     <>

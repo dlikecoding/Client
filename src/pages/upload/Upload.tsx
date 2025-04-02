@@ -2,7 +2,11 @@ import { createSignal, Show } from "solid-js";
 import styles from "./Upload.module.css";
 import { UploadIcon } from "../../components/svgIcons";
 import Loading from "../../components/extents/Loading";
-// import { forUploadFiles } from "../../components/extents/request/fetching";
+import ImportLoading from "../../components/extents/ImportLoading";
+import { Portal } from "solid-js/web";
+import { forUploadFiles } from "../../components/extents/request/fetching";
+import { createStore } from "solid-js/store";
+import { ProcessMesg } from "../admin/Dashboard";
 
 const GB = 1024 * 1024 * 1024;
 
@@ -10,6 +14,7 @@ const MAX_BODY_SIZE = 5 * GB; // limit total files size
 const MAX_UPLOAD_FILE_SIZE = 1 * GB; // limit per file
 
 const Upload = () => {
+  const [streamMesg, setStreamMesg] = createStore<ProcessMesg>({ mesg: "", status: false });
   const [files, setFiles] = createSignal<File[]>([]);
 
   const handleFileChange = async (event: Event) => {
@@ -27,22 +32,9 @@ const Upload = () => {
       formData.append("uploadFiles", file);
     });
 
-    setIsUploading(true);
-    try {
-      const response = await fetch("/api/v1/upload", {
-        method: "POST",
-        body: formData, // No Content-Type needed; fetch will set it automatically
-      });
-
-      const data = await response.json();
-      console.log("Response JSON:", data);
-      setIsUploading(false);
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
+    setStreamMesg("mesg", "Started Uploading...");
+    await forUploadFiles(setStreamMesg, formData);
   };
-
-  const [isUploading, setIsUploading] = createSignal<boolean>(false);
 
   const [hasAgreed, setHasAgreed] = createSignal<boolean>(localStorage.getItem("NoticeUpload") === "false");
   const clickedConfirm = () => {
@@ -58,12 +50,17 @@ const Upload = () => {
 
   return (
     <>
+      <Show when={streamMesg.mesg}>
+        <Portal>
+          <ImportLoading streamMesg={streamMesg} setStreamMesg={setStreamMesg} />
+        </Portal>
+      </Show>
+
       <button
         onClick={() => {
           if (!hasAgreed()) return document.getElementById("uploadPopover")?.showPopover();
           fileUploaded();
-        }}
-        disabled={isUploading()}>
+        }}>
         {UploadIcon()}
       </button>
 
@@ -119,7 +116,6 @@ const Upload = () => {
         id="fileInput"
         style={{ display: "none" }}
         accept="image/*, video/*"
-        // accept="/*"
         multiple
         required
         onChange={handleFileChange}

@@ -22,13 +22,13 @@ const FilterTimeline = () => {
   const toggleSort = (type: string) => {
     updatePage({ sortKey: type, sortOrder: 1 - (params.sortOrder! | 0) });
   };
+
   const sortOptions = [
     { type: "FileSize", label: "Size" },
     { type: "CreateDate", label: "Created" },
     { type: "UploadAt", label: "Uploaded" },
   ];
 
-  // Handlers for UI interactions
   const handleZoom = (input: number) => {
     setView("nColumn", (prev: number) => prev + input);
   };
