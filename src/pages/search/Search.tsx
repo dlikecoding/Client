@@ -1,12 +1,20 @@
 import styles from "./Search.module.css";
-import { createSignal, For, Show } from "solid-js";
+import { createResource, createSignal, For, Show } from "solid-js";
 import { ManageURLContextProvider } from "../../context/ManageUrl";
+
+const fetchSearch = async () => {
+  const res = await fetch("api/v1/search");
+  if (!res.ok) return false;
+  return await res.json();
+};
 
 const Search = (props: any) => {
   const [pageNumber, setPageNumber] = createSignal(0);
   const loadedMedias: any[] | undefined = [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 1, 2, 3, 12, 3, 123, 123, 123, 123, 123, 1, 22, 2, 2, 2, 2, 3, 3, 3, 3, 0,
   ];
+
+  const [loadingSearch] = createResource(fetchSearch);
   return (
     <ManageURLContextProvider>
       <div class={styles.groupSearch}>
