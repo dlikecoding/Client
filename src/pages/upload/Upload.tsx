@@ -34,6 +34,8 @@ const Upload = () => {
 
     setStreamMesg("mesg", "Started Uploading...");
     await forUploadFiles(setStreamMesg, formData);
+
+    input.value = "";
   };
 
   const [hasAgreed, setHasAgreed] = createSignal<boolean>(localStorage.getItem("NoticeUpload") === "false");
@@ -126,6 +128,4 @@ const Upload = () => {
 
 export default Upload;
 
-const fileUploaded = () => {
-  document.getElementById("fileInput")?.click();
-};
+const fileUploaded = () => document.getElementById("fileInput")?.click();

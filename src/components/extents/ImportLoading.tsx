@@ -6,7 +6,7 @@ const ImportLoading = (props: any) => {
   return (
     <div class={styles.processPopup}>
       <div class={styles.processMessage}>
-        <div>{props.streamMesg.mesg}</div>
+        <div style={{ "max-width": "350px" }}>{props.streamMesg.mesg}</div>
 
         <div>
           <Show
