@@ -1,6 +1,6 @@
 import { A, useLocation, useParams } from "@solidjs/router";
-import FooterCollection from "../../pages/collection/PagesCollection";
-import FooterLibrary from "../../pages/library/PageLibrary";
+import FooterCollection from "../../pages/collection/FooterCollection";
+import FooterLibrary from "../../pages/library/FooterLibrary";
 import { CloseIcon, FilterIcon } from "../svgIcons";
 import FilterNavBar from "./FilterNavBar";
 import { useManageURLContext } from "../../context/ManageUrl";

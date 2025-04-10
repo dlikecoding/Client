@@ -1,7 +1,7 @@
 import { A } from "@solidjs/router";
 import { useManageURLContext } from "../../context/ManageUrl";
 
-const PageLibrary = () => {
+const FooterLibrary = () => {
   const { updatePage } = useManageURLContext();
 
   return (
@@ -10,18 +10,18 @@ const PageLibrary = () => {
         Year
       </A>
       <A
-        onClick={() => {
-          updatePage({ year: "0" });
-        }}
+        // onClick={() => {
+        //   updatePage({ year: "0" });
+        // }}
         href="/library/month"
         inactiveClass="inactive_button"
         activeClass="active_button">
         Month
       </A>
       <A
-        onClick={() => {
-          updatePage({ year: "", month: "" });
-        }}
+        // onClick={() => {
+        //   updatePage({ year: "", month: "" });
+        // }}
         href="/library/all"
         inactiveClass="inactive_button"
         activeClass="active_button">
@@ -31,4 +31,4 @@ const PageLibrary = () => {
   );
 };
 
-export default PageLibrary;
+export default FooterLibrary;

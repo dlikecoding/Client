@@ -8,8 +8,7 @@ const App = () => {
 
   // Summary each year (Library)
   const Library = lazy(() => import("./pages/library/Library"));
-  const YearView = lazy(() => import("./pages/library/YearView"));
-  const MonthView = lazy(() => import("./pages/library/MonthView"));
+  const GroupView = lazy(() => import("./pages/library/GroupView"));
 
   // For viewing Albums and Ai recognition dataset (Collection)
   const Collection = lazy(() => import("./pages/collection/Collection"));
@@ -70,8 +69,10 @@ const App = () => {
             </Route>
 
             <Route path="/library" component={Library}>
-              <Route path="/" component={YearView} />
-              <Route path="/month" component={MonthView} />
+              <Route path="/" component={GroupView}>
+                <Route path="/" />
+                <Route path="/month" />
+              </Route>
               <Route path="/:pages" component={PhotoView} matchFilters={filters.LIBRARY} />
             </Route>
 

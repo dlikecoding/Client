@@ -99,7 +99,7 @@ const ContextView = () => {
   const { element: endEl } = useElementByPoint({ x: 20, y: window.innerHeight - 1 });
 
   const displayTime = createMemo(() => {
-    if (openModal()) return;
+    if (openModal() || !displayMedias.length) return;
     return elPointToTime(startEl(), endEl());
   });
 
@@ -130,6 +130,10 @@ const ContextView = () => {
         }}>
         <Show when={loadedMedias.loading || loadedMoreMedias.loading}>
           <Loading />
+        </Show>
+
+        <Show when={!displayMedias.length}>
+          <NotFound />
         </Show>
 
         <Index
