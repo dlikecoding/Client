@@ -1,11 +1,11 @@
-import { createSignal, Show } from "solid-js";
 import styles from "./Upload.module.css";
-import { UploadIcon } from "../../components/svgIcons";
-import Loading from "../../components/extents/Loading";
-import ImportLoading from "../../components/extents/ImportLoading";
 import { Portal } from "solid-js/web";
-import { forUploadFiles } from "../../components/extents/request/fetching";
 import { createStore } from "solid-js/store";
+import { createSignal, Show } from "solid-js";
+
+import ImportLoading from "../../components/extents/ImportLoading";
+import { UploadIcon } from "../../components/svgIcons";
+import { forUploadFiles } from "../../components/extents/request/fetching";
 import { ProcessMesg } from "../admin/Dashboard";
 
 const GB = 1024 * 1024 * 1024;

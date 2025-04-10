@@ -9,6 +9,8 @@ const Login = () => {
 
   const [email, setEmail] = createSignal<string>();
   const signInAccount = async () => {
+    setMessage("status", true);
+
     // 1. Get challenge from server
     const initResponse = await fetch(`api/v1/auth/init-auth?email=${email()}`, {
       credentials: "include",
@@ -24,12 +26,10 @@ const Login = () => {
       authenticationJSON = await startAuthentication({ optionsJSON: options });
     } catch (error) {
       if (error instanceof WebAuthnError) {
-        // console.log(error.message); //error.cause, error.code, error.name, error.message, error.stack
-        return error.name === "NotAllowedError"
-          ? setMessage({ status: false, msg: "Authenticator was missing biometric verification." })
-          : setMessage({ status: false, msg: "Unknown error occurred during registration." });
+        if (error.name === "NotAllowedError")
+          return setMessage({ status: false, msg: "Authenticator was missing biometric verification." });
       }
-      return console.log(error);
+      return setMessage({ status: false, msg: "Authenticator was missing biometric verification." });
     }
 
     // 3. Save passkey in DB
@@ -75,7 +75,7 @@ const Login = () => {
         </div>
 
         <div class={styles.inputBx}>
-          <input type="button" onClick={signInAccount} value="Sign In" />
+          <input type="button" onClick={signInAccount} value="Sign In" disabled={message.status} />
         </div>
         <div class={styles.links}>
           <A href="#">Lost key</A>

@@ -13,6 +13,8 @@ const Signup = () => {
   const [user, setUser] = createStore<UserInput>();
 
   const createAccount = async () => {
+    setMessage("status", true);
+
     // 1. Get challenge from server
     const initResponse = await fetch(`api/v1/auth/init-register?email=${user.email}&username=${user.name}`, {
       credentials: "include",
@@ -29,12 +31,10 @@ const Signup = () => {
       registrationJSON = await startRegistration({ optionsJSON: options });
     } catch (error) {
       if (error instanceof WebAuthnError) {
-        console.log(error.message); //error.cause, error.code, error.name, error.message, error.stack
-        return error.name === "NotAllowedError"
-          ? setMessage({ status: false, msg: "Authenticator was missing biometric verification." })
-          : setMessage({ status: false, msg: "Unknown error occurred during registration." });
+        if (error.name === "NotAllowedError")
+          return setMessage({ status: false, msg: "Authenticator was missing biometric verification." });
       }
-      return console.log(error);
+      return setMessage({ status: false, msg: "Authenticator was missing biometric verification." });
     }
 
     // 3. Save passkey in DB
@@ -50,9 +50,10 @@ const Signup = () => {
     const verifyData = await verifyResponse.json();
     if (!verifyResponse.ok) return setMessage({ status: false, msg: verifyData.error });
 
-    verifyData.verified
-      ? setMessage({ status: true, msg: `Successfully registered ${user.email}` })
-      : setMessage({ status: false, msg: `Failed to register` });
+    if (!verifyData.verified) return setMessage({ status: false, msg: `Failed to register` });
+    window.location.href = "/login";
+
+    // ? setMessage({ status: true, msg: `Successfully registered ${user.email}` })
   };
   return (
     <div class={styles.ring}>
@@ -91,7 +92,7 @@ const Signup = () => {
         </div>
 
         <div class={styles.inputBx}>
-          <input type="button" onClick={createAccount} value="Create Account" />
+          <input type="button" onClick={createAccount} value="Create Account" disabled={message.status} />
         </div>
         <div class={styles.links}>
           <div></div>
