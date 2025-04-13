@@ -38,9 +38,8 @@ const PhotoCard: Component<PhotoProps> = (props) => {
       class={styles.mediaContainer}
       style={{ width: `calc(100% / ${view.nColumn} - 1px)` }}
       data-id={media().media_id}
-      data-src={media().SourceFile}
-      // data-thumb={media().ThumbPath}
-      data-time={media().timeFormat}
+      data-src={media().source_file}
+      data-time={media().create_date}
       data-idx={index()}
       onClick={() => handleImageClick(index(), media().media_id)}>
       <div inert class={styles.imageContainer}>
@@ -48,22 +47,22 @@ const PhotoCard: Component<PhotoProps> = (props) => {
           <Show when={items().has(index())}>
             <div class={styles.selectedIcon}></div>
           </Show>
-          <Show when={media().isFavorite}>
+          <Show when={media().favorite}>
             <div class={styles.overlayFavorite}></div>
           </Show>
           <Switch>
-            <Match when={media().FileType === "Live"}>
+            <Match when={media().file_type === "Live"}>
               <div class={styles.overlayLive}></div>
             </Match>
-            <Match when={media().FileType === "Video"}>
+            <Match when={media().file_type === "Video"}>
               <div class={styles.overlayText}>{media().duration}</div>
             </Match>
           </Switch>
         </Show>
         <img
           loading="lazy"
-          src={media().ThumbPath}
-          alt={media().videoTitle}
+          src={media().thumb_path}
+          alt={media().create_date}
           class={`${view.objectFit ? styles.cover : styles.contain} ${items().has(index()) ? styles.grayscale : ""}`}
         />
       </div>

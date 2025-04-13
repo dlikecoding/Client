@@ -56,7 +56,7 @@ const Video: Component<VideoProps> = (props) => {
       <video
         inert
         ref={videoRef}
-        poster={props.media.ThumbPath}
+        poster={props.media.thumb_path}
         onPlay={() => setIsPlaying(true)}
         onPause={() => {
           props.setShowImageOnly(false);
@@ -67,7 +67,7 @@ const Video: Component<VideoProps> = (props) => {
         playsinline={true}
         crossorigin="use-credentials">
         {/* ///////// DEVELOPMENT //////////////////////////////////////// */}
-        <source src={`http://localhost:8080${props.media.SourceFile}`} type={props.media.MIMEType} />
+        <source src={`http://localhost:8080${props.media.source_file}`} type={props.media.mime_type} />
         {/* <source src={props.media.SourceFile} type={props.media.MIMEType} /> */}
 
         <p>Your browser doesn't support the video tag.</p>

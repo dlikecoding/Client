@@ -1,21 +1,22 @@
-import { createContext, useContext, JSX, createEffect, createMemo } from "solid-js";
+import { createContext, useContext, JSX, createMemo } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
 
 export type SearchQuery = {
-  year: string;
-  month?: string;
-  filterType?: string;
+  year?: number;
+  month?: number;
+
+  filterType?: "Photo" | "Live" | "Video";
   filterDevice?: number;
-  filterObject?: string;
-  sortKey?: string;
-  sortOrder?: number;
 
   favorite?: number;
   hidden?: number;
   deleted?: number;
   duplicate?: number;
 
-  albumId?: string;
+  albumId?: number;
+
+  sortKey: "file_size" | "create_date" | "upload_at";
+  sortOrder: 0 | 1;
 };
 
 export type ZoomAndAspect = {
@@ -100,14 +101,11 @@ export const useManageURLContext = () => {
   return ctx;
 };
 
-export const defaultParams: SearchQuery = {
-  year: "",
-  month: undefined,
+const resetFilter = {
   filterType: undefined,
   filterDevice: undefined,
-  filterObject: undefined,
-  sortKey: "CreateDate",
-  sortOrder: 0,
+
+  // filterObject: undefined,
 
   favorite: undefined,
   deleted: undefined,
@@ -115,15 +113,11 @@ export const defaultParams: SearchQuery = {
   duplicate: undefined,
 };
 
-const resetFilter = {
-  filterType: undefined,
-  filterDevice: undefined,
-  filterObject: undefined,
-  sortKey: "CreateDate",
-  sortOrder: 0,
+export const defaultParams: SearchQuery = {
+  year: undefined,
+  month: undefined,
 
-  favorite: undefined,
-  deleted: undefined,
-  hidden: undefined,
-  duplicate: undefined,
+  sortKey: "create_date",
+  sortOrder: 0, // Valid now
+  ...resetFilter,
 };

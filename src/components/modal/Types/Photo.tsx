@@ -15,7 +15,7 @@ const Photo: Component<PhotoProps> = (props) => {
       inert
       class={styles.blurLoad}
       style={{
-        "background-image": imgLoading() ? `url(${props.media.ThumbPath})` : "",
+        "background-image": imgLoading() ? `url(${props.media.thumb_path})` : "",
         "background-size": view.modalObjFit ? "cover" : "contain",
       }}>
       <img
@@ -23,7 +23,7 @@ const Photo: Component<PhotoProps> = (props) => {
         onLoad={() => setImgLoading(false)}
         onError={() => setImgLoading(true)}
         loading="lazy"
-        src={props.media.SourceFile}
+        src={props.media.source_file}
         alt={`Modal Image`}
       />
     </div>

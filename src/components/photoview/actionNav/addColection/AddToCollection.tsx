@@ -7,7 +7,7 @@ import { Portal } from "solid-js/web";
 interface AddToCollectionProps {
   setAddToCollection: Setter<boolean>;
   entityType: "Album" | "Dataset";
-  fetchItems: () => Promise<any[] | null>;
+  fetchItems: () => Promise<any[] | undefined>;
   updateItems: (ids: string[], entityId?: number, entityTitle?: string) => Promise<{ ok: boolean }>;
 }
 
@@ -89,7 +89,7 @@ const AddToCollection = (props: AddToCollectionProps) => {
                 onClick={async () => {
                   await addItemsToCollection(entity[props.entityType === "Album" ? "album_id" : "class_id"]);
                 }}>
-                <img src={entity.ThumbPath} alt={entity.title} />
+                <img src={entity.thumb_path} alt={entity.title} />
                 <div>{entity.title}</div>
                 <text>{entity.media_count}</text>
               </div>

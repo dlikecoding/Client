@@ -21,6 +21,8 @@ type ButtonConfig = {
   default: string[];
 };
 
+type UpdateKey = "favorite" | "hidden" | "deleted";
+
 const buttonConfig: ButtonConfig = {
   default: ["favorite", "save", "more", "delete"],
   deleted: ["recover", "permanentDelete"],
@@ -48,29 +50,29 @@ const ActionNav = () => {
   const actions = {
     save: () => console.log("save clicked"),
 
-    favorite: () => updateMediaStatus("Favorite"),
+    favorite: () => updateMediaStatus("favorite"),
 
-    hide: () => updateMediaStatus("Hidden", true),
-    unhide: () => updateMediaStatus("Hidden", false),
+    hide: () => updateMediaStatus("hidden", true),
+    unhide: () => updateMediaStatus("hidden", false),
 
-    delete: () => updateMediaStatus("Deleted", true),
-    recovery: () => updateMediaStatus("Deleted", false),
+    delete: () => updateMediaStatus("deleted", true),
+    recovery: () => updateMediaStatus("deleted", false),
 
     merge: () => console.log("Merge Images"),
   };
 
-  const updateMediaStatus = async (updateKey: "Favorite" | "Hidden" | "Deleted", updateValue?: boolean) => {
+  const updateMediaStatus = async (updateKey: UpdateKey, updateValue?: boolean) => {
     if (items().size < 1) return;
     const listOfIds = new Set(items().values());
     const listOfIndex = [...items().keys()];
 
     // Toggle the favorite status of all selected items:
     // If any item is NOT a favorite, set all to favorite; otherwise, set all to not favorite.
-    if (updateKey === "Favorite") {
-      const isNotFavorite: boolean = listOfIndex.some((index) => !displayMedias[index].isFavorite);
+    if (updateKey === "favorite") {
+      const isNotFavorite: boolean = listOfIndex.some((index) => !displayMedias[index].favorite);
       updateValue = isNotFavorite;
 
-      setDisplayMedia(listOfIndex, "isFavorite", isNotFavorite);
+      setDisplayMedia(listOfIndex, "favorite", isNotFavorite);
     } else {
       setDisplayMedia((prev) => prev.filter((item, _) => !listOfIds.has(item.media_id)));
     }

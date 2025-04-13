@@ -7,7 +7,7 @@ import { CameraIcon } from "../../svgIcons";
 const DeviceFilter = () => {
   const { isSelected } = useMediaContext();
   const { updatePageKey } = useManageURLContext();
-  const [loadDevices, { mutate, refetch }] = createResource(fetchListOfDevices);
+  const [loadDevices] = createResource(fetchListOfDevices);
 
   const [selectedCamera, setSelectedCamera] = createSignal(null); // Track selected camera_id
 
@@ -34,7 +34,7 @@ const DeviceFilter = () => {
                 setSelectedCamera(item.camera_id);
                 updatePageKey("filterDevice", item.camera_id);
               }}>
-              {item.Model}
+              {item.model}
             </div>
           )}
         </For>

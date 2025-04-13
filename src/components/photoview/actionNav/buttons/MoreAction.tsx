@@ -1,10 +1,10 @@
+import { useParams } from "@solidjs/router";
 import { createSignal, Show } from "solid-js";
 import { MoreActionButtonIcon } from "../../../svgIcons";
-// import AddToAlbum from "../_AddToAlbum";
-import { useParams } from "@solidjs/router";
 import { useMediaContext } from "../../../../context/Medias";
 import AddToCollection from "../addColection/AddToCollection";
-import { fetchAlbum, fetchAlbumUpdating } from "../../../extents/request/fetching";
+import { fetchAlbum, fetchRemoveAlbum, fetchAddAlbum } from "../../../extents/request/fetching";
+import { useViewMediaContext } from "../../../../context/ViewContext";
 
 type MoreActionsProps = {
   hide: () => void;
@@ -12,7 +12,9 @@ type MoreActionsProps = {
 
 export const MoreAction = (props: MoreActionsProps) => {
   const params = useParams();
-  const { items } = useMediaContext();
+
+  const { items, setItems, setIsSelected } = useMediaContext();
+  const { setDisplayMedia } = useViewMediaContext();
 
   const [addToAlbum, setAddToAlbum] = createSignal<boolean>(false);
   // const [addToDataset, setAddToDataset] = createSignal<boolean>(false);
@@ -27,13 +29,24 @@ export const MoreAction = (props: MoreActionsProps) => {
   //   document.getElementById("actions_contents")?.hidePopover();
   // };
 
+  const handleRemoveFromAlbum = async () => {
+    const listOfIds = new Set(items().values());
+    const res = await fetchRemoveAlbum([...listOfIds], parseInt(params.id));
+    if (!res.ok) alert("Failed to remove media from album!");
+
+    setDisplayMedia((prev) => prev.filter((item, _) => !listOfIds.has(item.media_id)));
+
+    setIsSelected(false);
+    setItems(new Map());
+  };
+
   return (
     <>
       <button popovertarget="actions_contents">{MoreActionButtonIcon()}</button>
 
       <div popover="auto" id="actions_contents" class="popover-container actions_contents">
         <Show when={params.pages === "album"}>
-          <div onClick={() => console.log("Remove album: ", items())}>Remove from Album</div>
+          <div onClick={handleRemoveFromAlbum}>Remove from Album</div>
         </Show>
         {/* <Show when={params.pages === "dataset"}>
           <div onClick={() => console.log("Remove dataset: ", items())}>Remove from Dataset</div>
@@ -56,7 +69,7 @@ export const MoreAction = (props: MoreActionsProps) => {
           setAddToCollection={setAddToAlbum}
           entityType="Album"
           fetchItems={fetchAlbum}
-          updateItems={fetchAlbumUpdating}
+          updateItems={fetchAddAlbum}
         />
       </Show>
 

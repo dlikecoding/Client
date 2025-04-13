@@ -89,11 +89,11 @@ const Modal: Component<ModalProps> = (props) => {
   };
 
   // Display time in header
-  const displayTime = createMemo(() => {
-    const curEl = displayMedias[current.elIndex];
-    if (!curEl) return { date: "", time: "" };
-    return formatTime(curEl.CreateDate);
-  });
+  // const displayTime = createMemo(() => {
+  //   const curEl = displayMedias[current.elIndex];
+  //   if (!curEl) return { date: "", time: "" };
+  //   return formatTime(curEl.create_date);
+  // });
 
   /** Create sublist for thumbnails */
   const modalMedias = () => getSublist(displayMedias, current.elIndex);
@@ -113,12 +113,12 @@ const Modal: Component<ModalProps> = (props) => {
           </div>
 
           <div class={styles.modalTitle}>
-            <p>{displayTime().date}</p>
-            <p style={{ "font-size": "12px" }}>{displayTime().time}</p>
+            {/* <p>{displayTime().date}</p>
+            <p style={{ "font-size": "12px" }}>{displayTime().time}</p> */}
           </div>
           <div class="buttonContainer">
             <button
-              style={{ visibility: displayMedias[current.elIndex]?.FileType !== "Photo" ? "hidden" : "visible" }}
+              style={{ visibility: displayMedias[current.elIndex]?.file_type !== "Photo" ? "hidden" : "visible" }}
               onClick={() => setView("modalObjFit", (prev) => !prev)}>
               {view.modalObjFit ? CompressIcon() : ExpandIcon()}
             </button>
@@ -172,7 +172,7 @@ const Modal: Component<ModalProps> = (props) => {
                 //   updateCurrent(navigateToIndex);
                 // }}
               >
-                <img inert src={media().ThumbPath} />
+                <img inert src={media().thumb_path} />
               </div>
             )}
           </List>

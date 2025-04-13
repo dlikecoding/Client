@@ -37,24 +37,24 @@ const fetchData = async <T>(url: string): Promise<T | undefined> => {
   errorHandler(res);
 };
 
-export const fetchMediaYears = async () => fetchData<any[]>(`/api/v1/medias`);
-export const fetchMediaMonths = async (year: string) => fetchData<any[]>(`/api/v1/medias?year=${year}`);
+export const fetchMediaYears = async () => await fetchData<any[]>(`/api/v1/medias`);
 
 export const fetchMedias = (queries: SearchQuery, pageNumber: number = 0) => {
+  console.log(queries);
   const queryString = buildQueryString({ ...queries, pageNumber });
   return fetchData<MediaType[]>(`/api/v1/stream?${queryString}`);
 };
 
-export const fetchListOfDevices = () => fetchData<any[]>(`/api/v1/medias/devices`);
+export const fetchListOfDevices = async () => await fetchData<any[]>(`/api/v1/medias/devices`);
 
 export const fetchStatistic = async () => {
   const result = await fetchData<any[]>(`/api/v1/medias/statistic`);
   return result ? result[0] : null;
 };
 
-export const fetchAlbum = () => fetchData<any[]>(`/api/v1/album`);
+export const fetchAlbum = async () => await fetchData<any[]>(`/api/v1/album`);
 
-export const fetchAlbumUpdating = async (mediaIds: string[], albumId?: number, albumTitle?: string) => {
+export const fetchAddAlbum = async (mediaIds: string[], albumId?: number, albumTitle?: string) => {
   return await fetch(`/api/v1/album/add`, {
     method: "PUT",
     headers: {
@@ -65,6 +65,20 @@ export const fetchAlbumUpdating = async (mediaIds: string[], albumId?: number, a
       mediaIds: mediaIds,
       albumId: albumId,
       albumTitle: albumTitle,
+    }),
+  });
+};
+
+export const fetchRemoveAlbum = async (mediaIds: string[], albumId?: number) => {
+  return await fetch(`/api/v1/album/remove`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "same-origin",
+    body: JSON.stringify({
+      mediaIds: mediaIds,
+      albumId: albumId,
     }),
   });
 };
@@ -129,7 +143,7 @@ export const forUploadFiles = async (setMessages: SetStoreFunction<ProcessMesg>,
   await fetchStreamData(response, setMessages);
 };
 ///////////////// For ADMIN //////////////////////////////////////////
-export const adminFetchAdminDashboard = async () => fetchData<any>(`/api/v1/admin/dashboard`);
+export const adminFetchAdminDashboard = async () => await fetchData<any>(`/api/v1/admin/dashboard`);
 
 export const adminIntegrateData = async (setMessages: SetStoreFunction<ProcessMesg>) => {
   const response = await fetch("/api/v1/admin/import", {

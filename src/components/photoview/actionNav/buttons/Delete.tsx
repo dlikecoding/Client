@@ -15,7 +15,6 @@ export const Delete = (props: DeleteProps) => {
 
   const deleteMediasOnSV = async () => {
     const listOfIds = new Set(items().values());
-    console.log(listOfIds); //////////////////////////
 
     setDisplayMedia((prev) => prev.filter((item, _) => !listOfIds.has(item.media_id)));
 

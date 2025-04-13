@@ -51,10 +51,10 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
       data-modalid={media().media_id} // This media_id is needed to scrollIntoView
       onClick={() => props.setShowImageOnly((prev) => !prev)}>
       <Switch fallback={<div>Unknown type</div>}>
-        <Match when={media().FileType === "Photo"}>
+        <Match when={media().file_type === "Photo"}>
           <Photo media={media()} />
         </Match>
-        <Match when={media().FileType === "Video"}>
+        <Match when={media().file_type === "Video"}>
           <Video
             media={media()}
             isVisible={isVisible()}
@@ -62,7 +62,7 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
             setShowImageOnly={props.setShowImageOnly}
           />
         </Match>
-        <Match when={media().FileType === "Live"}>
+        <Match when={media().file_type === "Live"}>
           <Live media={media()} />
         </Match>
       </Switch>

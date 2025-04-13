@@ -15,18 +15,19 @@ const FilterTimeline = () => {
     { label: "Video", className: "videos" },
   ];
 
-  const updateFilter = (type: string = "") => {
+  const updateFilter = (type: any = "") => {
     updatePageKey("filterType", type);
   };
 
-  const toggleSort = (type: string) => {
-    updatePage({ sortKey: type, sortOrder: 1 - (params.sortOrder! | 0) });
+  const toggleSort = (type: any) => {
+    updatePage({ sortKey: type, sortOrder: params.sortOrder ? 0 : 1 });
+    console.log(params.sortOrder);
   };
 
   const sortOptions = [
-    { type: "FileSize", label: "Size" },
-    { type: "CreateDate", label: "Created" },
-    { type: "UploadAt", label: "Uploaded" },
+    { type: "file_size", label: "Size" },
+    { type: "create_date", label: "Created" },
+    { type: "upload_at", label: "Uploaded" },
   ];
 
   const handleZoom = (input: number) => {

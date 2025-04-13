@@ -19,7 +19,7 @@ import Select from "./buttons/Select";
 import ModalView from "../modal/ModalView";
 import { getElementBySelector } from "../extents/helper/helper";
 
-const viewPages = new Map([
+const viewPageTitles = new Map([
   ["favorite", "Favorite"],
   ["deleted", "Recently Deleted"],
   ["hidden", "Hidden"],
@@ -44,7 +44,7 @@ const ContextView = () => {
     month: params.month,
     filterDevice: params.filterDevice,
     filterType: params.filterType,
-    filterObject: params.filterObject,
+    // filterObject: params.filterObject,
     sortKey: params.sortKey,
     sortOrder: params.sortOrder,
 
@@ -53,7 +53,7 @@ const ContextView = () => {
     deleted: params.deleted,
     duplicate: params.duplicate,
 
-    albumId: paramsUrl.id,
+    albumId: paramsUrl.id ? parseInt(paramsUrl.id) : undefined,
   });
 
   const [pageNumber, setPageNumber] = createSignal(0);
@@ -99,15 +99,19 @@ const ContextView = () => {
   const { element: endEl } = useElementByPoint({ x: 20, y: window.innerHeight - 1 });
 
   const displayTime = createMemo(() => {
-    if (openModal() || !displayMedias.length) return;
-    return elPointToTime(startEl(), endEl());
+    try {
+      if (openModal() || !displayMedias.length) return;
+      return elPointToTime(startEl(), endEl());
+    } catch (error) {
+      console.log(error);
+    }
   });
 
   return (
     <>
       <header style={{ "z-index": 1 }}>
         <div inert>
-          <h1>{viewPages.get(paramsUrl.pages)}</h1>
+          <h1>{viewPageTitles.get(paramsUrl.pages)}</h1>
           <p>{displayTime()}</p>
         </div>
         <div class="buttonContainer" style={{ "margin-top": "10px" }}>
@@ -174,6 +178,7 @@ const elPointToTime = (elStart: HTMLElement | null, elEnd: HTMLElement | null): 
   const sTime = elStart.dataset.time;
   const eTime = elEnd.dataset.time;
   if (!sTime || !eTime) return "";
+
   return `${sTime} - ${eTime}`;
 };
 

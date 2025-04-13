@@ -2,20 +2,15 @@ import { Accessor, createContext, createSignal, Setter, useContext } from "solid
 import { createStore, SetStoreFunction } from "solid-js/store";
 
 export interface MediaType {
-  MIMEType?: string;
   media_id: string;
-  SourceFile: string;
-  ThumbPath: string;
-  timeFormat: string;
-  isFavorite: boolean;
-  FileType: string;
+  source_file: string;
+  thumb_path: string;
+  favorite: boolean;
+  file_type: string;
   duration?: string;
-  videoTitle?: string;
-  FileName: string;
-  FileSize: number;
-  CreateDate: string;
-  UploadAt: string;
-  CameraType?: number;
+  mime_type?: string;
+  file_size: number;
+  create_date: string;
 }
 
 interface ContextProps {
