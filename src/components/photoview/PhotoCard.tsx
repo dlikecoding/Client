@@ -55,7 +55,7 @@ const PhotoCard: Component<PhotoProps> = (props) => {
               <div class={styles.overlayLive}></div>
             </Match>
             <Match when={media().file_type === "Video"}>
-              <div class={styles.overlayText}>{media().duration}</div>
+              <div class={styles.overlayText}>{media().video_duration}</div>
             </Match>
           </Switch>
         </Show>

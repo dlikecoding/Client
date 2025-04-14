@@ -89,11 +89,11 @@ const Modal: Component<ModalProps> = (props) => {
   };
 
   // Display time in header
-  // const displayTime = createMemo(() => {
-  //   const curEl = displayMedias[current.elIndex];
-  //   if (!curEl) return { date: "", time: "" };
-  //   return formatTime(curEl.create_date);
-  // });
+  const displayTime = createMemo(() => {
+    const curEl = displayMedias[current.elIndex];
+    if (!curEl) return { date: "", time: "" };
+    return formatTime(curEl.create_date);
+  });
 
   /** Create sublist for thumbnails */
   const modalMedias = () => getSublist(displayMedias, current.elIndex);
@@ -113,8 +113,8 @@ const Modal: Component<ModalProps> = (props) => {
           </div>
 
           <div class={styles.modalTitle}>
-            {/* <p>{displayTime().date}</p>
-            <p style={{ "font-size": "12px" }}>{displayTime().time}</p> */}
+            <p>{displayTime().date}</p>
+            <p style={{ "font-size": "12px" }}>{displayTime().time}</p>
           </div>
           <div class="buttonContainer">
             <button

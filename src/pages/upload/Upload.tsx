@@ -22,15 +22,16 @@ const Upload = () => {
 
     if (input.files) setFiles(Array.from(input.files) as File[]);
 
-    const totalFileSize = 0;
-    files().forEach((f) => f.size + totalFileSize);
-    if (totalFileSize > MAX_BODY_SIZE) return;
+    let totalFileSize = 0;
 
     const formData = new FormData();
     files().forEach((file) => {
-      if (file.size >= MAX_UPLOAD_FILE_SIZE) return;
+      if (file.size >= MAX_UPLOAD_FILE_SIZE) return setStreamMesg({ mesg: "File size over limited", status: false });
+      totalFileSize += file.size;
       formData.append("uploadFiles", file);
     });
+
+    if (totalFileSize > MAX_BODY_SIZE) return setStreamMesg({ mesg: "Total size too large!", status: false });
 
     setStreamMesg("mesg", "Started Uploading...");
     await forUploadFiles(setStreamMesg, formData);

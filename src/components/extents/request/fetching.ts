@@ -48,7 +48,7 @@ export const fetchMedias = (queries: SearchQuery, pageNumber: number = 0) => {
 export const fetchListOfDevices = async () => await fetchData<any[]>(`/api/v1/medias/devices`);
 
 export const fetchStatistic = async () => {
-  const result = await fetchData<any[]>(`/api/v1/medias/statistic`);
+  const result = await fetchData<any[]>(`/api/v1/album/statistic`);
   return result ? result[0] : null;
 };
 
@@ -137,6 +137,9 @@ const fetchStreamData = async (response: Response, setMessages: SetStoreFunction
 export const forUploadFiles = async (setMessages: SetStoreFunction<ProcessMesg>, formData: FormData) => {
   const response = await fetch("/api/v1/upload", {
     method: "POST",
+    // headers: {
+    //   "Content-Type": "multipart/form-data",
+    // },
     credentials: "same-origin",
     body: formData,
   });

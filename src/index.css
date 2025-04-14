@@ -28,7 +28,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  overscroll-behavior: smooth;
+  overscroll-behavior: none; /* Remove bouding for all of the pages */
 }
 
 /* Hide Scrollbars */

@@ -96,7 +96,7 @@ const ContextView = () => {
 
   //Tracking current element on screen based on x and y
   const { element: startEl } = useElementByPoint({ x: 20, y: 20 });
-  const { element: endEl } = useElementByPoint({ x: 20, y: window.innerHeight - 1 });
+  const { element: endEl } = useElementByPoint({ x: 5, y: window.innerHeight - 5 });
 
   const displayTime = createMemo(() => {
     try {
@@ -179,7 +179,16 @@ const elPointToTime = (elStart: HTMLElement | null, elEnd: HTMLElement | null): 
   const eTime = elEnd.dataset.time;
   if (!sTime || !eTime) return "";
 
-  return `${sTime} - ${eTime}`;
+  return `${toDate(sTime)} - ${toDate(eTime)}`;
+};
+
+const toDate = (timestamp: string): string => {
+  const date = new Date(timestamp);
+
+  const day = date.getDate();
+  const month = date.toLocaleString("default", { month: "short" });
+  const year = date.getFullYear();
+  return `${month} ${day}, ${year}`;
 };
 
 /**

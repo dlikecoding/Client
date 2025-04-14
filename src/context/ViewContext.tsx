@@ -11,6 +11,7 @@ export interface MediaType {
   mime_type?: string;
   file_size: number;
   create_date: string;
+  video_duration: string;
 }
 
 interface ContextProps {
