@@ -8,12 +8,14 @@ interface PhotoProps {
   media: MediaType;
   lastItem?: (el: HTMLElement) => void;
   index: number;
+  mediaDim: { top: number; left: number; size: number };
 }
 
 const PhotoCard: Component<PhotoProps> = (props) => {
   const index = () => props.index;
   const media = () => props.media;
   const lastItem = () => props.lastItem;
+  const mediaDim = () => props.mediaDim;
 
   const { items, setItems, setOneItem, isSelected } = useMediaContext();
   const { view } = useManageURLContext();
@@ -36,10 +38,14 @@ const PhotoCard: Component<PhotoProps> = (props) => {
     <div
       ref={lastItem()}
       class={styles.mediaContainer}
-      style={{ width: `calc(100% / ${view.nColumn} - 1px)` }}
+      style={{
+        top: `${mediaDim().top}px`,
+        left: `${mediaDim().left}px`,
+        width: `${mediaDim().size}px`,
+        height: `${mediaDim().size}px`,
+      }}
       data-id={media().media_id}
       data-src={media().source_file}
-      data-time={media().create_date}
       data-idx={index()}
       onClick={() => handleImageClick(index(), media().media_id)}>
       <div inert class={styles.imageContainer}>
@@ -62,7 +68,7 @@ const PhotoCard: Component<PhotoProps> = (props) => {
         <img
           loading="lazy"
           src={media().thumb_path}
-          alt={media().create_date}
+          alt="Gallery"
           class={`${view.objectFit ? styles.cover : styles.contain} ${items().has(index()) ? styles.grayscale : ""}`}
         />
       </div>

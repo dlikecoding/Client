@@ -40,7 +40,6 @@ const fetchData = async <T>(url: string): Promise<T | undefined> => {
 export const fetchMediaYears = async () => await fetchData<any[]>(`/api/v1/medias`);
 
 export const fetchMedias = (queries: SearchQuery, pageNumber: number = 0) => {
-  console.log(queries);
   const queryString = buildQueryString({ ...queries, pageNumber });
   return fetchData<MediaType[]>(`/api/v1/stream?${queryString}`);
 };

@@ -1,8 +1,8 @@
 import style from "./PhotoView.module.css";
 
 import { useParams } from "@solidjs/router";
-import { useElementByPoint, useIntersectionObserver } from "solidjs-use";
-import { createMemo, createResource, createSignal, Index, onCleanup, onMount, Show } from "solid-js";
+import { useIntersectionObserver } from "solidjs-use";
+import { createMemo, createResource, createSignal, For, Index, onCleanup, onMount, Show } from "solid-js";
 
 import { useMediaContext } from "../../context/Medias";
 import { SearchQuery, useManageURLContext } from "../../context/ManageUrl";
@@ -94,17 +94,25 @@ const ContextView = () => {
   // Change number of column when in duplicate page. Otherwise, keep the preveous.
   //// NOT SURE IF NEEDED
 
-  //Tracking current element on screen based on x and y
-  const { element: startEl } = useElementByPoint({ x: 20, y: 20 });
-  const { element: endEl } = useElementByPoint({ x: 5, y: window.innerHeight - 5 });
+  ///////////////// Virtualization ContextView /////////////////////////////////////////////////
+  const BUFFER_ITEM = 10; // number of rows buffering
+  let containerRef!: HTMLDivElement;
 
-  const displayTime = createMemo(() => {
-    try {
-      if (openModal() || !displayMedias.length) return;
-      return elPointToTime(startEl(), endEl());
-    } catch (error) {
-      console.log(error);
-    }
+  const [scrollTop, setScrollTop] = createSignal(0);
+  const itemDimention = createMemo(() => window.innerWidth / view.nColumn);
+
+  const VISIBLE_ITEM = createMemo(() => Math.ceil(window.innerHeight / itemDimention() + BUFFER_ITEM) * view.nColumn);
+
+  const startIndex = createMemo(() => Math.max(0, (Math.floor(scrollTop() / itemDimention()) - 1) * view.nColumn));
+
+  const endIndex = createMemo(() => Math.min(displayMedias.length - 1, startIndex() + VISIBLE_ITEM()));
+
+  const visibleRows = createMemo(() => {
+    if (displayMedias.length === 0) return [];
+
+    const start = startIndex(); // track
+    const end = endIndex(); // track
+    return displayMedias.slice(start, end + 1); // new array
   });
 
   return (
@@ -112,7 +120,11 @@ const ContextView = () => {
       <header style={{ "z-index": 1 }}>
         <div inert>
           <h1>{viewPageTitles.get(paramsUrl.pages)}</h1>
-          <p>{displayTime()}</p>
+          <Show when={displayMedias.length}>
+            <p>
+              {toDate(displayMedias[startIndex()])} - {toDate(displayMedias[endIndex()])}
+            </p>
+          </Show>
         </div>
         <div class="buttonContainer" style={{ "margin-top": "10px" }}>
           <Show when={view.nColumn <= HIDE_SELECT_BUTTON}>
@@ -123,9 +135,11 @@ const ContextView = () => {
       </header>
 
       <div
+        ref={containerRef}
         class={style.container}
         onScroll={(event: Event) => {
           event.preventDefault();
+          setScrollTop(containerRef.scrollTop);
 
           const popovers = document.querySelectorAll<HTMLElement>("div[popover]");
           popovers.forEach((eachPopover: HTMLElement) => {
@@ -140,17 +154,30 @@ const ContextView = () => {
           <NotFound />
         </Show>
 
-        <Index
-          each={displayMedias}
-          fallback={<NotFound errorCode={"Not Found"} message={"Page you're looking for could not be found"} />}>
-          {(media, index) => (
-            <PhotoCard
-              lastItem={displayMedias.length - 1 === index ? setLastEl : undefined}
-              media={media()}
-              index={index}
-            />
-          )}
-        </Index>
+        <div
+          class={style.virtualContainer}
+          style={{ height: `${(displayMedias.length / view.nColumn) * itemDimention()}px` }}>
+          <For
+            each={visibleRows()}
+            fallback={<NotFound errorCode={"Not Found"} message={"Page you're looking for could not be found"} />}>
+            {(media, index) => {
+              const curIndex = startIndex() + index();
+              const mediaDim = {
+                top: Math.floor(curIndex / view.nColumn) * itemDimention(),
+                left: (curIndex % view.nColumn) * itemDimention(),
+                size: itemDimention(),
+              };
+              return (
+                <PhotoCard
+                  lastItem={displayMedias.length - 1 === curIndex ? setLastEl : undefined}
+                  media={media}
+                  index={curIndex}
+                  mediaDim={mediaDim}
+                />
+              );
+            }}
+          </For>
+        </div>
       </div>
 
       <Show when={isSelected()}>
@@ -166,24 +193,9 @@ const ContextView = () => {
 
 export default ContextView;
 
-/**
- * Returns a formatted time range from the `data-time` attributes of two elements.
- * @param elStart - The starting element.
- * @param elEnd - The ending element.
- * @returns A string in the format `"startTime - endTime"` or an empty string if unavailable.
- */
-const elPointToTime = (elStart: HTMLElement | null, elEnd: HTMLElement | null): string => {
-  if (!elStart || !elEnd) return "";
-
-  const sTime = elStart.dataset.time;
-  const eTime = elEnd.dataset.time;
-  if (!sTime || !eTime) return "";
-
-  return `${toDate(sTime)} - ${toDate(eTime)}`;
-};
-
-const toDate = (timestamp: string): string => {
-  const date = new Date(timestamp);
+const toDate = (mediaType: MediaType): string => {
+  if (!mediaType) return "";
+  const date = new Date(mediaType.create_date);
 
   const day = date.getDate();
   const month = date.toLocaleString("default", { month: "short" });
