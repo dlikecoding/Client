@@ -1,4 +1,4 @@
-import { Match, Show, Switch, type Component } from "solid-js";
+import { createMemo, createSignal, Match, Show, Switch, type Component } from "solid-js";
 import styles from "./PhotoView.module.css";
 import { useMediaContext } from "../../context/Medias";
 import { useManageURLContext } from "../../context/ManageUrl";
@@ -8,14 +8,15 @@ interface PhotoProps {
   media: MediaType;
   lastItem?: (el: HTMLElement) => void;
   index: number;
-  mediaDim: { top: number; left: number; size: number };
+  itemDim: number;
+  // mediaDim: { top: number; left: number; size: number };
 }
 
 const PhotoCard: Component<PhotoProps> = (props) => {
   const index = () => props.index;
   const media = () => props.media;
   const lastItem = () => props.lastItem;
-  const mediaDim = () => props.mediaDim;
+  const itemDim = () => props.itemDim;
 
   const { items, setItems, setOneItem, isSelected } = useMediaContext();
   const { view } = useManageURLContext();
@@ -34,6 +35,14 @@ const PhotoCard: Component<PhotoProps> = (props) => {
     setItems(newItems);
   };
 
+  const mediaDim = createMemo(() => {
+    return {
+      top: Math.floor(index() / view.nColumn) * itemDim(),
+      left: (index() % view.nColumn) * itemDim(),
+      size: itemDim(),
+    };
+  });
+
   return (
     <div
       ref={lastItem()}
@@ -49,24 +58,23 @@ const PhotoCard: Component<PhotoProps> = (props) => {
       data-idx={index()}
       onClick={() => handleImageClick(index(), media().media_id)}>
       <div inert class={styles.imageContainer}>
-        <Show when={view.nColumn < 6}>
-          <Show when={items().has(index())}>
-            <div class={styles.selectedIcon}></div>
-          </Show>
-          <Show when={media().favorite}>
-            <div class={styles.overlayFavorite}></div>
-          </Show>
-          <Switch>
-            <Match when={media().file_type === "Live"}>
-              <div class={styles.overlayLive}></div>
-            </Match>
-            <Match when={media().file_type === "Video"}>
-              <div class={styles.overlayText}>{media().video_duration}</div>
-            </Match>
-          </Switch>
+        <Show when={items().has(index())}>
+          <div class={styles.selectedIcon}></div>
         </Show>
+        <Show when={media().favorite}>
+          <div class={styles.overlayFavorite}></div>
+        </Show>
+        <Switch>
+          <Match when={media().file_type === "Live"}>
+            <div class={styles.overlayLive}></div>
+          </Match>
+          <Match when={media().file_type === "Video"}>
+            <div class={styles.overlayText}>{media().video_duration}</div>
+          </Match>
+        </Switch>
+
         <img
-          loading="lazy"
+          // loading="lazy"
           src={media().thumb_path}
           alt="Gallery"
           class={`${view.objectFit ? styles.cover : styles.contain} ${items().has(index()) ? styles.grayscale : ""}`}

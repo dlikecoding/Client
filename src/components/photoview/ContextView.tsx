@@ -95,7 +95,7 @@ const ContextView = () => {
   //// NOT SURE IF NEEDED
 
   ///////////////// Virtualization ContextView /////////////////////////////////////////////////
-  const BUFFER_ITEM = 10; // number of rows buffering
+  const BUFFER_ITEM = 5; // number of rows buffering
   let containerRef!: HTMLDivElement;
 
   const [scrollTop, setScrollTop] = createSignal(0);
@@ -114,6 +114,15 @@ const ContextView = () => {
     const end = endIndex(); // track
     return displayMedias.slice(start, end + 1); // new array
   });
+
+  // createMemo(() => {
+  //   if (view.nColumn) {
+  //     window.scrollTo({
+  //       top: document.body.scrollHeight,
+  //       behavior: "instant",
+  //     });
+  //   }
+  // });
 
   return (
     <>
@@ -157,25 +166,34 @@ const ContextView = () => {
         <div
           class={style.virtualContainer}
           style={{ height: `${(displayMedias.length / view.nColumn) * itemDimention()}px` }}>
+          {/* {visibleRows().map((media, index) => {
+            const curIndex = startIndex() + index;
+            const mediaDim = {
+              top: Math.floor(curIndex / view.nColumn) * itemDimention(),
+              left: (curIndex % view.nColumn) * itemDimention(),
+              size: itemDimention(),
+            };
+            return (
+              <PhotoCard
+                lastItem={displayMedias.length - 1 === curIndex ? setLastEl : undefined}
+                media={media}
+                index={curIndex}
+                mediaDim={mediaDim}
+              />
+            );
+          })} */}
+
           <For
             each={visibleRows()}
             fallback={<NotFound errorCode={"Not Found"} message={"Page you're looking for could not be found"} />}>
-            {(media, index) => {
-              const curIndex = startIndex() + index();
-              const mediaDim = {
-                top: Math.floor(curIndex / view.nColumn) * itemDimention(),
-                left: (curIndex % view.nColumn) * itemDimention(),
-                size: itemDimention(),
-              };
-              return (
-                <PhotoCard
-                  lastItem={displayMedias.length - 1 === curIndex ? setLastEl : undefined}
-                  media={media}
-                  index={curIndex}
-                  mediaDim={mediaDim}
-                />
-              );
-            }}
+            {(media, index) => (
+              <PhotoCard
+                lastItem={displayMedias.length - 1 === startIndex() + index() ? setLastEl : undefined}
+                media={media}
+                index={startIndex() + index()}
+                itemDim={itemDimention()}
+              />
+            )}
           </For>
         </div>
       </div>

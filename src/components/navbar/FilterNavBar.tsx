@@ -3,8 +3,8 @@ import { For, Show } from "solid-js";
 import { SortAscIcon, SortDescIcon, ZoomInIcon, ZoomOutIcon } from "../svgIcons";
 import { useManageURLContext } from "../../context/ManageUrl";
 
-const MIN_NUMBER_OF_COLUMNS = 2;
-const MAX_NUMBER_OF_COLUMNS = 7; // Zoom out maximum n columns
+const MIN_NUMBER_OF_COLUMNS = 1;
+const MAX_NUMBER_OF_COLUMNS = 5; // Zoom out maximum n columns
 
 const FilterTimeline = () => {
   const { view, params, setView, updatePage, updatePageKey } = useManageURLContext();

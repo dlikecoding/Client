@@ -73,18 +73,22 @@ const OverView = () => {
       <h3>Utilities</h3>
       <div class={style.media_section}>
         <For each={Object.entries(loadedStatistics() || {})} fallback={<div>Not Found...</div>}>
-          {([key, value]) => (
-            <A
-              href={`/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}
-              onClick={() => {
-                const updateData = gotoPage[key as UpdateKey];
-                if (updateData) return updatePage(updateData);
-                console.warn(`No update action found for: ${key}`);
-              }}>
-              <span>{key}</span>
-              <span>{value}</span>
-            </A>
-          )}
+          {([key, value]) => {
+            return value === "0" ? (
+              <></>
+            ) : (
+              <A
+                href={`/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}
+                onClick={() => {
+                  const updateData = gotoPage[key as UpdateKey];
+                  if (updateData) return updatePage(updateData);
+                  console.warn(`No update action found for: ${key}`);
+                }}>
+                <span>{key}</span>
+                <span>{value}</span>
+              </A>
+            );
+          }}
         </For>
       </div>
       <br />
