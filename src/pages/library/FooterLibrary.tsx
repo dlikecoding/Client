@@ -2,7 +2,7 @@ import { A } from "@solidjs/router";
 import { useManageURLContext } from "../../context/ManageUrl";
 
 const FooterLibrary = () => {
-  const { resetLibrary } = useManageURLContext();
+  const { resetParams } = useManageURLContext();
 
   return (
     <>
@@ -12,7 +12,7 @@ const FooterLibrary = () => {
       <A href="/library/month" inactiveClass="inactive_button" activeClass="active_button">
         Month
       </A>
-      <A href="/library/all" inactiveClass="inactive_button" activeClass="active_button" onClick={() => resetLibrary()}>
+      <A href="/library/all" inactiveClass="inactive_button" activeClass="active_button" onClick={() => resetParams()}>
         All
       </A>
     </>

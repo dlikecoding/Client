@@ -1,7 +1,7 @@
 import styles from "./ModalView.module.css";
 
 import { Portal } from "solid-js/web";
-import { Component, createMemo, createSignal, For, onMount, Setter, Show } from "solid-js";
+import { Accessor, Component, createMemo, createSignal, For, onMount, Setter, Show } from "solid-js";
 import { createStore } from "solid-js/store";
 import { List } from "@solid-primitives/list";
 
@@ -22,6 +22,8 @@ interface ElementModal {
 
 interface ModalProps {
   setLastEl: Setter<HTMLElement | null | undefined>;
+  endIdxView: Accessor<number>;
+  startIdxView: Accessor<number>;
 }
 
 const BUFFER_ITEM = 3;
@@ -98,6 +100,19 @@ const Modal: Component<ModalProps> = (props) => {
   /** Create sublist for thumbnails */
   const modalMedias = () => getSublist(displayMedias, current.elIndex);
 
+  const endIdxView = () => props.endIdxView();
+  const startIdxView = () => props.startIdxView();
+
+  /** On Scroll, set scroll top. Check if current position is equal to the START/END INDEX in
+   * ContextView, if so, scroll to it */
+  const onScrollModal = (e: Event) => {
+    e.preventDefault();
+    setScrollTop(containerRef.scrollTop);
+
+    if (current.elIndex === endIdxView() || current.elIndex === startIdxView()) {
+      scrollToViewElement(current.elId);
+    }
+  };
   return (
     <Portal>
       <div class={styles.modalContainer} style={{ "z-index": 1 }}>
@@ -131,14 +146,7 @@ const Modal: Component<ModalProps> = (props) => {
           </div>
         </header>
 
-        <div
-          class={styles.modalImages}
-          ref={containerRef}
-          id="modalImages"
-          onScroll={(event) => {
-            event.preventDefault();
-            setScrollTop(containerRef.scrollTop);
-          }}>
+        <div class={styles.modalImages} ref={containerRef} id="modalImages" onScroll={onScrollModal}>
           <div class={styles.visualList} style={{ height: `${displayMedias.length * ITEM_HEIGHT}px` }}>
             <For each={visualModal()}>
               {(media, index) => (

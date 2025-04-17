@@ -31,6 +31,7 @@ const viewPageTitles = new Map([
 ]);
 
 const HIDE_SELECT_BUTTON = 5; // Hide select button when number of column > 5
+const BUFFER_ROWS = 3; // number of rows buffering
 
 const ContextView = () => {
   const paramsUrl = useParams();
@@ -95,13 +96,12 @@ const ContextView = () => {
   //// NOT SURE IF NEEDED
 
   ///////////////// Virtualization ContextView /////////////////////////////////////////////////
-  const BUFFER_ITEM = 5; // number of rows buffering
   let containerRef!: HTMLDivElement;
 
   const [scrollTop, setScrollTop] = createSignal(0);
   const itemDimention = createMemo(() => window.innerWidth / view.nColumn);
 
-  const VISIBLE_ITEM = createMemo(() => Math.ceil(window.innerHeight / itemDimention() + BUFFER_ITEM) * view.nColumn);
+  const VISIBLE_ITEM = createMemo(() => (Math.ceil(window.innerHeight / itemDimention()) + BUFFER_ROWS) * view.nColumn);
 
   const startIndex = createMemo(() => Math.max(0, (Math.floor(scrollTop() / itemDimention()) - 1) * view.nColumn));
 
@@ -114,15 +114,6 @@ const ContextView = () => {
     const end = endIndex(); // track
     return displayMedias.slice(start, end + 1); // new array
   });
-
-  // createMemo(() => {
-  //   if (view.nColumn) {
-  //     window.scrollTo({
-  //       top: document.body.scrollHeight,
-  //       behavior: "instant",
-  //     });
-  //   }
-  // });
 
   return (
     <>
@@ -166,26 +157,10 @@ const ContextView = () => {
         <div
           class={style.virtualContainer}
           style={{ height: `${(displayMedias.length / view.nColumn) * itemDimention()}px` }}>
-          {/* {visibleRows().map((media, index) => {
-            const curIndex = startIndex() + index;
-            const mediaDim = {
-              top: Math.floor(curIndex / view.nColumn) * itemDimention(),
-              left: (curIndex % view.nColumn) * itemDimention(),
-              size: itemDimention(),
-            };
-            return (
-              <PhotoCard
-                lastItem={displayMedias.length - 1 === curIndex ? setLastEl : undefined}
-                media={media}
-                index={curIndex}
-                mediaDim={mediaDim}
-              />
-            );
-          })} */}
-
           <For
             each={visibleRows()}
-            fallback={<NotFound errorCode={"Not Found"} message={"Page you're looking for could not be found"} />}>
+            // fallback={<NotFound errorCode={"Not Found"} message={"Page you're looking for could not be found"} />}
+          >
             {(media, index) => (
               <PhotoCard
                 lastItem={displayMedias.length - 1 === startIndex() + index() ? setLastEl : undefined}
@@ -203,7 +178,7 @@ const ContextView = () => {
       </Show>
 
       <Show when={openModal()}>
-        <ModalView setLastEl={setLastEl} />
+        <ModalView setLastEl={setLastEl} startIdxView={startIndex} endIdxView={endIndex} />
       </Show>
     </>
   );
