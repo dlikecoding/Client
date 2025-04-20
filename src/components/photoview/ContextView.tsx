@@ -1,8 +1,8 @@
 import style from "./PhotoView.module.css";
 
 import { useParams } from "@solidjs/router";
-import { useIntersectionObserver } from "solidjs-use";
-import { createMemo, createResource, createSignal, For, Index, onCleanup, onMount, Show } from "solid-js";
+import { useIntersectionObserver, useWindowSize } from "solidjs-use";
+import { createMemo, createResource, createSignal, For, onCleanup, Show } from "solid-js";
 
 import { useMediaContext } from "../../context/Medias";
 import { SearchQuery, useManageURLContext } from "../../context/ManageUrl";
@@ -98,14 +98,20 @@ const ContextView = () => {
   ///////////////// Virtualization ContextView /////////////////////////////////////////////////
   let containerRef!: HTMLDivElement;
 
+  const { width, height } = useWindowSize();
   const [scrollTop, setScrollTop] = createSignal(0);
-  const itemDimention = createMemo(() => window.innerWidth / view.nColumn);
 
-  const VISIBLE_ITEM = createMemo(() => (Math.ceil(window.innerHeight / itemDimention()) + BUFFER_ROWS) * view.nColumn);
+  const itemDimention = createMemo(() => width() / view.nColumn);
 
-  const startIndex = createMemo(() => Math.max(0, (Math.floor(scrollTop() / itemDimention()) - 1) * view.nColumn));
+  const VISIBLE_ITEM = createMemo(() => (Math.ceil(height() / itemDimention()) + BUFFER_ROWS) * view.nColumn);
 
-  const endIndex = createMemo(() => Math.min(displayMedias.length - 1, startIndex() + VISIBLE_ITEM()));
+  const startIndex = createMemo(() =>
+    Math.max(0, (Math.floor(scrollTop() / itemDimention()) - BUFFER_ROWS) * view.nColumn)
+  );
+
+  const endIndex = createMemo(() =>
+    Math.min(displayMedias.length - 1, startIndex() + VISIBLE_ITEM() + BUFFER_ROWS * view.nColumn)
+  );
 
   const visibleRows = createMemo(() => {
     if (displayMedias.length === 0) return [];
@@ -151,16 +157,13 @@ const ContextView = () => {
         </Show>
 
         <Show when={!displayMedias.length}>
-          <NotFound />
+          <NotFound errorCode={"Not Found"} message={"Page you're looking for could not be found"} />
         </Show>
 
         <div
           class={style.virtualContainer}
           style={{ height: `${(displayMedias.length / view.nColumn) * itemDimention()}px` }}>
-          <For
-            each={visibleRows()}
-            // fallback={<NotFound errorCode={"Not Found"} message={"Page you're looking for could not be found"} />}
-          >
+          <For each={visibleRows()}>
             {(media, index) => (
               <PhotoCard
                 lastItem={displayMedias.length - 1 === startIndex() + index() ? setLastEl : undefined}

@@ -1,4 +1,4 @@
-import styles from "./Groups.module.css";
+import styles from "../Group.module.css";
 import { A } from "@solidjs/router";
 import { useManageURLContext } from "../../../context/ManageUrl";
 import { createSignal, Index, onMount } from "solid-js";
@@ -10,7 +10,7 @@ const ByYears = (props: any) => {
   const [targetRef, setTargetRef] = createSignal<HTMLAnchorElement | null>(null);
 
   onMount(() => {
-    if (targetRef()) targetRef()!.scrollIntoView({ behavior: "instant", block: "center" });
+    if (targetRef()) targetRef()!.scrollIntoView({ behavior: "instant", block: "start" });
   });
 
   return (

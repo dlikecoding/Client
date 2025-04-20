@@ -1,17 +1,15 @@
 import styles from "./Group.module.css";
+import { Dynamic } from "solid-js/web";
 
 import { createMemo, createResource, createSignal, Index, Match, onMount, Switch } from "solid-js";
 import NotFound from "../../components/extents/NotFound";
 
 import { useLocation } from "@solidjs/router";
 
-import { useManageURLContext } from "../../context/ManageUrl";
 import { fetchMediaYears } from "../../components/extents/request/fetching";
 import Loading from "../../components/extents/Loading";
-import ByMonths from "./Groups/ByMonths";
-import ByYears from "./Groups/ByYears";
-import { createStore } from "solid-js/store";
-import { Dynamic } from "solid-js/web";
+import ByMonths from "./Components/ByMonths";
+import ByYears from "./Components/ByYears";
 
 interface GroupMedia {
   create_year: string;
@@ -23,22 +21,15 @@ interface GroupMedia {
 }
 
 const GroupView = () => {
-  const { params } = useManageURLContext();
   const [loadedMedias] = createResource(fetchMediaYears);
 
   const location = useLocation();
-  const isYear = createMemo(() => {
-    return location.pathname === "/library/";
-  });
+  const isYear = createMemo(() => location.pathname === "/library/");
 
   const displayMedias = createMemo<GroupMedia[]>(() => {
     const data = loadedMedias();
     if (!data) return [];
-    if (isYear()) {
-      const uniqueByYear = new Map(data.map((media: GroupMedia) => [media.create_year, media]));
-      return Array.from(uniqueByYear.values());
-    }
-    return data;
+    return isYear() ? filterUniqueByKey(data) : data;
   });
 
   return (
@@ -61,3 +52,14 @@ const GroupView = () => {
 };
 
 export default GroupView;
+
+const filterUniqueByKey = (medias: GroupMedia[]) => {
+  const seen = new Set();
+
+  return medias.filter((media: GroupMedia) => {
+    const value = media.create_year;
+    if (seen.has(value)) return false;
+    seen.add(value);
+    return true;
+  });
+};

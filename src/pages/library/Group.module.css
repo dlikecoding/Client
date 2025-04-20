@@ -16,3 +16,70 @@
   align-content: start;
   gap: 35px;
 }
+
+/* ////////////////// YEARS ////////////////// */
+.mediaContainer {
+  position: relative;
+  border-radius: 15px;
+  height: var(--heightMoYo);
+  color: var(--svg-color);
+}
+
+.mediaContainer > img,
+.monthViewContainer > img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+  aspect-ratio: 1;
+}
+
+.overlayText {
+  position: absolute;
+  margin: 15px;
+  /* top: 0; */
+}
+
+.overlayText > h3 {
+  margin: 0;
+  font: var(--font-titles);
+  text-shadow: 1px 1px 12px rgb(0, 0, 0);
+}
+
+/* ////////////////// MONTHS ////////////////// */
+
+.monthViewContainer {
+  position: relative;
+  height: 350px;
+  width: 100%;
+  color: var(--svg-color);
+  text-decoration: none;
+  margin-bottom: 25px;
+}
+
+.titleMonthView {
+  margin: 5px 10px;
+  font: var(--font-titles);
+}
+
+.overlayDay {
+  position: absolute;
+  font: var(--font-days);
+  margin: 15px;
+  text-shadow: 1px 1px 12px rgb(0, 0, 0);
+}
+
+@media (orientation: landscape) {
+  .mediaContainer,
+  .monthViewContainer {
+    width: 70%;
+    transition: all 0.4s ease-in-out;
+  }
+}
+@media (orientation: portrait) {
+  .mediaContainer,
+  .monthViewContainer {
+    width: 100%;
+    transition: all 0.4s ease-in-out;
+  }
+}
