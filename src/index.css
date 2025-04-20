@@ -28,7 +28,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  overscroll-behavior: none; /* Remove bouding for all of the pages */
+  overscroll-behavior: smooth; /* Remove bouding for all of the pages */
 }
 
 /* Hide Scrollbars */
@@ -283,6 +283,7 @@ button:disabled {
 
   pointer-events: visible;
   animation: zoomIn 0.3s ease;
+  scroll-behavior: none;
 }
 
 .popover-container > div,

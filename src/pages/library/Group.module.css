@@ -73,13 +73,13 @@
   .mediaContainer,
   .monthViewContainer {
     width: 70%;
-    transition: all 0.4s ease-in-out;
+    transition: width 0.2s ease-in-out;
   }
 }
 @media (orientation: portrait) {
   .mediaContainer,
   .monthViewContainer {
     width: 100%;
-    transition: all 0.4s ease-in-out;
+    transition: width 0.2s ease-in-out;
   }
 }

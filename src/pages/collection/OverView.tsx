@@ -31,7 +31,9 @@ const OverView = () => {
 
       <h3>
         My Albums
-        <button class={style.atag_group_views}>Edit</button>
+        <button class={style.atag_group_views} on:click={() => console.log("Album clicked")}>
+          Edit
+        </button>
       </h3>
       <div class={style.album_section}>
         <div class={style.cards}>
@@ -50,7 +52,9 @@ const OverView = () => {
       {/* //////////////////////////// */}
       <h3>
         Dataset
-        <button class={style.atag_group_views}>Edit</button>
+        <button class={style.atag_group_views} on:click={() => console.log("Dataset clicked")}>
+          Edit
+        </button>
       </h3>
       <div class={style.album_section}>
         <div class={style.cards}>

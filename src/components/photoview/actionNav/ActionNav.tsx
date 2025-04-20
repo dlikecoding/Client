@@ -23,14 +23,7 @@ type ButtonConfig = {
 
 type UpdateKey = "favorite" | "hidden" | "deleted";
 
-const buttonConfig: ButtonConfig = {
-  default: ["favorite", "save", "more", "delete"],
-  deleted: ["recover", "permanentDelete"],
-  hidden: ["unhide", "delete"],
-  duplicate: ["merge", "delete"],
-};
-
-const getButtonConfig = (isModalOpen: boolean): ButtonConfig => ({
+const buttonConfig = (isModalOpen: boolean): ButtonConfig => ({
   default: isModalOpen
     ? ["save", "favorite", "info", "edit", "delete"]
     : ["favorite", "save", "count", "more", "delete"],
@@ -38,7 +31,7 @@ const getButtonConfig = (isModalOpen: boolean): ButtonConfig => ({
     ? ["recover", "permanentDelete"]
     : ["recover", "recoverAll", "count", "permanentDeleteAll", "permanentDelete"],
   hidden: isModalOpen ? ["unhide", "delete"] : ["unhide", "count", "delete"],
-  duplicate: isModalOpen ? ["delete"] : ["merge", "count", "delete"],
+  duplicate: isModalOpen ? ["merge", "permanentDelete"] : ["merge", "count", "permanentDelete"],
 });
 
 const ActionNav = () => {
@@ -87,7 +80,7 @@ const ActionNav = () => {
 
   // Get current pages: Album, Library, ...
   const currentPage =
-    getButtonConfig(openModal())[params.pages as keyof ButtonConfig] || getButtonConfig(openModal()).default;
+    buttonConfig(openModal())[params.pages as keyof ButtonConfig] || buttonConfig(openModal()).default;
 
   // Disable all action buttons when there is no selected item
   const disableButtons = () => items().size < 1;
