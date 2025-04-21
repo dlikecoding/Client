@@ -1,44 +1,33 @@
-import { createMemo, createSignal, For, onMount, Show } from "solid-js";
-import { useLocation } from "@solidjs/router";
+import { createMemo, onMount } from "solid-js";
+import { useLocation, useNavigate } from "@solidjs/router";
 
 import Footer from "./Footer";
 import AccountButton from "../../components/photoview/buttons/AccountButton";
-import Loading from "../../components/extents/Loading";
 
 // import { useAuthContext } from "../../context/AuthProvider";
 
 const mainPages = new Map([
   ["/user/admin", "Dashboard"],
   ["/user", "Profile"],
-  ["/", "Photos"],
+  ["/", "Search"],
 ]);
 
 const Home = (props: any) => {
   // Goto previous page if any:
   const location = useLocation();
+  const navigate = useNavigate();
+  const prevState = localStorage.getItem("LastVisited") || "";
 
-  // const { loggedUser } = useAuthContext();
-  // console.log(loggedUser.userEmail);
-
-  // const navigate = useNavigate();
-  // const prevState = localStorage.getItem("LastVisited") || "";
-
-  // onMount(() => {
-  //   if (prevState && prevState !== "/") navigate(prevState);
-  // });
+  onMount(() => {
+    if (prevState && prevState !== "/") navigate(prevState);
+  });
   createMemo(() => localStorage.setItem("LastVisited", location.pathname.toString()));
-
-  // Create search items for media
-  const [pageNumber, setPageNumber] = createSignal(0);
-  const loadedMedias: any[] | undefined = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 1, 2, 3, 12, 3, 123, 123, 123, 123, 123, 1, 22, 2, 2, 2, 2, 3, 3, 3, 3, 0,
-  ];
 
   return (
     <>
       <main class="mainHomePage">
         <header style={{ position: "relative" }}>
-          <div>
+          <div inert>
             <h1>{mainPages.get(location.pathname)}</h1>
           </div>
           <div class="buttonContainer">

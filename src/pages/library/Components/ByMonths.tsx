@@ -9,7 +9,7 @@ const ByMonths = (props: any) => {
   const [targetRef, setTargetRef] = createSignal<HTMLAnchorElement | null>(null);
 
   onMount(() => {
-    if (targetRef()) targetRef()!.scrollIntoView({ behavior: "instant", block: "start" });
+    if (targetRef()) targetRef()!.scrollIntoView({ behavior: "instant", block: "center" });
   });
   return (
     <Index each={medias()}>

@@ -1,62 +1,74 @@
 import styles from "./Search.module.css";
-import { createResource, createSignal, For, Show } from "solid-js";
+import { createMemo, createResource, createSignal, For, Index, Show } from "solid-js";
 import { ManageURLContextProvider } from "../../context/ManageUrl";
+import { A } from "@solidjs/router";
 
-const fetchSearch = async () => {
-  const res = await fetch("api/v1/search");
-  if (!res.ok) return false;
-  return await res.json();
+const fetchSearch = async (input: string = "") => {
+  const res = await fetch(`api/v1/search?keyword=${input}`);
+  if (!res.ok) return { error: "" };
+  try {
+    return await res.json();
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-const Search = (props: any) => {
-  const [pageNumber, setPageNumber] = createSignal(0);
-  const loadedMedias: any[] | undefined = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 1, 2, 3, 12, 3, 123, 123, 123, 123, 123, 1, 22, 2, 2, 2, 2, 3, 3, 3, 3, 0,
-  ];
-
-  const [loadingSearch] = createResource(fetchSearch);
+const Search = () => {
+  const [keyword, setKeyword] = createSignal<string>("");
+  const [loadingSearch] = createResource(keyword, fetchSearch);
   return (
-    <ManageURLContextProvider>
-      <div class={styles.groupSearch}>
-        <input
-          id="searchInput"
-          class="inputSearch"
-          type="text"
-          placeholder="Places, Objects, Devices, Years ... "
-          oninput={(e) => setPageNumber(parseInt(e.target.value))}
-        />
-      </div>
-
-      <div class={styles.searchResult}>
-        <Show when={loadedMedias.length > 0}>
-          <For each={loadedMedias}>
-            {(_, index) => {
-              return index() < 4 ? (
-                <button class="inactive">
-                  <span>dog</span>
-                  <span>102</span>
-                </button>
-              ) : (
-                ""
-              );
+    <>
+      <ManageURLContextProvider>
+        <div class={styles.groupSearch}>
+          <input
+            id="searchInput"
+            class="inputSearch"
+            type="text"
+            placeholder="Find photos using keywords ... "
+            onInput={(e) => setKeyword(e.target.value)}
+            onFocus={() => {
+              const headers = document.getElementsByTagName("header");
+              if (!headers && !headers[0]) return;
+              headers[0].style.height = "0";
             }}
-          </For>
+            onBlur={() => {
+              const headers = document.getElementsByTagName("header");
+              if (!headers && !headers[0]) return;
+              headers[0].style.height = "65px";
+            }}
+          />
+        </div>
+        <div class={styles.searchResult}>
+          <Show when={keyword().trim() && loadingSearch()}>
+            <Index each={loadingSearch().count}>
+              {(each) => (
+                <button class="inactive" onClick={() => setKeyword(each().title)}>
+                  <span>{each().title}</span>
+                  <span>{each().count}</span>
+                </button>
+              )}
+            </Index>
+          </Show>
+        </div>
+        <Show when={loadingSearch()}>
+          <h3>
+            {loadingSearch().count.reduce((total: number, item: any) => total + parseInt(item.count), 0)} Photos
+            <A href={keyword() ? `/search/${keyword()}` : "#"} class="atag_group_views">
+              See All
+            </A>
+          </h3>
         </Show>
-      </div>
-
-      <Show when={loadedMedias.length > 0}>
-        <h3>
-          1031 Photos
-          <button class="atag_group_views">See All</button>
-        </h3>
-      </Show>
-
-      <div class={styles.libraryGrid}>
-        <Show when={loadedMedias.length > 0}>
-          <For each={loadedMedias}>{(media, index) => <img src="" alt="Image 1" />}</For>
-        </Show>
-      </div>
-    </ManageURLContextProvider>
+        <div class={styles.libraryGrid}>
+          <Show when={loadingSearch()}>
+            <Index each={loadingSearch().data}>
+              {(media, index) => {
+                return <img src={media().thumb_path} alt="Image 1" />;
+              }}
+            </Index>
+          </Show>
+        </div>
+      </ManageURLContextProvider>
+    </>
   );
 };
 
