@@ -46,7 +46,7 @@ const Login = () => {
     if (!verifyResponse.ok) return setMessage({ status: false, msg: verifyData.error });
 
     if (!verifyData.verified) return setMessage({ status: false, msg: `Failed to Sign In` });
-    window.location.href = "/";
+    window.location.replace("/library/");
   };
 
   return (

@@ -18,6 +18,7 @@ import Loading from "../extents/Loading";
 import Select from "./buttons/Select";
 import ModalView from "../modal/ModalView";
 import { getElementBySelector } from "../extents/helper/helper";
+import FilterPhotoView from "./buttons/FilterPhotoView";
 
 const viewPageTitles = new Map([
   ["favorite", "Favorite"],
@@ -133,10 +134,11 @@ const ContextView = () => {
           </Show>
         </div>
         <div class="buttonContainer" style={{ "margin-top": "10px" }}>
+          <DeviceFilter />
           <Show when={view.nColumn <= HIDE_SELECT_BUTTON}>
             <Select />
           </Show>
-          <DeviceFilter />
+          <FilterPhotoView />
         </div>
       </header>
 
@@ -162,7 +164,7 @@ const ContextView = () => {
 
         <div
           class={style.virtualContainer}
-          style={{ height: `${(displayMedias.length / view.nColumn) * itemDimention()}px` }}>
+          style={{ height: `${(displayMedias.length / view.nColumn) * itemDimention()}px`, "padding-bottom": "150px" }}>
           <For each={visibleRows()}>
             {(media, index) => (
               <PhotoCard

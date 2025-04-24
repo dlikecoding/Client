@@ -1,7 +1,10 @@
-import { Route, Router } from "@solidjs/router";
 import { lazy } from "solid-js";
+import { Navigate, Route, Router } from "@solidjs/router";
+
 import AuthGuard from "./pages/auth/AuthGuard";
 import { AuthProvider } from "./context/AuthProvider";
+
+const HomepageRedirect = () => <Navigate href="/library/" />;
 
 const App = () => {
   const Homepage = lazy(() => import("./pages/homepage/Home"));
@@ -15,6 +18,7 @@ const App = () => {
   const OverView = lazy(() => import("./pages/collection/OverView")); // Collection Summanry page
 
   // For Searching dataset (Search)
+  const ContextSearch = lazy(() => import("./pages/search/ContextSearch"));
   const Search = lazy(() => import("./pages/search/Search"));
 
   // View medias (Use for Library and Collection)
@@ -58,10 +62,14 @@ const App = () => {
         <Route path="/forget" component={ForgetPW} />
 
         {/* Protected Routes (Wrapped Inside a Route) */}
-        <Route path="/" component={AuthGuard}>
-          <Route path="/" component={Homepage}>
-            <Route path="/" component={Search} />
-            <Route path="/:pages/:keywords" component={PhotoView} matchFilters={filters.SEARCH} />
+        <Route component={AuthGuard}>
+          <Route component={Homepage}>
+            <Route path="/" component={HomepageRedirect} />
+
+            <Route path="/search" component={ContextSearch}>
+              <Route path="/" component={Search} />
+              <Route path="/:keywords" component={PhotoView} />
+            </Route>
 
             <Route path="/user">
               <Route path="/" component={Profile} />
@@ -83,9 +91,9 @@ const App = () => {
             </Route>
           </Route>
         </Route>
-
-        <Route path="*" component={NotFound} />
       </Route>
+
+      <Route path="*" component={NotFound} />
     </Router>
   );
 };

@@ -15,28 +15,17 @@ const mainPages = new Map([
 const Home = (props: any) => {
   // Goto previous page if any:
   const location = useLocation();
-  const navigate = useNavigate();
-  const prevState = localStorage.getItem("LastVisited") || "";
+  // const navigate = useNavigate();
+  // const prevState = localStorage.getItem("LastVisited") || "";
 
-  onMount(() => {
-    if (prevState && prevState !== "/") navigate(prevState);
-  });
-  createMemo(() => localStorage.setItem("LastVisited", location.pathname.toString()));
+  // onMount(() => {
+  //   if (prevState && prevState !== "/") navigate(prevState);
+  // });
+  // createMemo(() => localStorage.setItem("LastVisited", location.pathname.toString()));
 
   return (
     <>
-      <main class="mainHomePage">
-        <header style={{ position: "relative" }}>
-          <div inert>
-            <h1>{mainPages.get(location.pathname)}</h1>
-          </div>
-          <div class="buttonContainer">
-            <AccountButton />
-          </div>
-        </header>
-        {props.children}
-      </main>
-
+      <main class="mainHomePage">{props.children}</main>
       <Footer />
     </>
   );

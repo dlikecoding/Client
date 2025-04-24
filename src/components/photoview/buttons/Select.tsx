@@ -9,9 +9,9 @@ const Select = () => {
   createMemo(() => {
     // Hide navigation bar when Select button clicked
     if (isSelected()) {
-      footerBar.style.display = "none";
+      if (footerBar) footerBar.style.display = "none";
     } else {
-      footerBar.style.display = "";
+      if (footerBar) footerBar.style.display = "";
       setItems(new Map());
     }
   });

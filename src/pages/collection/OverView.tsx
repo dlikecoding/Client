@@ -9,10 +9,8 @@ type UpdateKey = "Favorite" | "Hidden" | "Duplicate" | "Recently Deleted";
 const OverView = () => {
   const { updatePage } = useManageURLContext();
 
-  const [loadedStatistics, { mutate: statsMutate, refetch: statsRefetch }] = createResource<string, string>(
-    fetchStatistic
-  );
-  const [loadedAlbums, { mutate: albumMutate, refetch: albumRefetch }] = createResource(fetchAlbum);
+  const [loadedStatistics] = createResource<string, string>(fetchStatistic);
+  const [loadedAlbums] = createResource(fetchAlbum);
 
   const gotoPage: Record<UpdateKey, { [key: string]: number }> = {
     Favorite: { favorite: 1 },
@@ -23,7 +21,7 @@ const OverView = () => {
 
   return (
     <>
-      <header style={{ position: "relative", "z-index": 1 }}>
+      <header style={{ position: "relative" }}>
         <div>
           <h1>Collection</h1> {/* Portfolio */}
         </div>
@@ -77,22 +75,18 @@ const OverView = () => {
       <h3>Utilities</h3>
       <div class={style.media_section}>
         <For each={Object.entries(loadedStatistics() || {})} fallback={<div>Not Found...</div>}>
-          {([key, value]) => {
-            return value === "0" ? (
-              <></>
-            ) : (
-              <A
-                href={`/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}
-                onClick={() => {
-                  const updateData = gotoPage[key as UpdateKey];
-                  if (updateData) return updatePage(updateData);
-                  console.warn(`No update action found for: ${key}`);
-                }}>
-                <span>{key}</span>
-                <span>{value}</span>
-              </A>
-            );
-          }}
+          {([key, value]) => (
+            <A
+              href={`/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}
+              onClick={() => {
+                const updateData = gotoPage[key as UpdateKey];
+                if (updateData) return updatePage(updateData);
+                console.warn(`No update action found for: ${key}`);
+              }}>
+              <span>{key}</span>
+              <span>{value}</span>
+            </A>
+          )}
         </For>
       </div>
       <br />

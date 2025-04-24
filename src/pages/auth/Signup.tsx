@@ -51,7 +51,7 @@ const Signup = () => {
     if (!verifyResponse.ok) return setMessage({ status: false, msg: verifyData.error });
 
     if (!verifyData.verified) return setMessage({ status: false, msg: `Failed to register` });
-    window.location.href = "/login";
+    window.location.replace("/login");
 
     // ? setMessage({ status: true, msg: `Successfully registered ${user.email}` })
   };

@@ -64,19 +64,18 @@ svg {
 /* //////////////////////////////////// */
 
 .mainHomePage {
-  /* overflow-y: hidden; */
   height: 100dvh;
   width: 100dvw;
 }
 
-.currentActivePage {
+/* .currentActivePage {
   overflow-y: scroll;
   position: fixed;
   top: 0;
   left: 0;
   background: var(--bg-primary);
   z-index: 1;
-}
+} */
 
 /* Headings */
 header {
@@ -251,6 +250,26 @@ footer {
   stroke: var(--svg-color);
 }
 
+/* ================== ACTIVE LINKS================== */
+
+.footerActive > svg,
+.footerInactive > svg {
+  transition: transform 0.3s ease, fill 0.3s ease, stroke 0.3s ease;
+}
+
+.footerActive > svg {
+  transform: scale(1.15);
+  stroke: var(--button-active-color);
+  fill: var(--button-active-color);
+  filter: brightness(120%);
+}
+
+.footerInactive > svg {
+  transform: scale(1);
+  stroke: var(--svg-color);
+  fill: var(--svg-color);
+}
+
 /* ================== DISABLED BUTTONS ================== */
 .footerDisabled button,
 button:disabled {
@@ -320,17 +339,17 @@ button:disabled {
 
 .filter_timeline {
   position: absolute;
-  transform-origin: bottom center;
-  bottom: 85px;
-  left: 0;
+  transform-origin: top right;
+  top: 62px;
+  right: 15px;
   margin: 0 5px;
   min-width: 190px;
 }
 
 .devices_filter_popover {
-  transform-origin: top right;
+  transform-origin: top center;
   top: 62px;
-  right: 15px;
+  right: 45px;
 }
 
 /* Clear filter button */

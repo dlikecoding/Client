@@ -1,5 +1,5 @@
 import { A, useNavigate } from "@solidjs/router";
-import { TestAccountIcon } from "../../svgIcons";
+import { AccountIcon } from "../../svgIcons";
 import { useAuthContext } from "../../../context/AuthProvider";
 import { Show } from "solid-js";
 
@@ -12,7 +12,7 @@ const AccountButton = () => {
       <button
         style={{ "background-color": true ? "rgb(51,94,168)" : "rgb(236,106,94)" }}
         popoverTarget="account-popover">
-        {TestAccountIcon()}
+        {AccountIcon()}
       </button>
       <div popover="auto" id="account-popover" class="popover-container devices_filter_popover">
         <A href="/user">Profile</A>
