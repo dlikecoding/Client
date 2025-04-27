@@ -1,16 +1,7 @@
 import styles from "./Search.module.css";
 import { A } from "@solidjs/router";
 import { createResource, createSignal, Index, Show } from "solid-js";
-
-const fetchSearch = async (input: string = "") => {
-  const res = await fetch(`api/v1/search?keyword=${input}`);
-  if (!res.ok) return { error: "" };
-  try {
-    return await res.json();
-  } catch (error) {
-    console.log(error);
-  }
-};
+import { fetchSearch } from "../../components/extents/request/fetching";
 
 const Search = () => {
   const [keyword, setKeyword] = createSignal<string>("");
@@ -51,7 +42,7 @@ const Search = () => {
       <Show when={loadingSearch()}>
         <h3>
           {loadingSearch().count.reduce((total: number, item: any) => total + parseInt(item.count), 0)} Photos
-          <A href={keyword() ? `/search/${keyword()}` : "/library/all"} class="atag_group_views">
+          <A href={keyword() ? `/search/${keyword()}` : "/search/all"} class="atag_group_views">
             See All
           </A>
         </h3>

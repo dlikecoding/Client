@@ -13,16 +13,14 @@ const errorHandler = async (res: Response) => {
   switch (res.status) {
     case 401:
       return window.location.replace("/login"); // alert("Unauthoried, please signin to your account!");
-
-    case 403:
-      return window.location.replace("/");
-
+      
     case 400:
       const response = await res.json();
       alert(`${response.error}, please try again!`);
       throw new Error(`${res.status} ${response.error}`);
 
     default:
+      alert(`Something went wrong`);
       throw new Error(`Something went wrong`);
   }
 };
@@ -33,8 +31,12 @@ const fetchData = async <T>(url: string): Promise<T | undefined> => {
     credentials: "same-origin",
   });
 
-  if (res.ok) return await res.json();
-  errorHandler(res);
+  try {
+    if (res.ok) return await res.json();
+    errorHandler(res);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const fetchMediaYears = async () => await fetchData<any[]>(`/api/v1/medias`);
@@ -165,6 +167,9 @@ export const adminUpdateUserStatus = async (userEmail: string) => {
     body: JSON.stringify({ userEmail: userEmail }),
   });
 };
+
+///////////////// For Searching //////////////////////////////////////////
+export const fetchSearch = async (input: string) => await fetchData<any>(`/api/v1/search?keyword=${input}`);
 
 // export const fetchPhotoInfo = async (mediaId: string) => {
 //   return fetchData<any[]>(`/api/v1/media/${mediaId}`);

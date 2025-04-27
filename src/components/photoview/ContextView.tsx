@@ -201,12 +201,12 @@ const toDate = (mediaType: MediaType): string => {
   return `${month} ${day}, ${year}`;
 };
 
-/**
- * Returns an element with the specified `data-idx` attribute.
- * @param index - The index to match.
- * @returns The matching element or `null` if not found.
- */
-const getLastElement = (index: number) => {
-  return document.querySelector<HTMLElement>(`[data-idx="${index}"]`);
-};
+// /**
+//  * Returns an element with the specified `data-idx` attribute.
+//  * @param index - The index to match.
+//  * @returns The matching element or `null` if not found.
+//  */
+// const getLastElement = (index: number) => {
+//   return document.querySelector<HTMLElement>(`[data-idx="${index}"]`);
+// };
 /* <p> PhotoView - ID: {params.id} - Page: {params.pages} </p> */

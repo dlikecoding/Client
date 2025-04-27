@@ -49,7 +49,7 @@ const App = () => {
     },
     SEARCH: {
       pages: ["search"],
-      keyworks: /^[a-zA-Z0-9\s]*$/,
+      keywords: /^[a-zA-Z0-9\s]*$/,
     },
   };
 
@@ -65,11 +65,6 @@ const App = () => {
         <Route component={AuthGuard}>
           <Route component={Homepage}>
             <Route path="/" component={HomepageRedirect} />
-
-            <Route path="/search" component={ContextSearch}>
-              <Route path="/" component={Search} />
-              <Route path="/:keywords" component={PhotoView} />
-            </Route>
 
             <Route path="/user">
               <Route path="/" component={Profile} />
@@ -88,6 +83,11 @@ const App = () => {
               <Route path="/" component={OverView} />
               <Route path="/:pages/:id" component={PhotoView} matchFilters={filters.COLLECTION} />
               <Route path="/:pages" component={PhotoView} matchFilters={filters.UTILITIES} />
+            </Route>
+
+            <Route path="/:pages" component={ContextSearch} matchFilters={filters.SEARCH}>
+              <Route path="/" component={Search} />
+              <Route path="/:keywords" component={PhotoView} matchFilters={filters.SEARCH} />
             </Route>
           </Route>
         </Route>
