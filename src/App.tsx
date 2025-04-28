@@ -7,7 +7,7 @@ import { AuthProvider } from "./context/AuthProvider";
 const HomepageRedirect = () => <Navigate href="/library/" />;
 
 const App = () => {
-  const Homepage = lazy(() => import("./pages/homepage/Home"));
+  const Layout = lazy(() => import("./pages/main_layout/Layout"));
 
   // Summary each year (Library)
   const Library = lazy(() => import("./pages/library/Library"));
@@ -63,7 +63,7 @@ const App = () => {
 
         {/* Protected Routes (Wrapped Inside a Route) */}
         <Route component={AuthGuard}>
-          <Route component={Homepage}>
+          <Route component={Layout}>
             <Route path="/" component={HomepageRedirect} />
 
             <Route path="/user">

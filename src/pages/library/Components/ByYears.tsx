@@ -1,7 +1,7 @@
 import styles from "../Group.module.css";
 import { A } from "@solidjs/router";
 import { useManageURLContext } from "../../../context/ManageUrl";
-import { createMemo, createSignal, For, Index, onMount } from "solid-js";
+import { createSignal, Index } from "solid-js";
 
 const ByYears = (props: any) => {
   const { params, updatePage } = useManageURLContext();
@@ -9,9 +9,9 @@ const ByYears = (props: any) => {
 
   const [targetRef, setTargetRef] = createSignal<HTMLAnchorElement | null>(null);
 
-  onMount(() => {
-    const target = targetRef();
-    if (target) setTimeout(() => target.scrollIntoView({ behavior: "instant", block: "center" }), 0);
+  requestAnimationFrame(() => {
+    const el = targetRef();
+    if (el) el.scrollIntoView({ behavior: "instant", block: "center" });
   });
 
   return (

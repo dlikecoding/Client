@@ -12,7 +12,7 @@ const mainPages = new Map([
   ["/", "Search"],
 ]);
 
-const Home = (props: any) => {
+const Layout = (props: any) => {
   // Goto previous page if any:
   const location = useLocation();
   // const navigate = useNavigate();
@@ -31,4 +31,4 @@ const Home = (props: any) => {
   );
 };
 
-export default Home;
+export default Layout;

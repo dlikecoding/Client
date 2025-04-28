@@ -1,17 +1,18 @@
 import styles from "../Group.module.css";
 import { A } from "@solidjs/router";
 import { useManageURLContext } from "../../../context/ManageUrl";
-import { createSignal, Index, onMount } from "solid-js";
+import { createSignal, Index } from "solid-js";
 
 const ByMonths = (props: any) => {
   const { params, updatePage } = useManageURLContext();
   const medias = () => props.medias;
   const [targetRef, setTargetRef] = createSignal<HTMLAnchorElement | null>(null);
 
-  onMount(() => {
-    const target = targetRef();
-    if (target) setTimeout(() => target.scrollIntoView({ behavior: "instant", block: "center" }), 0);
+  requestAnimationFrame(() => {
+    const el = targetRef();
+    if (el) el.scrollIntoView({ behavior: "instant", block: "center" });
   });
+
   return (
     <Index each={medias()}>
       {(photo) => {
