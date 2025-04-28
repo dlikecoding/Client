@@ -33,7 +33,7 @@ const GroupView = () => {
   });
 
   return (
-    <div class={styles.groupContainer} style={{ "padding-bottom": "150px" }}>
+    <div class={styles.groupContainer}>
       <Switch fallback={<NotFound errorCode="Not Found 404" message="No data available for the selected period." />}>
         <Match when={loadedMedias.loading}>
           <Loading />

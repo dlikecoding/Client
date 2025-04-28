@@ -5,11 +5,9 @@
 }
 
 .groupContainer {
-  position: absolute;
+  height: 100dvh;
   width: 100dvw;
 
-  top: 0;
-  left: 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

@@ -1,29 +1,31 @@
-.cards {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 10px;
-  padding-bottom: 10px;
-}
-
-.album_section {
+.cards_section {
   position: relative;
-  overflow-x: auto;
+  overflow-x: scroll;
   overflow-y: hidden;
-  white-space: nowrap;
+
   height: fit-content;
+  width: 100dvw;
+
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
 }
 
-.album_section * {
+.cards_section * {
   color: aliceblue;
   text-decoration: none;
 }
 
+.cards {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 15px;
+  padding-bottom: 10px;
+}
+
 /* Album Section Styles ==================================*/
 .albumCard {
-  width: 190px;
-  height: auto;
+  /* width: 190px; */
+  /* height: auto; */
   border-radius: 15px;
 
   display: flex;

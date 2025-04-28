@@ -23,6 +23,7 @@ const Search = () => {
           type="text"
           placeholder="Find photos using keywords ... "
           onInput={(e) => setKeyword(e.target.value)}
+          value={keyword().trim()}
           onFocus={() => (header()!.style.height = "0")}
           onBlur={() => (header()!.style.height = "65px")}
         />

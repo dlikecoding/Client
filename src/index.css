@@ -206,9 +206,13 @@ footer {
 .actions__toolbar__column > A {
   display: flex;
   align-items: center;
+  justify-content: center;
+
   background: transparent;
   border: none;
-  height: 24px;
+
+  height: 27px;
+  min-width: 27px;
 }
 
 .actions__toolbar__column.is_left {

@@ -33,12 +33,12 @@ const OverView = () => {
           Edit
         </button>
       </h3>
-      <div class={style.album_section}>
+      <div class={style.cards_section}>
         <div class={style.cards}>
           <For each={loadedAlbums()}>
             {(album, _) => (
               <A href={`/collection/album/${album.album_id}`} class={style.albumCard}>
-                <img src={album.thumb_path} alt="Focus Playlist" />
+                <img loading="lazy" src={album.thumb_path} alt="Focus Playlist" />
                 <div> {album.title}</div>
                 <p>{album.media_count}</p>
               </A>
@@ -54,12 +54,12 @@ const OverView = () => {
           Edit
         </button>
       </h3>
-      <div class={style.album_section}>
+      <div class={style.cards_section}>
         <div class={style.cards}>
           <For each={loadedAlbums()}>
             {(album, _) => (
               <A href={`/collection/dataset/${album.album_id}`} class={style.card}>
-                <img src={album.thumb_path} alt="Focus Playlist" />
+                <img loading="lazy" src={album.thumb_path} alt="Focus Playlist" />
 
                 <div class={style.cardFooter}>
                   <div> {album.title}</div>
@@ -77,8 +77,10 @@ const OverView = () => {
         <For each={Object.entries(loadedStatistics() || {})} fallback={<div>Not Found...</div>}>
           {([key, value]) => (
             <A
-              href={`/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}
+              href={parseInt(value) === 0 ? "" : `/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}
               onClick={() => {
+                if (parseInt(value) === 0) return;
+
                 const updateData = gotoPage[key as UpdateKey];
                 if (updateData) return updatePage(updateData);
                 console.warn(`No update action found for: ${key}`);

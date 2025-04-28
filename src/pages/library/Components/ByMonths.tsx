@@ -9,7 +9,8 @@ const ByMonths = (props: any) => {
   const [targetRef, setTargetRef] = createSignal<HTMLAnchorElement | null>(null);
 
   onMount(() => {
-    if (targetRef()) targetRef()!.scrollIntoView({ behavior: "instant", block: "center" });
+    const target = targetRef();
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: "instant", block: "center" }), 0);
   });
   return (
     <Index each={medias()}>
@@ -27,12 +28,14 @@ const ByMonths = (props: any) => {
               updatePage({ year: photo().create_year, month: photo().create_month });
             }}
             href="/library/all">
-            <h3 class={styles.titleMonthView}>
+            <h3 inert class={styles.titleMonthView}>
               {formatDate.month} {photo().create_year}
             </h3>
 
-            <div class={styles.overlayDay}>{formatDate.date}</div>
-            <img loading="lazy" alt="Month Photos" src={photo().thumb_path} />
+            <div inert class={styles.overlayDay}>
+              {formatDate.date}
+            </div>
+            <img inert loading="lazy" alt="Month Photos" src={photo().thumb_path} />
           </A>
         );
       }}

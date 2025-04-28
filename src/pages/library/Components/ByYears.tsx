@@ -1,7 +1,7 @@
 import styles from "../Group.module.css";
 import { A } from "@solidjs/router";
 import { useManageURLContext } from "../../../context/ManageUrl";
-import { createSignal, Index, onMount } from "solid-js";
+import { createMemo, createSignal, For, Index, onMount } from "solid-js";
 
 const ByYears = (props: any) => {
   const { params, updatePage } = useManageURLContext();
@@ -10,7 +10,8 @@ const ByYears = (props: any) => {
   const [targetRef, setTargetRef] = createSignal<HTMLAnchorElement | null>(null);
 
   onMount(() => {
-    if (targetRef()) targetRef()!.scrollIntoView({ behavior: "instant", block: "center" });
+    const target = targetRef();
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: "instant", block: "center" }), 0);
   });
 
   return (
@@ -23,10 +24,10 @@ const ByYears = (props: any) => {
             updatePage({ year: photo().create_year, month: photo().create_month });
           }}
           href="/library/month">
-          <div class={styles.overlayText}>
+          <div inert class={styles.overlayText}>
             <h3>{photo().create_year}</h3>
           </div>
-          <img loading="lazy" alt="Year Photos" src={photo().thumb_path} />
+          <img inert loading="lazy" alt="Year Photos" src={photo().thumb_path} />
         </A>
       )}
     </Index>

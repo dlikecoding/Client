@@ -48,7 +48,9 @@ const Dashboard = () => {
   };
 
   const externalMedias = async () => {
-    console.log("Import external medias");
+    const path = importExternal.path;
+    if (!path) return alert("Do not accept empty path");
+    console.log("Import external medias: ", path);
   };
 
   const [importExternal, setImportExternal] = createStore({
@@ -95,7 +97,7 @@ const Dashboard = () => {
           </div>
           <button
             class={styles.processButtons}
-            onClick={!dashboardData()?.sysStatus ? integrateMedias : externalMedias}>
+            onClick={() => (dashboardData()?.sysStatus ? externalMedias() : integrateMedias())}>
             Start Progress
           </button>
         </fieldset>
