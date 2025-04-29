@@ -6,11 +6,10 @@ import { createSignal, Index } from "solid-js";
 const ByMonths = (props: any) => {
   const { params, updatePage } = useManageURLContext();
   const medias = () => props.medias;
-  const [targetRef, setTargetRef] = createSignal<HTMLAnchorElement | null>(null);
 
+  let targetRef: HTMLAnchorElement | null = null;
   requestAnimationFrame(() => {
-    const el = targetRef();
-    if (el) el.scrollIntoView({ behavior: "instant", block: "center" });
+    if (targetRef) targetRef.scrollIntoView({ behavior: "instant", block: "center" });
   });
 
   return (
@@ -20,9 +19,7 @@ const ByMonths = (props: any) => {
         return (
           <A
             ref={(el) => {
-              photo().create_year === params.year && photo().create_month === params.month
-                ? setTargetRef(el)
-                : undefined;
+              if (photo().create_year === params.year && photo().create_month === params.month) targetRef = el;
             }}
             class={styles.monthViewContainer}
             onClick={() => {

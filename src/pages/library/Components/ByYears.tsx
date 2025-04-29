@@ -1,24 +1,22 @@
 import styles from "../Group.module.css";
 import { A } from "@solidjs/router";
 import { useManageURLContext } from "../../../context/ManageUrl";
-import { createSignal, Index } from "solid-js";
+import { Index } from "solid-js";
 
 const ByYears = (props: any) => {
   const { params, updatePage } = useManageURLContext();
   const medias = () => props.medias;
 
-  const [targetRef, setTargetRef] = createSignal<HTMLAnchorElement | null>(null);
-
+  let targetRef: HTMLAnchorElement | null = null;
   requestAnimationFrame(() => {
-    const el = targetRef();
-    if (el) el.scrollIntoView({ behavior: "instant", block: "center" });
+    if (targetRef) targetRef.scrollIntoView({ behavior: "instant", block: "center" });
   });
 
   return (
     <Index each={medias()}>
       {(photo) => (
         <A
-          ref={(el) => (photo().create_year === params.year ? setTargetRef(el) : undefined)}
+          ref={(el) => (photo().create_year === params.year ? (targetRef = el) : undefined)}
           class={styles.mediaContainer}
           onClick={() => {
             updatePage({ year: photo().create_year, month: photo().create_month });
