@@ -8,6 +8,8 @@ export type SearchQuery = {
   filterType?: "Photo" | "Live" | "Video";
   filterDevice?: number;
 
+  searchKey?: string;
+
   favorite?: number;
   hidden?: number;
   deleted?: number;
@@ -105,7 +107,7 @@ const resetFilter = {
   filterType: undefined,
   filterDevice: undefined,
 
-  // filterObject: undefined,
+  searchKey: undefined,
 
   favorite: undefined,
   deleted: undefined,

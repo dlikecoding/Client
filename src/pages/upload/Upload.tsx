@@ -10,7 +10,7 @@ import { ProcessMesg } from "../admin/Dashboard";
 
 const GB = 1024 * 1024 * 1024;
 
-const MAX_BODY_SIZE = 5 * GB; // limit total files size
+const MAX_BODY_SIZE = 2 * GB; // limit total files size
 const MAX_UPLOAD_FILE_SIZE = 1 * GB; // limit per file
 
 const Upload = () => {

@@ -46,7 +46,9 @@ const ContextView = () => {
     month: params.month,
     filterDevice: params.filterDevice,
     filterType: params.filterType,
-    // filterObject: params.filterObject,
+
+    searchKey: params.searchKey,
+
     sortKey: params.sortKey,
     sortOrder: params.sortOrder,
 

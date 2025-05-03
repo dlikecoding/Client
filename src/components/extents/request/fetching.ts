@@ -1,7 +1,7 @@
 import { SearchQuery } from "../../../context/ManageUrl";
 import { MediaType } from "../../../context/ViewContext";
 import { SetStoreFunction } from "solid-js/store";
-import { ProcessMesg } from "../../../pages/admin/Dashboard";
+import { ImportArgs, ProcessMesg } from "../../../pages/admin/Dashboard";
 
 const buildQueryString = (params: object): string =>
   Object.entries(params)
@@ -13,7 +13,7 @@ const errorHandler = async (res: Response) => {
   switch (res.status) {
     case 401:
       return window.location.replace("/login"); // alert("Unauthoried, please signin to your account!");
-      
+
     case 400:
       const response = await res.json();
       alert(`${response.error}, please try again!`);
@@ -113,6 +113,14 @@ export const forDeleting = async (mediaIds: string[]) => {
 ///////////////// For Uploading //////////////////////////////////////////
 const fetchStreamData = async (response: Response, setMessages: SetStoreFunction<ProcessMesg>) => {
   try {
+    if (!response.ok) {
+      const errorMgs = await response.json();
+
+      return response.status === 401
+        ? window.location.replace("/login")
+        : setMessages({ status: true, mesg: errorMgs.error });
+    }
+
     if (!response.body) throw new Error("Stream response body is empty");
 
     const reader = response.body.getReader();
@@ -149,10 +157,17 @@ export const forUploadFiles = async (setMessages: SetStoreFunction<ProcessMesg>,
 ///////////////// For ADMIN //////////////////////////////////////////
 export const adminFetchAdminDashboard = async () => await fetchData<any>(`/api/v1/admin/dashboard`);
 
-export const adminIntegrateData = async (setMessages: SetStoreFunction<ProcessMesg>) => {
+export const adminIntegrateData = async (setMessages: SetStoreFunction<ProcessMesg>, importArgs: ImportArgs) => {
   const response = await fetch("/api/v1/admin/import", {
-    method: "GET",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
     credentials: "same-origin",
+    body: JSON.stringify({
+      sourcePath: importArgs.path,
+      aimode: importArgs.aimode,
+    }),
   });
   await fetchStreamData(response, setMessages);
 };

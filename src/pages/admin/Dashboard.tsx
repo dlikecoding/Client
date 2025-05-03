@@ -20,6 +20,11 @@ export interface ProcessMesg {
   status: boolean;
 }
 
+export interface ImportArgs {
+  path: string;
+  aimode: 0 | 1;
+}
+
 const Dashboard = () => {
   const [dashboardData, { mutate, refetch }] = createResource<loadedDashboard>(adminFetchAdminDashboard);
 
@@ -41,22 +46,24 @@ const Dashboard = () => {
 
   const [streamMesg, setStreamMesg] = createStore<ProcessMesg>({ mesg: "", status: false });
 
+  const [importArgs, setImportArgs] = createStore<ImportArgs>({
+    path: "",
+    aimode: 0,
+  });
+
   const integrateMedias = async () => {
     setStreamMesg("mesg", "Sent request to Server");
-    await adminIntegrateData(setStreamMesg);
+    await adminIntegrateData(setStreamMesg, importArgs);
     refetch();
   };
 
   const externalMedias = async () => {
-    const path = importExternal.path;
+    const path = importArgs.path;
     if (!path) return alert("Do not accept empty path");
-    console.log("Import external medias: ", path);
-  };
 
-  const [importExternal, setImportExternal] = createStore({
-    path: "",
-    aiMode: false,
-  });
+    setStreamMesg("mesg", `Start processing medias in ${importArgs.path}`);
+    await adminIntegrateData(setStreamMesg, importArgs);
+  };
 
   return (
     <>
@@ -76,11 +83,10 @@ const Dashboard = () => {
               <input
                 class="inputSearch"
                 type="text"
-                name="importPath"
                 id="importPath"
                 autocomplete="off"
                 placeholder="/Volumes/External/Photos"
-                onInput={(e) => setImportExternal("path", e.target.value)}
+                onInput={(e) => setImportArgs("path", e.target.value)}
               />
             </div>
           </Show>
@@ -88,12 +94,10 @@ const Dashboard = () => {
           <div>
             <input
               type="checkbox"
-              name="detectModel"
               id="detectModel"
-              value="detectModel"
-              onChange={() => setImportExternal("aiMode", !importExternal.aiMode)}
+              onChange={() => setImportArgs("aimode", importArgs.aimode === 0 ? 1 : 0)}
             />
-            <label for="detectModel">AI Detection Mode ({importExternal.aiMode ? "enable" : "disabled"})</label>
+            <label for="detectModel">AI Detection Mode ({importArgs.aimode ? "enable" : "disabled"})</label>
           </div>
           <button
             class={styles.processButtons}

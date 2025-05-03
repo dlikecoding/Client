@@ -1,10 +1,13 @@
 import styles from "./Search.module.css";
 import { A } from "@solidjs/router";
-import { createResource, createSignal, Index, Show } from "solid-js";
+import { createMemo, createResource, createSignal, Index, Show } from "solid-js";
 import { fetchSearch } from "../../components/extents/request/fetching";
+import { useManageURLContext } from "../../context/ManageUrl";
 
 const Search = () => {
   const [keyword, setKeyword] = createSignal<string>("");
+
+  const { updatePage } = useManageURLContext();
 
   const [header, setHeader] = createSignal<HTMLElement>();
   const [loadingSearch] = createResource(keyword, fetchSearch);
@@ -28,7 +31,7 @@ const Search = () => {
           onBlur={() => (header()!.style.height = "65px")}
         />
       </div>
-      <div class={styles.searchResult}>
+      {/* <div class={styles.searchResult}>
         <Show when={keyword().trim() && loadingSearch()}>
           <Index each={loadingSearch().count}>
             {(each) => (
@@ -39,11 +42,16 @@ const Search = () => {
             )}
           </Index>
         </Show>
-      </div>
+      </div> */}
       <Show when={loadingSearch()}>
         <h3>
-          {loadingSearch().count.reduce((total: number, item: any) => total + parseInt(item.count), 0)} Photos
-          <A href={keyword() ? `/search/${keyword()}` : "/search/all"} class="atag_group_views">
+          {loadingSearch().count} Photos
+          <A
+            href={keyword() ? `/search/${keyword()}` : "/search/all"}
+            onClick={() => {
+              updatePage({ searchKey: keyword() });
+            }}
+            class="atag_group_views">
             See All
           </A>
         </h3>
