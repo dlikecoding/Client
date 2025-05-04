@@ -17,7 +17,7 @@ export interface loadedDashboard {
 
 export interface ProcessMesg {
   mesg: string;
-  status: boolean;
+  isRunning: boolean;
 }
 
 export interface ImportArgs {
@@ -44,7 +44,7 @@ const Dashboard = () => {
     });
   };
 
-  const [streamMesg, setStreamMesg] = createStore<ProcessMesg>({ mesg: "", status: false });
+  const [streamMesg, setStreamMesg] = createStore<ProcessMesg>({ mesg: "", isRunning: false });
 
   const [importArgs, setImportArgs] = createStore<ImportArgs>({
     path: "",
@@ -52,7 +52,7 @@ const Dashboard = () => {
   });
 
   const integrateMedias = async () => {
-    setStreamMesg("mesg", "Sent request to Server");
+    setStreamMesg({ mesg: "Start processing internal media", isRunning: true });
     await adminIntegrateData(setStreamMesg, importArgs);
     refetch();
   };
@@ -61,7 +61,7 @@ const Dashboard = () => {
     const path = importArgs.path;
     if (!path) return alert("Do not accept empty path");
 
-    setStreamMesg("mesg", `Start processing medias in ${importArgs.path}`);
+    setStreamMesg({ mesg: `Start processing medias in ${importArgs.path}`, isRunning: true });
     await adminIntegrateData(setStreamMesg, importArgs);
   };
 

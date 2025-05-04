@@ -14,29 +14,37 @@ const MAX_BODY_SIZE = 2 * GB; // limit total files size
 const MAX_UPLOAD_FILE_SIZE = 1 * GB; // limit per file
 
 const Upload = () => {
-  const [streamMesg, setStreamMesg] = createStore<ProcessMesg>({ mesg: "", status: false });
-  const [files, setFiles] = createSignal<File[]>([]);
+  // When status is false, show spining. Otherwise, show close (X) button on True
+  const [streamMesg, setStreamMesg] = createStore<ProcessMesg>({ mesg: "", isRunning: false });
+
+  const resetFileInput = (message: string = "") => {
+    const input = fileInputEl();
+    if (input) input.value = "";
+    if (message !== "") setStreamMesg({ mesg: message, isRunning: false });
+  };
 
   const handleFileChange = async (event: Event) => {
-    const input = event.target as HTMLInputElement;
+    setStreamMesg({ mesg: "Started Uploading...", isRunning: true });
 
-    if (input.files) setFiles(Array.from(input.files) as File[]);
+    const input = event.target as HTMLInputElement;
+    if (!input.files) return;
+
+    const selectedFiles = Array.from(input.files);
 
     let totalFileSize = 0;
 
     const formData = new FormData();
-    files().forEach((file) => {
-      if (file.size >= MAX_UPLOAD_FILE_SIZE) return setStreamMesg({ mesg: "File size over limited", status: false });
-      totalFileSize += file.size;
+    selectedFiles.forEach((file) => {
+      // if (file.size >= MAX_UPLOAD_FILE_SIZE) return resetFileInput("File size over limited");
+      // totalFileSize += file.size;
       formData.append("uploadFiles", file);
     });
 
-    if (totalFileSize > MAX_BODY_SIZE) return setStreamMesg({ mesg: "Total size too large!", status: false });
+    // if (totalFileSize > MAX_BODY_SIZE) return resetFileInput("Total size exceed limit!");
 
-    setStreamMesg("mesg", "Started Uploading...");
     await forUploadFiles(setStreamMesg, formData);
 
-    input.value = "";
+    resetFileInput();
   };
 
   const [hasAgreed, setHasAgreed] = createSignal<boolean>(localStorage.getItem("NoticeUpload") === "false");
@@ -97,12 +105,10 @@ const Upload = () => {
           </ul>
         </div>
 
-        {/* <div class={styles.checkboxLabel}>
-          <label>
-            <input type="checkbox" id="enabledAI" name="enabledAI" value="enabledAI" class={styles.checkboxInput} />
-            Enable AI Detection
-          </label>
-        </div> */}
+        <div class={styles.checkboxLabel} style={{ "justify-content": "center", gap: "5px", "padding-bottom": "10px" }}>
+          <input type="checkbox" id="enabledAI" name="enabledAI" value="enabledAI" class={styles.checkboxInput} />
+          <label for="enabledAI">Enable AI Detection</label>
+        </div>
 
         <div class={styles.dialogActions}>
           <button class={styles.cancelButton} onClick={() => document.getElementById("uploadPopover")?.hidePopover()}>
@@ -113,7 +119,6 @@ const Upload = () => {
           </button>
         </div>
       </div>
-
       <input
         type="file"
         id="fileInput"
@@ -129,4 +134,5 @@ const Upload = () => {
 
 export default Upload;
 
-const fileUploaded = () => document.getElementById("fileInput")?.click();
+const fileInputEl = () => document.getElementById("fileInput") as HTMLInputElement;
+const fileUploaded = () => fileInputEl().click();

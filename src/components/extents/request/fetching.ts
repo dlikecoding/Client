@@ -115,10 +115,7 @@ const fetchStreamData = async (response: Response, setMessages: SetStoreFunction
   try {
     if (!response.ok) {
       const errorMgs = await response.json();
-
-      return response.status === 401
-        ? window.location.replace("/login")
-        : setMessages({ status: true, mesg: errorMgs.error });
+      return setMessages("mesg", errorMgs.error);
     }
 
     if (!response.body) throw new Error("Stream response body is empty");
@@ -133,22 +130,17 @@ const fetchStreamData = async (response: Response, setMessages: SetStoreFunction
       const chunk = decoder.decode(value, { stream: true });
       setMessages("mesg", chunk);
     }
-
-    setMessages("status", true);
   } catch (error) {
-    console.log("Error import media", error);
-
-    setMessages("mesg", `⚠️ Error: ${error}`);
-    setMessages("status", true);
+    console.log("Error import/upload media", error);
+    setMessages("mesg", `⚠️ ${error}`);
+  } finally {
+    setMessages("isRunning", false);
   }
 };
 
 export const forUploadFiles = async (setMessages: SetStoreFunction<ProcessMesg>, formData: FormData) => {
   const response = await fetch("/api/v1/upload", {
     method: "POST",
-    // headers: {
-    //   "Content-Type": "multipart/form-data",
-    // },
     credentials: "same-origin",
     body: formData,
   });
@@ -203,3 +195,7 @@ export const fetchSearch = async (input: string) => await fetchData<any>(`/api/v
 //   const res = await fetch(url, mergedOptions);
 //   return;
 // };
+
+// headers: {
+//   "Content-Type": "multipart/form-data",
+// },
