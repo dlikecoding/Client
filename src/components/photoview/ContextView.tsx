@@ -93,11 +93,6 @@ const ContextView = () => {
     if (newMedia) setDisplayMedia((prev) => [...prev!, ...newMedia]);
   });
 
-  // Reset params on closed (This dose not reset year and month )
-  onCleanup(() => resetLibrary());
-  // Change number of column when in duplicate page. Otherwise, keep the preveous.
-  //// NOT SURE IF NEEDED
-
   ///////////////// Virtualization ContextView /////////////////////////////////////////////////
   let containerRef!: HTMLDivElement;
 
@@ -123,6 +118,9 @@ const ContextView = () => {
     const end = endIndex(); // track
     return displayMedias.slice(start, end + 1); // new array
   });
+
+  // Reset params on closed (This dose not reset year and month )
+  onCleanup(() => resetLibrary());
 
   return (
     <>

@@ -1,5 +1,8 @@
-import { createContext, useContext, JSX, createMemo } from "solid-js";
+import { useLocation } from "@solidjs/router";
+import { createContext, useContext, JSX, createMemo, onCleanup } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
+
+const LOCALSTORAGE_VIEW_KEY = "zoomAspect";
 
 export type SearchQuery = {
   year?: number;
@@ -28,6 +31,8 @@ export type ZoomAndAspect = {
   modalObjFit: boolean;
 };
 
+type StoreLastVisit = { url: string; params: SearchQuery };
+
 interface ManageURLContextProviderProps {
   children: JSX.Element;
 }
@@ -46,46 +51,37 @@ type ManageURIContextType = {
 const ManageURLContext = createContext<ManageURIContextType>();
 
 export const ManageURLContextProvider = (props: ManageURLContextProviderProps) => {
-  const localSearchQuery = localStorage.getItem("SearchQuery");
-  const localZoomAndAspect = localStorage.getItem("ZoomAndAspect");
+  const location = useLocation();
+  const pageName = createMemo(() => location.pathname.split("/")[1]);
 
-  const [params, setParams] = createStore<SearchQuery>(JSON.parse(localSearchQuery!) || { ...defaultParams });
+  const localSearchQuery = loadLocalStorage(pageName());
+  const localZoomAndAspect = loadLocalStorage(LOCALSTORAGE_VIEW_KEY);
+
+  const loadParams = localSearchQuery ? JSON.parse(localSearchQuery).params : defaultParams;
+  const [params, setParams] = createStore<SearchQuery>(loadParams);
 
   const [view, setView] = createStore(
     JSON.parse(localZoomAndAspect!) || {
       nColumn: 3,
       objectFit: true,
 
-      modalObjFit: true,
+      modalObjFit: false,
     }
   );
 
   // Updates a specific parameter in the query object by key
-  const updatePageKey = <T extends keyof SearchQuery>(key: T, value: SearchQuery[T]) => {
-    setParams({ [key]: value });
-  };
-
+  const updatePageKey = <T extends keyof SearchQuery>(key: T, value: SearchQuery[T]) => setParams({ [key]: value });
   // Updates multiple parameters in the query object at once
-  const updatePage = (data: Partial<SearchQuery>) => {
-    setParams((prevState) => ({ ...prevState, ...data }));
-  };
+  const updatePage = (data: Partial<SearchQuery>) => setParams((prevState) => ({ ...prevState, ...data }));
 
   // Resets all parameters in the query object to their default values
-  const resetParams = () => {
-    setParams({ ...defaultParams });
-  };
+  const resetParams = () => setParams({ ...defaultParams });
+  const resetLibrary = () => setParams((prevState) => ({ ...prevState, ...resetFilter })); // For Library only (wo reset year, month)
 
-  // Resets all parameters in the query object to their default values
-  const resetLibrary = () => {
-    setParams((prevState) => ({ ...prevState, ...resetFilter }));
-  };
-
+  createMemo(() => saveLocalStorage(LOCALSTORAGE_VIEW_KEY, view));
   createMemo(() => {
-    localStorage.setItem("SearchQuery", JSON.stringify(params));
-  });
-
-  createMemo(() => {
-    localStorage.setItem("ZoomAndAspect", JSON.stringify(view));
+    const storagePage: StoreLastVisit = { url: location.pathname, params: params };
+    saveLocalStorage(pageName(), storagePage);
   });
 
   return (
@@ -102,6 +98,9 @@ export const useManageURLContext = () => {
   }
   return ctx;
 };
+
+const loadLocalStorage = (key: string) => localStorage.getItem(key);
+const saveLocalStorage = (key: string, data: StoreLastVisit) => localStorage.setItem(key, JSON.stringify(data));
 
 const resetFilter = {
   filterType: undefined,
@@ -123,3 +122,8 @@ export const defaultParams: SearchQuery = {
   sortOrder: 0, // Valid now
   ...resetFilter,
 };
+
+// const defaultPage: StoreLastVisit = {
+//   url: "",
+//   params: defaultParams,
+// };
