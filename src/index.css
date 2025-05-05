@@ -226,8 +226,8 @@ footer {
 
 .actions__toolbar__column.is_middle > button,
 .actions__toolbar__column.is_middle > A {
-  padding: 0 10px;
-  justify-content: space-between;
+  /* padding: 0 10px;
+  justify-content: space-between; */
   font-size: 17px;
   color: var(--text-color);
   font-weight: 600;

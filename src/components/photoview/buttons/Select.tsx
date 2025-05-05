@@ -4,14 +4,16 @@ import { useMediaContext } from "../../../context/Medias";
 const Select = () => {
   const { setItems, isSelected, setIsSelected } = useMediaContext();
 
-  const footerBar = document.getElementById("navigationBar") as HTMLElement;
-
   createMemo(() => {
     // Hide navigation bar when Select button clicked
     if (isSelected()) {
-      if (footerBar) footerBar.style.display = "none";
+      document.querySelectorAll(".footer_nav").forEach((el) => {
+        (el as HTMLElement).classList.add("hideFooter");
+      });
     } else {
-      if (footerBar) footerBar.style.display = "";
+      document.querySelectorAll(".footer_nav").forEach((el) => {
+        (el as HTMLElement).classList.remove("hideFooter");
+      });
       setItems(new Map());
     }
   });
@@ -24,3 +26,9 @@ const Select = () => {
 };
 
 export default Select;
+
+function hideElementsByClass(className: string) {
+  document.querySelectorAll(`.${className}`).forEach((el) => {
+    (el as HTMLElement).style.display = "none";
+  });
+}

@@ -8,12 +8,14 @@ const Setting = lazy(() => import("../setting/Setting"));
 
 const Footer = () => {
   return (
-    <footer>
-      <div class="actions__toolbar__column is_left">{LinkTag("library", LibraryIcon)}</div>
+    <footer class="footer_nav">
+      <div class="actions__toolbar__column is_left">
+        <Upload />
+      </div>
       <div class="actions__toolbar__column is_middle">
+        {LinkTag("library", LibraryIcon)}
         {LinkTag("collection", CollectionIcon)}
         {LinkTag("search", SearchIcon)}
-        <Upload />
       </div>
       <div class="actions__toolbar__column is_right">
         <button popovertarget="setting-contents">{ServerIcon()}</button>
