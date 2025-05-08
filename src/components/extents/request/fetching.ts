@@ -17,10 +17,11 @@ const errorHandler = async (res: Response) => {
     case 400:
       const response = await res.json();
       alert(`${response.error}, please try again!`);
+      return [];
       throw new Error(`${res.status} ${response.error}`);
 
     default:
-      alert(`Something went wrong`);
+      alert(`Something went wrong. Please reload the app!`);
       throw new Error(`Something went wrong`);
   }
 };
@@ -176,7 +177,10 @@ export const adminUpdateUserStatus = async (userEmail: string) => {
 };
 
 ///////////////// For Searching //////////////////////////////////////////
-export const fetchSearch = async (input: string) => await fetchData<any>(`/api/v1/search?keyword=${input}`);
+export const fetchRefetch = async () => await fetchData<any>(`/api/v1/search/refreshView`);
+export const fetchSearch = async (input: string) => {
+  return await fetchData<any>(`/api/v1/search?keywords=${input}`);
+};
 
 // export const fetchPhotoInfo = async (mediaId: string) => {
 //   return fetchData<any[]>(`/api/v1/media/${mediaId}`);
