@@ -3,20 +3,11 @@ import { ManageURLContextProvider } from "../../context/ManageUrl";
 import FooterLibrary from "./FooterLibrary";
 import { useNavigate } from "@solidjs/router";
 
-const Library = (props: any) => {
-  const navigate = useNavigate();
-  const lastVisitLibrary = localStorage.getItem("library");
-
-  onMount(() => {
-    if (lastVisitLibrary) return navigate(JSON.parse(lastVisitLibrary).url, { replace: true });
-  });
-
-  return (
-    <ManageURLContextProvider>
-      {props.children}
-      <FooterLibrary />
-    </ManageURLContextProvider>
-  );
-};
+const Library = (props: any) => (
+  <ManageURLContextProvider>
+    {props.children}
+    <FooterLibrary />
+  </ManageURLContextProvider>
+);
 
 export default Library;

@@ -53,7 +53,7 @@ const Dashboard = () => {
 
   const integrateMedias = async () => {
     setStreamMesg({ mesg: "Start processing internal media", isRunning: true });
-    await adminIntegrateData(setStreamMesg, importArgs);
+    await adminIntegrateData(setStreamMesg, importArgs, "internal");
     refetch();
   };
 
@@ -62,7 +62,7 @@ const Dashboard = () => {
     if (!path) return alert("Do not accept empty path");
 
     setStreamMesg({ mesg: `Start processing medias in ${importArgs.path}`, isRunning: true });
-    await adminIntegrateData(setStreamMesg, importArgs);
+    await adminIntegrateData(setStreamMesg, importArgs, "external");
   };
 
   return (
@@ -97,7 +97,9 @@ const Dashboard = () => {
               id="detectModel"
               onChange={() => setImportArgs("aimode", importArgs.aimode === 0 ? 1 : 0)}
             />
-            <label for="detectModel">AI Detection Mode ({importArgs.aimode ? "enable" : "disabled"})</label>
+            <label for="detectModel">
+              Computer Vision for Search Engine {importArgs.aimode ? "Enabled" : "Disabled"}
+            </label>
           </div>
           <button
             class={styles.processButtons}

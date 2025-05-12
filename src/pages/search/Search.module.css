@@ -64,3 +64,18 @@
   aspect-ratio: 1;
   transition: all 1s ease;
 }
+
+.notfoundSearch {
+  width: 100%;
+  height: 200px;
+
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.notfoundSearch > * {
+  margin: 0;
+  padding: 10px;
+}

@@ -139,8 +139,8 @@ const fetchStreamData = async (response: Response, setMessages: SetStoreFunction
   }
 };
 
-export const forUploadFiles = async (setMessages: SetStoreFunction<ProcessMesg>, formData: FormData) => {
-  const response = await fetch("/api/v1/upload", {
+export const forUploadFiles = async (setMessages: SetStoreFunction<ProcessMesg>, formData: FormData, aimode: 0 | 1) => {
+  const response = await fetch(`/api/v1/upload?aimode=${aimode}`, {
     method: "POST",
     credentials: "same-origin",
     body: formData,
@@ -150,8 +150,12 @@ export const forUploadFiles = async (setMessages: SetStoreFunction<ProcessMesg>,
 ///////////////// For ADMIN //////////////////////////////////////////
 export const adminFetchAdminDashboard = async () => await fetchData<any>(`/api/v1/admin/dashboard`);
 
-export const adminIntegrateData = async (setMessages: SetStoreFunction<ProcessMesg>, importArgs: ImportArgs) => {
-  const response = await fetch("/api/v1/admin/import", {
+export const adminIntegrateData = async (
+  setMessages: SetStoreFunction<ProcessMesg>,
+  importArgs: ImportArgs,
+  driveLocation: "internal" | "external"
+) => {
+  const response = await fetch(`/api/v1/admin/${driveLocation}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

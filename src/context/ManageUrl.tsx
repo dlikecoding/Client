@@ -1,5 +1,5 @@
-import { useLocation } from "@solidjs/router";
-import { createContext, useContext, JSX, createMemo, onCleanup } from "solid-js";
+import { useLocation, useNavigate } from "@solidjs/router";
+import { createContext, useContext, JSX, createMemo, onCleanup, createSignal } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
 
 const LOCALSTORAGE_VIEW_KEY = "zoomAspect";
@@ -79,10 +79,6 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
   const resetLibrary = () => setParams((prevState) => ({ ...prevState, ...resetFilter })); // For Library only (wo reset year, month)
 
   createMemo(() => saveLocalStorage(LOCALSTORAGE_VIEW_KEY, view));
-  createMemo(() => {
-    const storagePage: StoreLastVisit = { url: location.pathname, params: params };
-    saveLocalStorage(pageName(), storagePage);
-  });
 
   return (
     <ManageURLContext.Provider value={{ params, updatePageKey, updatePage, resetParams, resetLibrary, view, setView }}>
@@ -100,7 +96,8 @@ export const useManageURLContext = () => {
 };
 
 const loadLocalStorage = (key: string) => localStorage.getItem(key);
-const saveLocalStorage = (key: string, data: StoreLastVisit) => localStorage.setItem(key, JSON.stringify(data));
+const saveLocalStorage = (key: string, data: StoreLastVisit | string) =>
+  localStorage.setItem(key, JSON.stringify(data));
 
 const resetFilter = {
   filterType: undefined,

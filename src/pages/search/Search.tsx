@@ -8,7 +8,7 @@ const Search = () => {
   onMount(async () => await fetchRefetch());
 
   const [keyword, setKeyword] = createSignal<string>("");
-  const [isTyping, setIsTyping] = createSignal<boolean>(false);
+  // const [isTyping, setIsTyping] = createSignal<boolean>(false);
 
   const { updatePage } = useManageURLContext();
   const [loadingSearch] = createResource(keyword, fetchSearch);
@@ -30,27 +30,25 @@ const Search = () => {
           placeholder="Find photos using keywords ... "
           onInput={(e) => setKeyword(e.target.value)}
           value={keyword()}
-          onFocus={() => setIsTyping(true)}
+          // onFocus={() => setIsTyping(true)}
           // onBlur={() => setIsTyping(false)}
         />
       </div>
       <div class={styles.searchResult}>
-        <Show when={isTyping()}>
-          {loadingSearch() && (
-            <Index each={loadingSearch().suggestCount}>
-              {(each) => (
-                <button
-                  onClick={() => {
-                    setKeyword(each().word);
-                    setIsTyping(false);
-                  }}>
-                  <span>{each().word}</span>
-                  <span>{each().ndoc}</span>
-                </button>
-              )}
-            </Index>
-          )}
-        </Show>
+        {loadingSearch() && (
+          <Index each={loadingSearch().suggestCount}>
+            {(each) => (
+              <button
+                onClick={() => {
+                  setKeyword(each().word);
+                  // setIsTyping(false);
+                }}>
+                <span>{each().word}</span>
+                <span>{each().ndoc}</span>
+              </button>
+            )}
+          </Index>
+        )}
       </div>
       <Show when={loadingSearch()}>
         <h3>
@@ -66,8 +64,15 @@ const Search = () => {
         </h3>
       </Show>
       <div class={styles.libraryGrid}>
-        <Show when={loadingSearch()}>
-          <Index each={loadingSearch().data}>{(media, index) => <img src={media().thumb_path} alt="Image 1" />}</Index>
+        <Show
+          when={loadingSearch() && loadingSearch().data.length > 0}
+          fallback={
+            <div class={styles.notfoundSearch}>
+              <h3>No Results</h3>
+              <p>There were no reults for "{keyword()}." Try new search.</p>
+            </div>
+          }>
+          <Index each={loadingSearch().data}>{(media) => <img src={media().thumb_path} alt="Image 1" />}</Index>
         </Show>
       </div>
     </>

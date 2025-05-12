@@ -1,8 +1,9 @@
-import { createResource, For, Suspense } from "solid-js";
+import { createResource, For } from "solid-js";
 import style from "./OverView.module.css";
 import { A } from "@solidjs/router";
 import { fetchAlbum, fetchStatistic } from "../../components/extents/request/fetching";
 import { useManageURLContext } from "../../context/ManageUrl";
+import placeholder from "../../assets/svgs/place-holder.svg";
 
 type UpdateKey = "Favorite" | "Hidden" | "Duplicate" | "Recently Deleted";
 
@@ -35,11 +36,19 @@ const OverView = () => {
       </h3>
       <div class={style.cards_section}>
         <div class={style.cards}>
-          <For each={loadedAlbums()}>
+          <For
+            each={loadedAlbums()}
+            fallback={
+              <A href="#" class={style.albumCard}>
+                <img loading="lazy" src={placeholder} alt="Focus Playlist" />
+                <div>Create Album</div>
+                {/* <p> {album.media_count}</p> */}
+              </A>
+            }>
             {(album, _) => (
               <A href={`/collection/album/${album.album_id}`} class={style.albumCard}>
                 <img loading="lazy" src={album.thumb_path} alt="Focus Playlist" />
-                <div> {album.title}</div>
+                <div>{album.title}</div>
                 <p>{album.media_count}</p>
               </A>
             )}
@@ -56,13 +65,24 @@ const OverView = () => {
       </h3>
       <div class={style.cards_section}>
         <div class={style.cards}>
-          <For each={loadedAlbums()}>
+          <For
+            each={loadedAlbums()}
+            fallback={
+              <A href="#" class={style.card}>
+                <img loading="lazy" src={placeholder} alt="Focus Playlist" />
+
+                <div class={style.cardFooter}>
+                  <div>Placeholder</div>
+                  <p>999</p>
+                </div>
+              </A>
+            }>
             {(album, _) => (
               <A href={`/collection/dataset/${album.album_id}`} class={style.card}>
                 <img loading="lazy" src={album.thumb_path} alt="Focus Playlist" />
 
                 <div class={style.cardFooter}>
-                  <div> {album.title}</div>
+                  <div>{album.title}</div>
                   <p>{album.media_count}</p>
                 </div>
               </A>

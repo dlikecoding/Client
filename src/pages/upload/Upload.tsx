@@ -16,6 +16,7 @@ const MAX_UPLOAD_FILE_SIZE = 1 * GB; // limit per file
 const Upload = () => {
   // When status is false, show spining. Otherwise, show close (X) button on True
   const [streamMesg, setStreamMesg] = createStore<ProcessMesg>({ mesg: "", isRunning: false });
+  const [selectAiMode, setSelectAiMode] = createSignal<0 | 1>(0);
 
   const resetFileInput = (message: string = "") => {
     const input = fileInputEl();
@@ -35,14 +36,14 @@ const Upload = () => {
 
     const formData = new FormData();
     selectedFiles.forEach((file) => {
-      // if (file.size >= MAX_UPLOAD_FILE_SIZE) return resetFileInput("File size over limited");
-      // totalFileSize += file.size;
+      if (file.size >= MAX_UPLOAD_FILE_SIZE) return resetFileInput("File size over limited");
+      totalFileSize += file.size;
       formData.append("uploadFiles", file);
     });
 
-    // if (totalFileSize > MAX_BODY_SIZE) return resetFileInput("Total size exceed limit!");
+    if (totalFileSize > MAX_BODY_SIZE) return resetFileInput("Total size exceed limit!");
 
-    await forUploadFiles(setStreamMesg, formData);
+    await forUploadFiles(setStreamMesg, formData, selectAiMode());
 
     resetFileInput();
   };
@@ -93,7 +94,7 @@ const Upload = () => {
             + Files should have a <b>size</b> of less than <b>1 GB</b>.
           </p>
           <p>
-            + The total <b>size</b> of all files should not exceed <b>5 GB</b> per session.
+            + The total <b>size</b> of all files should not exceed <b>2 GB</b> per session.
           </p>
           <p>
             + Before uploading, select the <b>Most Compatible</b> option:
@@ -106,8 +107,13 @@ const Upload = () => {
         </div>
 
         <div class={styles.checkboxLabel} style={{ "justify-content": "center", gap: "5px", "padding-bottom": "10px" }}>
-          <input type="checkbox" id="enabledAI" name="enabledAI" value="enabledAI" class={styles.checkboxInput} />
-          <label for="enabledAI">Enable AI Detection</label>
+          <input
+            type="checkbox"
+            id="enabledAI"
+            class={styles.checkboxInput}
+            onChange={() => setSelectAiMode((prev) => (prev === 0 ? 1 : 0))}
+          />
+          <label for="enabledAI">Computer Vision for Search Engine ({selectAiMode() ? "Enabled" : "Disabled"})</label>
         </div>
 
         <div class={styles.dialogActions}>
