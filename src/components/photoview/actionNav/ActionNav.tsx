@@ -1,5 +1,5 @@
 import { useParams } from "@solidjs/router";
-import { Accessor, Component, Match, Show, Switch } from "solid-js";
+import { Match, Show, Switch } from "solid-js";
 
 import { useMediaContext } from "../../../context/Medias";
 import { useViewMediaContext } from "../../../context/ViewContext";
@@ -107,7 +107,7 @@ const ActionNav = () => {
           class="actions__toolbar__column is_middle"
           style={{ visibility: !currentPage.includes("favorite") && openModal() ? "hidden" : "visible" }}>
           <Show when={currentPage.includes("favorite")}>
-            <Favorite action={actions.favorite} />
+            <Favorite action={actions.favorite} openModal={openModal} />
           </Show>
 
           {/* //////////////////////////////////////////////// */}

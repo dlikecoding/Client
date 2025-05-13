@@ -80,6 +80,11 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
 
   createMemo(() => saveLocalStorage(LOCALSTORAGE_VIEW_KEY, view));
 
+  createMemo(() => {
+    const storagePage: StoreLastVisit = { url: location.pathname, params: params };
+    saveLocalStorage(pageName(), storagePage);
+  });
+
   return (
     <ManageURLContext.Provider value={{ params, updatePageKey, updatePage, resetParams, resetLibrary, view, setView }}>
       {props.children}

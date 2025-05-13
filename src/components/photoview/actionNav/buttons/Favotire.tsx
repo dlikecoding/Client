@@ -1,4 +1,31 @@
+import { createMemo } from "solid-js";
 import { FavoriteButtonIcon } from "../../../svgIcons";
-import { ButtonProps } from "./ButtonProps";
+import { useMediaContext } from "../../../../context/Medias";
+import { useViewMediaContext } from "../../../../context/ViewContext";
 
-export const Favorite = (props: ButtonProps) => <button onClick={props.action}>{FavoriteButtonIcon()}</button>;
+type FavoriteProps = {
+  action: () => void;
+  openModal: () => boolean;
+};
+
+export const Favorite = (props: FavoriteProps) => {
+  const { items } = useMediaContext();
+  const { displayMedias } = useViewMediaContext();
+
+  /** change fill or not for the status of heart on click:
+   * For example:
+   * - if model is not open, do not fill the heart
+   * - otherwise, fill the heart when user clicked on it, or when user change
+   * to the other image where is favorite*/
+  const isFill = createMemo(() => {
+    if (!props.openModal()) return false;
+    if (!items().size) return false;
+
+    const index = items().keys().next().value;
+    if (index) return displayMedias[index].favorite;
+
+    return false;
+  });
+
+  return <button onClick={props.action}>{FavoriteButtonIcon(isFill())}</button>;
+};
