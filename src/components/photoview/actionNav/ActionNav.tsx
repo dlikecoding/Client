@@ -13,6 +13,7 @@ import { Unhide } from "./buttons/Unhide";
 import { Delete } from "./buttons/Delete";
 import { Merge } from "./buttons/Merge";
 import { EditButtonIcon, InfoButtonIcon } from "../../svgIcons";
+import { Info } from "./buttons/Info";
 
 type ButtonConfig = {
   duplicate: string[];
@@ -111,7 +112,7 @@ const ActionNav = () => {
 
           {/* //////////////////////////////////////////////// */}
           <Show when={currentPage.includes("info")}>
-            <button>{InfoButtonIcon()}</button>
+            <Info />
           </Show>
 
           <Show when={currentPage.includes("edit")}>

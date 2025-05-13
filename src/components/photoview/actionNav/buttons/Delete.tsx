@@ -3,6 +3,7 @@ import { useMediaContext } from "../../../../context/Medias";
 import { useViewMediaContext } from "../../../../context/ViewContext";
 import { forDeleting } from "../../../extents/request/fetching";
 import { DeleteButtonIcon } from "../../../svgIcons";
+import styles from "./Buttons.module.css";
 
 type DeleteProps = {
   delete: () => void;
@@ -42,16 +43,16 @@ export const Delete = (props: DeleteProps) => {
   return (
     <>
       <button popovertarget="delete-contents">{DeleteButtonIcon()}</button>
-      <div popover="auto" id="delete-contents" class="delete_contents">
+      <div popover="auto" id="delete-contents" class={styles.slideUp_contents}>
         <p>{textDelete}</p>
 
-        <button class="deleteBtn" on:click={handleDelete}>
+        <button class={styles.deleteBtn} onClick={handleDelete}>
           Delete {items().size} Photo(s)
         </button>
 
         <button
-          class="cancelBtn"
-          on:click={() => {
+          class={styles.cancelBtn}
+          onClick={() => {
             if (popoverDelete) popoverDelete.hidePopover();
           }}>
           Cancel

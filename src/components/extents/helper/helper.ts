@@ -16,3 +16,21 @@ export const scrollIntoViewFc = (classType: string, dataID: string): void => {
 // export const sleepFunction = (ms: number): Promise<void> => {
 //   return new Promise((resolve) => setTimeout(resolve, ms));
 // };
+
+export const formatTime = (timestamp: string): { weekday: string; date: string; time: string } => {
+  const date = new Date(timestamp);
+
+  return {
+    weekday: date.toLocaleDateString("en-US", { weekday: "long" }),
+    date: date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+    time: date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
+  };
+};
+
+export const convertFileSize = (bytes: number | undefined): string => {
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+  if (!bytes) return "0 Byte";
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+
+  return Math.round(100 * (bytes / Math.pow(1024, i))) / 100 + " " + sizes[i];
+};

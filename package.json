@@ -6,19 +6,20 @@
   "scripts": {
     "dev": "bun x --bun vite",
     "buildX": "bun x --bun vite build --emptyOutDir",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "up": "bun upgrade && bun update"
   },
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^5.7.2",
-    "vite": "^6.0.0",
-    "vite-plugin-solid": "^2.11.1"
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vite-plugin-solid": "^2.11.6"
   },
   "dependencies": {
     "@simplewebauthn/browser": "^13.1.0",
-    "@solid-primitives/list": "^0.1.0",
+    "@solid-primitives/list": "^0.1.1",
     "@solidjs/router": "^0.15.3",
-    "solid-js": "^1.9.3",
+    "solid-js": "^1.9.6",
     "solidjs-use": "^2.3.0"
   }
 }

@@ -2,6 +2,7 @@ import { SearchQuery } from "../../../context/ManageUrl";
 import { MediaType } from "../../../context/ViewContext";
 import { SetStoreFunction } from "solid-js/store";
 import { ImportArgs, ProcessMesg } from "../../../pages/admin/Dashboard";
+import { MediaInfo } from "../../photoview/actionNav/buttons/Info";
 
 const buildQueryString = (params: object): string =>
   Object.entries(params)
@@ -110,7 +111,25 @@ export const forDeleting = async (mediaIds: string[]) => {
     body: JSON.stringify({ mediasToDel: mediaIds }),
   });
 };
+///////////////// For /api/v1/media //////////////////////////////////////////
 
+export const forUpdateCaption = async (mediaId: string, caption: string) => {
+  return await fetch(`/api/v1/media/caption`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "same-origin",
+    body: JSON.stringify({
+      mediaId: mediaId,
+      caption: caption,
+    }),
+  });
+};
+
+export const fetchPhotoInfo = async (mediaId: string, filterType: string): Promise<MediaInfo | undefined> => {
+  return await fetchData<MediaInfo>(`/api/v1/media?id=${mediaId}&filterType=${filterType}`);
+};
 ///////////////// For Uploading //////////////////////////////////////////
 const fetchStreamData = async (response: Response, setMessages: SetStoreFunction<ProcessMesg>) => {
   try {
@@ -185,10 +204,6 @@ export const fetchRefetch = async () => await fetchData<any>(`/api/v1/search/ref
 export const fetchSearch = async (input: string) => {
   return await fetchData<any>(`/api/v1/search?keywords=${input}`);
 };
-
-// export const fetchPhotoInfo = async (mediaId: string) => {
-//   return fetchData<any[]>(`/api/v1/media/${mediaId}`);
-// };
 
 // const fetchDatas = async <T>(url: string, options: RequestInit = {}): Promise<T | undefined> => {
 //   const defaultHeaders = {

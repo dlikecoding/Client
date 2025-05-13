@@ -6,7 +6,9 @@ const FooterLibrary = () => {
 
   return (
     <footer style={{ "z-index": 1, bottom: "90px" }} class="footer_nav">
-      <div class="actions__toolbar__column is_middle" style={{ width: "270px", padding: "5px" }}>
+      <div
+        class="actions__toolbar__column is_middle"
+        style={{ width: "270px", padding: "5px", "justify-content": "space-evenly" }}>
         <A href="/library/" inactiveClass="inactive_button" activeClass="active_button">
           Years
         </A>

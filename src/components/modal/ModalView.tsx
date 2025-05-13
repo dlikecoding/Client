@@ -10,7 +10,7 @@ import { MediaType, useViewMediaContext } from "../../context/ViewContext";
 import { useMediaContext } from "../../context/Medias";
 import { CompressIcon, CustomButtonIcon, ExpandIcon, GoBackIcon } from "../svgIcons";
 
-import { scrollIntoViewFc } from "../extents/helper/helper";
+import { formatTime, scrollIntoViewFc } from "../extents/helper/helper";
 import MediaDisplay from "./MediaDisplay";
 import NotFound from "../extents/NotFound";
 import ActionNav from "../photoview/actionNav/ActionNav";
@@ -195,14 +195,6 @@ const Modal: Component<ModalProps> = (props) => {
 };
 
 export default Modal;
-
-const formatTime = (timestamp: string): { date: string; time: string } => {
-  const date = new Date(timestamp);
-  return {
-    date: new Intl.DateTimeFormat("en-US", { year: "numeric", month: "long", day: "numeric" }).format(date),
-    time: new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "numeric", hour12: true }).format(date),
-  };
-};
 
 /**
  * Scrolls to the specified element using its data-modalid attribute.

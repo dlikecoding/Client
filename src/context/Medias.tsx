@@ -12,6 +12,7 @@ interface ContextProps {
 const GlobalMediaContext = createContext<ContextProps>();
 
 export const MediaContextProvider = (props: any) => {
+  // store index (number) and media id (string) in the map.
   const [items, setItems] = createSignal<Map<number, string>>(new Map());
   const [isSelected, setIsSelected] = createSignal(false);
 

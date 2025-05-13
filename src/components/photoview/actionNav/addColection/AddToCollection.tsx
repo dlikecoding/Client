@@ -14,7 +14,7 @@ interface AddToCollectionProps {
 const AddToCollection = (props: AddToCollectionProps) => {
   const { items, setIsSelected } = useMediaContext();
 
-  const [loadedEntities, { mutate, refetch }] = createResource(props.fetchItems);
+  const [loadedEntities] = createResource(props.fetchItems);
 
   const [inputValue, setInputValue] = createSignal("");
 

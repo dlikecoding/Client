@@ -14,7 +14,7 @@
   --button-active-color: rgb(53, 132, 246);
   --button-delete-color: rgb(224, 58, 40);
 
-  --popup-bground: rgba(28, 28, 30, 0.7);
+  --popup-bground: rgba(17, 17, 18, 0.79);
   --popup-bdropfilter: blur(20px) brightness(1);
 
   --iconSVGSize: 25px;
@@ -390,55 +390,6 @@ button:disabled {
   height: 100%;
   animation: slideIn 0.3s ease;
 }
-/* ================== DELETE CONFIRMATION ================== */
-.delete_contents {
-  inset: unset;
-
-  background: none;
-
-  border: none;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: 95%;
-  max-width: 390px;
-  animation: slideUp 0.3s ease;
-}
-
-.delete_contents > * {
-  text-align: center;
-  width: 100%;
-  padding: 20px;
-
-  background: var(--popup-bground);
-  backdrop-filter: blur(50px) brightness(1.2);
-  -webkit-backdrop-filter: blur(50px) brightness(1.2);
-
-  box-sizing: border-box;
-
-  font-size: larger;
-}
-
-.delete_contents > p {
-  font-size: small;
-  border-radius: 12px 12px 0 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  color: #b2b2b2;
-  margin: 0;
-  /* width: 100%; */
-}
-
-.delete_contents > .deleteBtn {
-  color: var(--button-delete-color);
-  border-radius: 0 0 12px 12px;
-}
-
-.delete_contents > .cancelBtn {
-  font-weight: 500;
-  color: var(--button-active-color);
-  margin: 5px 0 20px 0;
-  border-radius: 12px;
-}
 
 /* ================== MEDIA CONTENT ICONS ================== */
 .media_type_contents {
@@ -524,21 +475,13 @@ button:disabled {
 }
 
 /* ================== ANIMATIONS ================== */
+
 @keyframes zoomIn {
   from {
     scale: 0;
   }
   to {
     scale: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    bottom: -300px;
-  }
-  to {
-    bottom: 0;
   }
 }
 

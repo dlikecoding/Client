@@ -1,0 +1,181 @@
+/* ================== DELETE CONFIRMATION ================== */
+.slideUp_contents {
+  inset: unset;
+
+  background: none;
+
+  border: none;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 95%;
+  max-width: 390px;
+  animation: slideUp 0.3s ease;
+}
+
+.slideUp_contents > * {
+  text-align: center;
+  width: 100%;
+  padding: 20px;
+
+  background: var(--popup-bground);
+  backdrop-filter: blur(50px) brightness(1.2);
+  -webkit-backdrop-filter: blur(50px) brightness(1.2);
+
+  box-sizing: border-box;
+  font-size: larger;
+}
+
+.slideUp_contents > p {
+  font-size: small;
+  border-radius: 12px 12px 0 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  color: #b2b2b2;
+  margin: 0;
+}
+
+.slideUp_contents > .deleteBtn {
+  color: var(--button-delete-color);
+  border-radius: 0 0 12px 12px;
+}
+
+.slideUp_contents > .cancelBtn {
+  font-weight: 500;
+  color: var(--button-active-color);
+  margin: 5px 0 20px 0;
+  border-radius: 12px;
+}
+
+/* ================== INFO POPUP ================== */
+.mediaInfo {
+  /* background: #111112; */
+  color: rgb(145, 145, 154);
+
+  background: var(--popup-bground);
+  backdrop-filter: blur(50px) brightness(1.2);
+  -webkit-backdrop-filter: blur(50px) brightness(1.2);
+
+  border-radius: 10px;
+  padding: 15px;
+  margin: 10px 0;
+}
+
+.mediaInfo > .caption,
+.mediaInfo > .dateInfo {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  color: white;
+  gap: 20px;
+
+  text-align: left;
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.mediaInfo > p {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.mediaInfo > .caption,
+.dateInfo > button {
+  font-size: 17px;
+  color: var(--button-active-color);
+}
+
+.mediaInfo > .caption > input {
+  outline: none;
+  border: none;
+  background: none;
+
+  border-radius: 7px;
+
+  width: 100%;
+  font-size: 14px;
+  padding: 7px 10px 7px 0;
+
+  overflow-y: hidden;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+
+.mediaInfo > .caption > input:enabled {
+  color: white;
+  transition: color 0.2s linear;
+}
+
+.mediaInfo > .caption > input:disabled {
+  color: rgb(145, 145, 154);
+  transition: color 0.2s linear;
+}
+
+.caption > button > svg {
+  fill: var(--button-active-color);
+  stroke: var(--button-active-color);
+}
+
+.mediaInfo > .infoOfMedia {
+  display: block;
+  background: rgb(35, 35, 38);
+  border-radius: 10px;
+  font-size: 14px;
+}
+.mediaInfo > .infoOfMedia > div {
+  display: flex;
+  padding: 5px 10px;
+  margin: 10px 0;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+
+.mediaInfo > .infoOfMedia > .cameraInfo {
+  background: rgb(56, 56, 60);
+  padding: 0 10px;
+  margin: 0;
+  border-radius: 10px 10px 0 0;
+  color: #fff;
+
+  align-items: center;
+}
+
+.cameraInfo > p {
+  margin: 10px 0;
+}
+
+.cameraInfo > p:last-child {
+  background: gray;
+  padding: 3px;
+  border-radius: 5px;
+  font-weight: 500;
+}
+
+.mediaInfo > .infoOfMedia > div:last-child {
+  border-top: 2px solid rgb(42, 41, 45);
+  justify-content: space-around;
+}
+
+.mediaInfo > .infoOfMedia > div:last-child > p {
+  margin: 0;
+  padding: 0;
+}
+
+.mediaInfo > .addLocation {
+  text-align: center;
+  background-color: rgb(35, 35, 38);
+  padding: 15px 10px;
+  margin: 10px 0;
+  border-radius: 10px;
+  color: #0a84ff;
+  cursor: pointer;
+}
+
+@keyframes slideUp {
+  from {
+    bottom: -300px;
+  }
+  to {
+    bottom: 0;
+  }
+}
