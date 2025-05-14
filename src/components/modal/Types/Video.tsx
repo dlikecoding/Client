@@ -2,6 +2,7 @@ import styles from "./Types.module.css";
 
 import { Accessor, Component, createMemo, createSignal, onCleanup, onMount, Setter, Show } from "solid-js";
 import { MediaType } from "../../../context/ViewContext";
+import { VIDEO_API_URL } from "../../../App";
 
 interface VideoProps {
   media: MediaType;
@@ -64,10 +65,11 @@ const Video: Component<VideoProps> = (props) => {
         }}
         preload="metadata"
         controls={false}
+        controlslist="nodownload"
         playsinline={true}
         crossorigin="use-credentials">
         {/* ///////// DEVELOPMENT //////////////////////////////////////// */}
-        <source src={`http://localhost:8080${props.media.source_file}`} type={props.media.mime_type} />
+        <source src={`${VIDEO_API_URL}${props.media.source_file}`} type={props.media.mime_type} />
         {/* <source src={props.media.SourceFile} type={props.media.MIMEType} /> */}
 
         <p>Your browser doesn't support the video tag.</p>

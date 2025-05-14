@@ -128,7 +128,11 @@ export const forUpdateCaption = async (mediaId: string, caption: string) => {
 };
 
 export const fetchPhotoInfo = async (mediaId: string, filterType: string): Promise<MediaInfo | undefined> => {
-  return await fetchData<MediaInfo>(`/api/v1/media?id=${mediaId}&filterType=${filterType}`);
+  try {
+    return await fetchData<MediaInfo>(`/api/v1/media?id=${mediaId}&filterType=${filterType}`);
+  } catch (error) {
+    console.log("fetchPhotoInfo:", error);
+  }
 };
 ///////////////// For Uploading //////////////////////////////////////////
 const fetchStreamData = async (response: Response, setMessages: SetStoreFunction<ProcessMesg>) => {
@@ -198,6 +202,9 @@ export const adminUpdateUserStatus = async (userEmail: string) => {
     body: JSON.stringify({ userEmail: userEmail }),
   });
 };
+
+export const adminBackup = async () => await fetchData<any>(`/api/v1/admin/backup`);
+export const adminRestore = async () => await fetchData<any>(`/api/v1/admin/restore`);
 
 ///////////////// For Searching //////////////////////////////////////////
 export const fetchRefetch = async () => await fetchData<any>(`/api/v1/search/refreshView`);

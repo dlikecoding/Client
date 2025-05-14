@@ -4,6 +4,8 @@ import { Navigate, Route, Router } from "@solidjs/router";
 import AuthGuard from "./pages/auth/AuthGuard";
 import { AuthProvider } from "./context/AuthProvider";
 
+export const VIDEO_API_URL = "http://localhost:8080";
+
 const HomepageRedirect = () => <Navigate href="/library/" />;
 
 const App = () => {

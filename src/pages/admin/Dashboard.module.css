@@ -3,6 +3,40 @@
   --toggle-active: #34c759;
 }
 
+.restore > button,
+.backup > button,
+.processButtons {
+  border-radius: 7px;
+  padding: 7px;
+}
+
+.maintainSys {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.maintainSys > .backup,
+.maintainSys > .restore {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 450px;
+  width: 100%;
+}
+
+.backup > button {
+  background: #007bff;
+}
+
+.restore > button {
+  background: #34c759;
+}
+
+/* ///////////// USER ////////////////// */
 .userContainer {
   display: flex;
   flex-direction: column;
@@ -136,7 +170,6 @@
 
 .processButtons {
   margin: 20px;
-  padding: 10px;
-  background-color: #4f34eb;
-  border-radius: 7px;
+  padding: 7px;
+  background: #4f34eb;
 }

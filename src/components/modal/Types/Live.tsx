@@ -1,5 +1,6 @@
 import { Component } from "solid-js";
 import { MediaType } from "../../../context/ViewContext";
+import { VIDEO_API_URL } from "../../../App";
 
 interface LiveProps {
   media: MediaType;
@@ -19,9 +20,11 @@ const Live: Component<LiveProps> = (props) => {
         // }}
         preload="metadata"
         controls={false}
+        controlslist="nodownload"
         playsinline={true}
         crossorigin="use-credentials">
-        <source src={`http://localhost:8080${props.media.source_file}`} type={props.media.mime_type} />
+        {/* ///////// DEVELOPMENT //////////////////////////////////////// */}
+        <source src={`${VIDEO_API_URL}${props.media.source_file}`} type={props.media.mime_type} />
         {/* <source src={props.media.SourceFile} type={props.media.MIMEType} /> */}
 
         <p>Your browser doesn't support the video tag.</p>

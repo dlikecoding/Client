@@ -17,18 +17,28 @@ export type MediaInfo = {
   file_type: string;
   gps_latitude: string;
   gps_longitude: string;
-  image_height: string;
-  image_width: string;
-  lens_model?: string;
+
   make?: string;
   media: string;
-  megapixels?: string;
+
   mime_type: string;
   model?: string;
   orientation?: string;
   software?: string;
   upload_at: string;
   user_name?: string;
+
+  image_height: string;
+  image_width: string;
+  lens_model?: string;
+  megapixels?: string;
+
+  // For Video
+  title: string;
+
+  // For Video/Live
+  frame_rate: number;
+  duration: number;
 };
 
 export const Info = () => {
@@ -125,11 +135,13 @@ export const Info = () => {
               </div>
               <div>{mediaInfo()?.lens_model || "Canon RF24-70mm F2.8 L IS USM"}</div>
               <div>
+                {mediaInfo()?.file_type !== "Photo" ? `${minValue(mediaInfo()!)}P • ` : ""}
                 {mediaInfo()?.megapixels ? `${mediaInfo()?.megapixels} MP • ` : ""}
                 {mediaInfo()?.image_height ? `${mediaInfo()?.image_height} × ${mediaInfo()?.image_width}` : "Video"}
                 {convertFileSize(mediaInfo()?.file_size) ? ` • ${convertFileSize(mediaInfo()?.file_size)}` : ""}
               </div>
               <div>
+                {mediaInfo()?.frame_rate && <p>{mediaInfo()?.frame_rate} FPS</p>}
                 <p>Upload: {formatTime(mediaInfo()!.upload_at).date}</p>
                 <p>From {mediaInfo()?.user_name || "Unknown"}</p>
               </div>
@@ -140,4 +152,12 @@ export const Info = () => {
       </div>
     </>
   );
+};
+
+const minValue = (info: MediaInfo) => {
+  if (!info) return 0;
+  const w = info.image_width;
+  const h = info.image_height;
+  if (!w || !h) return 0;
+  return Math.min(parseInt(w), parseInt(h));
 };

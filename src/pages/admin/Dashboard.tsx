@@ -1,7 +1,9 @@
 import styles from "./Dashboard.module.css";
 import {
+  adminBackup,
   adminFetchAdminDashboard,
   adminIntegrateData,
+  adminRestore,
   adminUpdateUserStatus,
 } from "../../components/extents/request/fetching";
 import { createResource, Index, Show } from "solid-js";
@@ -13,6 +15,7 @@ import NotFound from "../../components/extents/NotFound";
 export interface loadedDashboard {
   users?: any[];
   sysStatus: boolean;
+  lastBackup: string;
 }
 
 export interface ProcessMesg {
@@ -65,6 +68,17 @@ const Dashboard = () => {
     await adminIntegrateData(setStreamMesg, importArgs, "external");
   };
 
+  const backupData = async () => {
+    const data = await adminBackup();
+    alert(data.message);
+    refetch();
+  };
+
+  const restoreData = async () => {
+    const data = await adminRestore();
+    alert(data.message);
+    refetch();
+  };
   return (
     <>
       {dashboardData.loading && <Loading />}
@@ -98,7 +112,7 @@ const Dashboard = () => {
               onChange={() => setImportArgs("aimode", importArgs.aimode === 0 ? 1 : 0)}
             />
             <label for="detectModel">
-              Computer Vision for Search Engine {importArgs.aimode ? "Enabled" : "Disabled"}
+              Computer Vision for Search Engine ({importArgs.aimode ? "Enabled" : "Disabled"})
             </label>
           </div>
           <button
@@ -113,10 +127,32 @@ const Dashboard = () => {
         <ImportLoading streamMesg={streamMesg} setStreamMesg={setStreamMesg} />
       </Show>
 
+      <h3 style={{ "margin-top": "50px" }}>Server Recovery</h3>
+      <div class={styles.maintainSys}>
+        <div class={styles.backup}>
+          <div>Last backup: {dashboardData()?.lastBackup || "N/A"}</div>
+          <button onClick={backupData}>Backup</button>
+        </div>
+
+        <Show when={dashboardData()?.lastBackup}>
+          <div class={styles.restore}>
+            <div>Last restore: {"N/A"}</div>
+            <button
+              onClick={() => {
+                alert("Confirm before restore");
+                // restoreData()
+                console.log("Recovery the system");
+              }}>
+              Restore
+            </button>
+          </div>
+        </Show>
+      </div>
+
       <h3 style={{ "margin-top": "50px" }}>Users Active Status</h3>
       <div class={styles.userContainer}>
         <Index each={dashboardData()?.users}>
-          {(user, index) => (
+          {(user) => (
             <div class={styles.userCard}>
               <img src="/src/assets/svgs/avatar.svg" style={{ "background-position": "center" }} />
               <div class={styles.userInfo}>
