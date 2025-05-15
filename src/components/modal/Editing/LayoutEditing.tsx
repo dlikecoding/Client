@@ -2,8 +2,6 @@ import styles from "../ModalView.module.css";
 import { Component, JSX } from "solid-js";
 import { Portal } from "solid-js/web";
 
-import moreStyles from "./Editing.module.css";
-
 type EditMediaProps = {
   onCancel: () => void;
   onDone: () => void;
@@ -14,20 +12,33 @@ const LayoutEditing: Component<EditMediaProps> = (props) => {
   return (
     <Portal>
       <div class={styles.modalContainer} style={{ "z-index": 1, background: "transparent" }}>
-        <header>
-          <div class="buttonContainer">
-            <button onClick={props.onCancel} style={{ padding: "7px 15px" }}>
-              Cancel
-            </button>
-          </div>
-          <div class="buttonContainer">
-            <button onClick={props.onDone} style={{ padding: "7px 15px" }}>
-              Done
-            </button>
-          </div>
+        <header
+          style={{
+            background: "var(--popup-bground)",
+            "backdrop-filter": "blur(20px) brightness(1)",
+            "-webkit-backdrop-filter": "blur(20px) brightness(1)",
+            padding: "15px 20px",
+          }}>
+          <button
+            onClick={props.onCancel}
+            style={{
+              padding: "7px 15px",
+              color: "var(--button-active-color)",
+            }}>
+            Cancel
+          </button>
+
+          <button
+            onClick={props.onDone}
+            style={{
+              padding: "7px 15px",
+              color: "var(--button-active-color)",
+            }}>
+            Done
+          </button>
         </header>
 
-        <div class={styles.modalContent}>{props.children}</div>
+        {props.children}
       </div>
     </Portal>
   );

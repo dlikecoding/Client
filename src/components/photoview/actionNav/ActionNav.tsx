@@ -125,7 +125,9 @@ const ActionNav = () => {
           </Show>
 
           <Show when={currentPage.includes("count")}>
-            <button inert>{items().size}</button>
+            <button inert style={{ "pointer-events": "none" }}>
+              {items().size}
+            </button>
           </Show>
 
           <Show when={currentPage.includes("more") && !openModal()}>

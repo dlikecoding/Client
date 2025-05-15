@@ -13,9 +13,9 @@ export const scrollIntoViewFc = (classType: string, dataID: string): void => {
   if (targetEl) targetEl.scrollIntoView({ behavior: "instant", block: "center" });
 };
 
-export const sleepFunc = (ms: number): Promise<void> => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-};
+// export const sleepFunc = (ms: number): Promise<void> => {
+//   return new Promise((resolve) => setTimeout(resolve, ms));
+// };
 
 export const formatTime = (timestamp: string): { weekday: string; date: string; time: string } => {
   if (!timestamp) return { weekday: "", date: "", time: "" };
@@ -34,4 +34,13 @@ export const convertFileSize = (bytes: number | undefined): string => {
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
 
   return Math.round(100 * (bytes / Math.pow(1024, i))) / 100 + " " + sizes[i];
+};
+
+export const safePlayVideo = async (video: HTMLVideoElement): Promise<void> => {
+  try {
+    if (video.paused) await video.play();
+  } catch (error) {
+    if (!video.paused) video.pause();
+    console.log(error);
+  }
 };

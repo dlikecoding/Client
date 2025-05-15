@@ -15,15 +15,17 @@ interface PhotoProps {
 const Photo: Component<PhotoProps> = (props) => {
   let photoRef: HTMLImageElement;
   const { view } = useManageURLContext();
+  const { isEditing, setIsEditing } = useViewMediaContext();
+
+  // Tracking image onload -> load thumbnail, when done -> load original
   const [imgLoading, setImgLoading] = createSignal<boolean>(true);
 
   const isVisible = () => props.isVisible;
 
-  const { isEditing, setIsEditing } = useViewMediaContext();
-
   return (
     <>
       <img
+        inert
         ref={(el) => (photoRef = el)}
         class={styles.imageTag}
         style={{ "object-fit": view.modalObjFit ? "cover" : "contain" }}
