@@ -27,16 +27,7 @@
 /* /////////////////// LIVE //////////////////////// */
 
 /* /////////////////// PHOTO //////////////////////// */
-
-.blurLoad {
-  width: 100%;
-  height: 100%;
-  /* background-size: var(--objectFitModal); */
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.blurLoad > img {
+.imageTag {
   width: 100%;
   height: 100%;
   max-height: calc(100dvh + 100px);
