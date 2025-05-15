@@ -1,22 +1,23 @@
 import styles from "./Group.module.css";
 import { Dynamic } from "solid-js/web";
 
-import { createMemo, createResource, createSignal, Index, Match, onMount, Switch } from "solid-js";
+import { createMemo, createResource, Index, Match, onMount, Switch } from "solid-js";
 import NotFound from "../../components/extents/NotFound";
 
-import { useLocation } from "@solidjs/router";
+import { useLocation, useNavigate } from "@solidjs/router";
 
 import { fetchMediaYears } from "../../components/extents/request/fetching";
 import Loading from "../../components/extents/Loading";
-import ByMonths from "./Components/ByMonths";
-import ByYears from "./Components/ByYears";
 
-interface GroupMedia {
-  create_year: string;
+import Years from "./Years";
+import { Months } from "./Months";
+
+export interface GroupMedia {
+  create_year: number;
+  create_month: number;
   thumb_path: string;
   media_id: number;
   file_type: string;
-  create_month: string;
   create_date: string;
 }
 
@@ -39,12 +40,12 @@ const GroupView = () => {
           <Loading />
         </Match>
 
-        <Match when={loadedMedias.error}>
-          <NotFound />
-        </Match>
-
         <Match when={displayMedias().length > 0}>
-          <Dynamic component={isYear() ? ByYears : ByMonths} medias={displayMedias()} />
+          <Index each={displayMedias()}>
+            {(photo) => {
+              return <Dynamic component={isYear() ? Years : Months} photo={photo()} />;
+            }}
+          </Index>
         </Match>
       </Switch>
     </div>

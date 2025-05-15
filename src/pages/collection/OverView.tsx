@@ -65,18 +65,16 @@ const OverView = () => {
       </h3>
       <div class={style.cards_section}>
         <div class={style.cards}>
-          <For
-            each={loadedAlbums()}
-            fallback={
-              <A href="#" class={style.card}>
-                <img loading="lazy" src={placeholder} alt="Focus Playlist" />
+          <A href="#" class={style.card}>
+            <img loading="lazy" src={placeholder} alt="Focus Playlist" />
 
-                <div class={style.cardFooter}>
-                  <div>Placeholder</div>
-                  <p>999</p>
-                </div>
-              </A>
-            }>
+            <div class={style.cardFooter}>
+              <div>Placeholder</div>
+              <p>999</p>
+            </div>
+          </A>
+
+          {/* <For each={loadedAlbums()}>
             {(album, _) => (
               <A href={`/collection/dataset/${album.album_id}`} class={style.card}>
                 <img loading="lazy" src={album.thumb_path} alt="Focus Playlist" />
@@ -87,7 +85,7 @@ const OverView = () => {
                 </div>
               </A>
             )}
-          </For>
+          </For> */}
         </div>
       </div>
       {/* //////////////////////////// */}

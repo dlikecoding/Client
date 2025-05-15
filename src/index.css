@@ -1,6 +1,6 @@
 /* ================== ROOT VARIABLES ================== */
 :root {
-  --font-info: 500 12px/12px sans-serif, system-ui, "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif;
+  --font-info: 500 12px/12px sans-serif;
   /* --font-navigate: 500 17px/16px system-ui, "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif; */
   /* --font-headers: 600 45px/45px system-ui, "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif; */
   --svg-color: rgb(239, 239, 239);
@@ -14,7 +14,7 @@
   --button-active-color: rgb(53, 132, 246);
   --button-delete-color: rgb(224, 58, 40);
 
-  --popup-bground: rgba(17, 17, 18, 0.79);
+  --popup-bground: rgba(38, 38, 38, 0.79);
   --popup-bdropfilter: blur(20px) brightness(1);
 
   --iconSVGSize: 25px;
@@ -50,7 +50,7 @@ body {
   scroll-behavior: smooth;
 
   color: white;
-  font-family: system-ui, "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: sans-serif;
 }
 
 svg {

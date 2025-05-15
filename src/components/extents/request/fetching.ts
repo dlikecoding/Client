@@ -19,11 +19,10 @@ const errorHandler = async (res: Response) => {
       const response = await res.json();
       alert(`${response.error}, please try again!`);
       return [];
-      throw new Error(`${res.status} ${response.error}`);
 
     default:
       alert(`Something went wrong. Please reload the app!`);
-      throw new Error(`Something went wrong`);
+      return "";
   }
 };
 
@@ -205,27 +204,16 @@ export const adminUpdateUserStatus = async (userEmail: string) => {
 
 export const adminBackup = async () => await fetchData<any>(`/api/v1/admin/backup`);
 export const adminRestore = async () => await fetchData<any>(`/api/v1/admin/restore`);
+export const adminReindex = async (setMessages: SetStoreFunction<ProcessMesg>) => {
+  const res = await fetch(`/api/v1/admin/reindex`, {
+    method: "GET",
+    credentials: "same-origin",
+  });
+  await fetchStreamData(res, setMessages);
+};
 
 ///////////////// For Searching //////////////////////////////////////////
 export const fetchRefetch = async () => await fetchData<any>(`/api/v1/search/refreshView`);
 export const fetchSearch = async (input: string) => {
   return await fetchData<any>(`/api/v1/search?keywords=${input}`);
 };
-
-// const fetchDatas = async <T>(url: string, options: RequestInit = {}): Promise<T | undefined> => {
-//   const defaultHeaders = {
-//     "Content-Type": "application/json",
-//   };
-
-//   const mergedOptions: RequestInit = {
-//     ...options,
-//     headers: { ...defaultHeaders, ...options.headers }, // Merge default and custom headers
-//   };
-
-//   const res = await fetch(url, mergedOptions);
-//   return;
-// };
-
-// headers: {
-//   "Content-Type": "multipart/form-data",
-// },

@@ -1,9 +1,8 @@
-import { onMount } from "solid-js";
 import { useMediaContext } from "../../../../context/Medias";
 import { useViewMediaContext } from "../../../../context/ViewContext";
 import { forDeleting } from "../../../extents/request/fetching";
 import { DeleteButtonIcon } from "../../../svgIcons";
-import styles from "./Buttons.module.css";
+import { SlideUp } from "../popover/SlideUp";
 
 type DeleteProps = {
   delete: () => void;
@@ -30,34 +29,16 @@ export const Delete = (props: DeleteProps) => {
     ? "The photo(s) will be moved to the Recently Deleted for 30 days before being permanently deleted."
     : "This will permanently delete the selectd photo(s). This action can't be undone";
 
-  let popoverDelete: HTMLElement | null;
-  onMount(() => {
-    popoverDelete = document.getElementById("delete-contents");
-  });
-
   const handleDelete = () => {
-    if (popoverDelete) popoverDelete.hidePopover();
     return props.isDeletePage ? props.delete() : deleteMediasOnSV();
   };
+
+  const deleteMes = () => `Delete ${items().size} Photo(s)`;
 
   return (
     <>
       <button popovertarget="delete-contents">{DeleteButtonIcon()}</button>
-      <div popover="auto" id="delete-contents" class={styles.slideUp_contents}>
-        <p>{textDelete}</p>
-
-        <button class={styles.deleteBtn} onClick={handleDelete}>
-          Delete {items().size} Photo(s)
-        </button>
-
-        <button
-          class={styles.cancelBtn}
-          onClick={() => {
-            if (popoverDelete) popoverDelete.hidePopover();
-          }}>
-          Cancel
-        </button>
-      </div>
+      <SlideUp idElement="delete-contents" noticeText={textDelete} confirmBtn={handleDelete} infoText={deleteMes} />
     </>
   );
 };

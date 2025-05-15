@@ -1,5 +1,4 @@
-/* ================== DELETE CONFIRMATION ================== */
-.slideUp_contents {
+.slideupContents {
   inset: unset;
 
   background: none;
@@ -8,12 +7,12 @@
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
-  width: 95%;
+  width: 100%;
   max-width: 390px;
   animation: slideUp 0.3s ease;
 }
 
-.slideUp_contents > * {
+.slideupContents > * {
   text-align: center;
   width: 100%;
   padding: 20px;
@@ -26,7 +25,7 @@
   font-size: larger;
 }
 
-.slideUp_contents > p {
+.slideupContents > p {
   font-size: small;
   border-radius: 12px 12px 0 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -34,16 +33,25 @@
   margin: 0;
 }
 
-.slideUp_contents > .deleteBtn {
+.slideupContents > .deleteBtn {
   color: var(--button-delete-color);
   border-radius: 0 0 12px 12px;
 }
 
-.slideUp_contents > .cancelBtn {
+.slideupContents > .cancelBtn {
   font-weight: 500;
   color: var(--button-active-color);
   margin: 5px 0 20px 0;
   border-radius: 12px;
+}
+
+@keyframes slideUp {
+  from {
+    bottom: -300px;
+  }
+  to {
+    bottom: 0;
+  }
 }
 
 /* ================== INFO POPUP ================== */
@@ -169,13 +177,4 @@
   border-radius: 10px;
   color: #0a84ff;
   cursor: pointer;
-}
-
-@keyframes slideUp {
-  from {
-    bottom: -300px;
-  }
-  to {
-    bottom: 0;
-  }
 }

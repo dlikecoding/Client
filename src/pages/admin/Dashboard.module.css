@@ -36,6 +36,16 @@
   background: #34c759;
 }
 
+.reindex > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  gap: 10px;
+  font-size: 14px;
+}
+
 /* ///////////// USER ////////////////// */
 .userContainer {
   display: flex;

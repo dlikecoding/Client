@@ -18,6 +18,7 @@ export const scrollIntoViewFc = (classType: string, dataID: string): void => {
 // };
 
 export const formatTime = (timestamp: string): { weekday: string; date: string; time: string } => {
+  if (!timestamp) return { weekday: "", date: "", time: "" };
   const date = new Date(timestamp);
 
   return {

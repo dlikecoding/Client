@@ -3,20 +3,30 @@ import {
   adminBackup,
   adminFetchAdminDashboard,
   adminIntegrateData,
+  adminReindex,
   adminRestore,
   adminUpdateUserStatus,
 } from "../../components/extents/request/fetching";
-import { createResource, Index, Show } from "solid-js";
+import { createMemo, createResource, Index, Show } from "solid-js";
 import { createStore } from "solid-js/store";
 import ImportLoading from "../../components/extents/ImportLoading";
 import Loading from "../../components/extents/Loading";
 import NotFound from "../../components/extents/NotFound";
+import { SlideUp } from "../../components/photoview/actionNav/popover/SlideUp";
 
 export interface loadedDashboard {
-  users?: any[];
+  users?: UserType[];
   sysStatus: boolean;
   lastBackup: string;
+  missedData: { thumbnail: number; hashcode: number; caption: number };
 }
+
+type UserType = {
+  user_name: string;
+  user_email: string;
+  status: boolean;
+  reg_user_id: string;
+};
 
 export interface ProcessMesg {
   mesg: string;
@@ -79,6 +89,22 @@ const Dashboard = () => {
     alert(data.message);
     refetch();
   };
+
+  const shouldReindex = () => {
+    const data = dashboardData();
+    if (!data || !data.missedData) return false;
+    const arrayOfMissingData = Object.values(data.missedData);
+    const allZeros = arrayOfMissingData.every((e) => e == 0);
+    return !allZeros;
+  };
+
+  const reindexMissingData = async () => {
+    if (!shouldReindex()) return;
+    setStreamMesg({ mesg: "Start reindexing medias", isRunning: true });
+    await adminReindex(setStreamMesg);
+
+    refetch();
+  };
   return (
     <>
       {dashboardData.loading && <Loading />}
@@ -137,14 +163,31 @@ const Dashboard = () => {
         <Show when={dashboardData()?.lastBackup}>
           <div class={styles.restore}>
             <div>Last restore: {"N/A"}</div>
-            <button
-              onClick={() => {
-                alert("Confirm before restore");
-                // restoreData()
-                console.log("Recovery the system");
-              }}>
-              Restore
-            </button>
+            <button popoverTarget="restore-database">Restore</button>
+            <SlideUp
+              idElement="restore-database"
+              noticeText={"All existing database will be replace with the new data. This action can not be undone."}
+              confirmBtn={restoreData}
+              infoText={() => "Restore Database"}
+            />
+          </div>
+        </Show>
+
+        <Show when={shouldReindex()}>
+          <div class={`${styles.backup} ${styles.reindex}`}>
+            <div>
+              <div>Thumnail</div>
+              <div>{dashboardData()?.missedData.thumbnail}</div>
+            </div>
+            <div>
+              <div>Hashcode</div>
+              <div>{dashboardData()?.missedData.hashcode}</div>
+            </div>
+            <div>
+              <div>Caption</div>
+              <div>{dashboardData()?.missedData.caption}</div>
+            </div>
+            <button onClick={reindexMissingData}>Reindex</button>
           </div>
         </Show>
       </div>

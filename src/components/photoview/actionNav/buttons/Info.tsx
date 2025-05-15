@@ -1,5 +1,4 @@
-import styles from "./Buttons.module.css";
-
+import styles from "../popover/SlideUp.module.css";
 import { createMemo, createSignal, Show } from "solid-js";
 import { useMediaContext } from "../../../../context/Medias";
 
@@ -63,6 +62,9 @@ export const Info = () => {
       if (!captionInputEl || captionInputEl.value.trim().length === 0)
         return alert("Please enter new data to update this caption.");
 
+      const caption = captionInputEl.value.trim();
+      if (caption === mediaInfo()?.caption) return;
+
       const res = await forUpdateCaption(mediaId, captionInputEl.value);
       if (res.ok) return;
       console.log(await res.json());
@@ -109,7 +111,7 @@ export const Info = () => {
         ref={(el) => (popoverDiv = el)}
         popover="auto"
         id="info-contents"
-        class={styles.slideUp_contents}
+        class={styles.slideupContents}
         style={{ "max-width": "600px", width: "100%", "border-radius": 0 }}>
         <Show when={mediaInfo()}>
           <div class={styles.mediaInfo}>
@@ -133,7 +135,7 @@ export const Info = () => {
                 <p>{(mediaInfo()?.make && mediaInfo()?.model) || "UNKNOWN CAMERA"}</p>
                 <p>{mediaInfo()?.file_ext}</p>
               </div>
-              <div>{mediaInfo()?.lens_model || "Canon RF24-70mm F2.8 L IS USM"}</div>
+              <div>{mediaInfo()?.lens_model || "No lens infomation"}</div>
               <div>
                 {mediaInfo()?.file_type !== "Photo" ? `${minValue(mediaInfo()!)}P • ` : ""}
                 {mediaInfo()?.megapixels ? `${mediaInfo()?.megapixels} MP • ` : ""}
