@@ -1,16 +1,13 @@
 import styles from "./Group.module.css";
 import { Dynamic } from "solid-js/web";
+import { createMemo, createResource, Index, Match, Switch } from "solid-js";
+import { useLocation } from "@solidjs/router";
 
-import { createMemo, createResource, Index, Match, onMount, Switch } from "solid-js";
 import NotFound from "../../components/extents/NotFound";
-
-import { useLocation, useNavigate } from "@solidjs/router";
-
-import { fetchMediaYears } from "../../components/extents/request/fetching";
 import Loading from "../../components/extents/Loading";
-
+import { fetchMediaYears } from "../../components/extents/request/fetching";
 import Years from "./Years";
-import { Months } from "./Months";
+import Months from "./Months";
 
 export interface GroupMedia {
   create_year: number;

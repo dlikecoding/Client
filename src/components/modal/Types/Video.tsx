@@ -1,8 +1,11 @@
 import styles from "./Types.module.css";
 
 import { Accessor, Component, createMemo, createSignal, onCleanup, onMount, Setter, Show } from "solid-js";
-import { MediaType } from "../../../context/ViewContext";
+import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import { VIDEO_API_URL } from "../../../App";
+import { useManageURLContext } from "../../../context/ManageUrl";
+import { sleepFunc } from "../../extents/helper/helper";
+import EditVideo from "../Editing/EditVideo";
 
 interface VideoProps {
   media: MediaType;
@@ -20,11 +23,18 @@ const Video: Component<VideoProps> = (props) => {
 
   const isVisible = () => props.isVisible;
 
-  /** Auto stop video playing when scroll to other element */
-  createMemo(() => {
-    if (isVisible()) return;
-    if (videoRef && !videoRef.paused) return videoRef.pause(); //Video is not visible, pausing...
+  /** Auto play/stop video playing when scroll to other element */
+  createMemo(async () => {
+    if (!isVisible()) {
+      if (videoRef && !videoRef.paused) return videoRef.pause(); //Video is not visible, pausing...
+    }
+    // if (videoRef && isVisible()) {
+    //   await sleepFunc(1000);
+    //   if (isVisible()) return await videoRef.play();
+    // }
   });
+
+  const { isEditing, setIsEditing } = useViewMediaContext();
 
   return (
     <>
@@ -74,7 +84,9 @@ const Video: Component<VideoProps> = (props) => {
 
         <p>Your browser doesn't support the video tag.</p>
       </video>
-
+      <Show when={isEditing() && isVisible()}>
+        {videoRef! && <EditVideo video={videoRef} setIsEditing={setIsEditing} />}
+      </Show>
       {/* Design a videoPlayer control when video play, user able to control it */}
 
       {/* backward forward pause -------------- 0:23 (duration) */}

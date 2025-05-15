@@ -133,7 +133,7 @@ const Modal: Component<ModalProps> = (props) => {
           </div>
           <div class="buttonContainer">
             <button
-              style={{ visibility: displayMedias[current.elIndex]?.file_type !== "Photo" ? "hidden" : "visible" }}
+              // style={{ visibility: displayMedias[current.elIndex]?.file_type !== "Photo" ? "hidden" : "visible" }}
               onClick={() => setView("modalObjFit", (prev) => !prev)}>
               {view.modalObjFit ? CompressIcon() : ExpandIcon()}
             </button>

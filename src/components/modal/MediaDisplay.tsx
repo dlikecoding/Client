@@ -1,6 +1,6 @@
 import styles from "./ModalView.module.css";
-import { MediaType } from "../../context/ViewContext";
-import { Accessor, Component, createSignal, Match, onMount, Setter, Show, Switch } from "solid-js";
+import { MediaType, useViewMediaContext } from "../../context/ViewContext";
+import { Accessor, Component, createMemo, createSignal, Match, onMount, Setter, Show, Switch } from "solid-js";
 import Video from "./Types/Video";
 import Photo from "./Types/Photo";
 import Live from "./Types/Live";
@@ -24,7 +24,7 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
   const viewIndex = () => props.viewIndex;
 
   const [isVisible, setIsVisible] = createSignal(false);
-
+  const { isEditing } = useViewMediaContext();
   // Tracking if element is visible, then set the current index to this
   onMount(() => {
     useIntersectionObserver(
@@ -43,16 +43,26 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
     );
   });
 
+  createMemo(() => props.setShowImageOnly(isEditing()));
+
   return (
     <div
       ref={mediaRef}
       class={styles.mediaContainer}
       style={{ top: `${props.topPos}px` }}
       data-modalid={media().media_id} // This media_id is needed to scrollIntoView
-      onClick={() => props.setShowImageOnly((prev) => !prev)}>
+      onClick={() => {
+        if (isEditing()) return;
+        props.setShowImageOnly((prev) => !prev);
+      }}>
       <Switch fallback={<div>Unknown type</div>}>
         <Match when={media().file_type === "Photo"}>
-          <Photo media={media()} />
+          <Photo
+            media={media()}
+            isVisible={isVisible()}
+            showImageOnly={props.showImageOnly}
+            setShowImageOnly={props.setShowImageOnly}
+          />
         </Match>
         <Match when={media().file_type === "Video"}>
           <Video
@@ -63,7 +73,12 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
           />
         </Match>
         <Match when={media().file_type === "Live"}>
-          <Live media={media()} />
+          <Live
+            media={media()}
+            isVisible={isVisible()}
+            showImageOnly={props.showImageOnly}
+            setShowImageOnly={props.setShowImageOnly}
+          />
         </Match>
       </Switch>
     </div>

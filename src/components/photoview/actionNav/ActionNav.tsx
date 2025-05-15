@@ -39,7 +39,7 @@ const ActionNav = () => {
   const { items, setItems, setIsSelected } = useMediaContext();
   const params = useParams();
 
-  const { openModal, displayMedias, setDisplayMedia } = useViewMediaContext();
+  const { openModal, setIsEditing, displayMedias, setDisplayMedia } = useViewMediaContext();
 
   const actions = {
     save: () => console.log("save clicked"),
@@ -116,7 +116,12 @@ const ActionNav = () => {
           </Show>
 
           <Show when={currentPage.includes("edit")}>
-            <button>{EditButtonIcon()}</button>
+            <button
+              onClick={() => {
+                setIsEditing(true);
+              }}>
+              {EditButtonIcon()}
+            </button>
           </Show>
 
           <Show when={currentPage.includes("count")}>

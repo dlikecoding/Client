@@ -3,6 +3,7 @@ import { CloseIcon } from "../svgIcons";
 import styles from "./ImportLoading.module.css";
 import { SetStoreFunction } from "solid-js/store";
 import { ProcessMesg } from "../../pages/admin/Dashboard";
+import Spinner from "./Spinner";
 
 interface StreamMesgProps {
   streamMesg: ProcessMesg;
@@ -25,12 +26,7 @@ const ImportLoading: Component<StreamMesgProps> = (props) => {
                 <CloseIcon />
               </button>
             }>
-            <div class={styles.f_spinner}>
-              <svg viewBox="0 0 50 50">
-                <circle cx="25" cy="25" r="20"></circle>
-                <circle cx="25" cy="25" r="20"></circle>
-              </svg>
-            </div>
+            <Spinner />
           </Show>
         </div>
       </div>

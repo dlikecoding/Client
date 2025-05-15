@@ -1,34 +1,44 @@
-import { Component } from "solid-js";
-import { MediaType } from "../../../context/ViewContext";
+import { Accessor, Component, createSignal, onMount, Setter, Show } from "solid-js";
+import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import { VIDEO_API_URL } from "../../../App";
+import EditLive from "../Editing/EditLive";
+import Spinner from "../../extents/Spinner";
 
 interface LiveProps {
   media: MediaType;
+  isVisible: boolean;
+
+  showImageOnly: Accessor<boolean>;
+  setShowImageOnly: Setter<boolean>;
 }
 
 const Live: Component<LiveProps> = (props) => {
+  let videoRef: HTMLVideoElement;
+  const isVisible = () => props.isVisible;
+
+  const [isSeeking, setIsSeeking] = createSignal(false);
+  const { isEditing, setIsEditing } = useViewMediaContext();
+
   return (
     <>
       <video
+        style={{ display: isSeeking() ? "none" : "" }}
+        ref={(el) => (videoRef = el)}
         inert
-        // ref={videoRef}
         poster={props.media.thumb_path}
-        // onPlay={() => setIsPlaying(true)}
-        // onPause={() => {
-        //   props.setShowImageOnly(false);
-        //   setIsPlaying(false);
-        // }}
         preload="metadata"
         controls={false}
         controlslist="nodownload"
         playsinline={true}
         crossorigin="use-credentials">
-        {/* ///////// DEVELOPMENT //////////////////////////////////////// */}
         <source src={`${VIDEO_API_URL}${props.media.source_file}`} type={props.media.mime_type} />
-        {/* <source src={props.media.SourceFile} type={props.media.MIMEType} /> */}
-
         <p>Your browser doesn't support the video tag.</p>
       </video>
+
+      <Show when={isEditing() && isVisible()}>
+        {isSeeking() && <Spinner />}
+        {videoRef! && <EditLive video={videoRef} setLoading={setIsSeeking} setIsEditing={setIsEditing} />}
+      </Show>
     </>
   );
 };

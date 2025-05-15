@@ -8,7 +8,7 @@ type TypeMonths = {
   photo: GroupMedia;
 };
 
-export const Months = (props: TypeMonths) => {
+const Months = (props: TypeMonths) => {
   const photo = () => props.photo;
 
   const { params, updatePage } = useManageURLContext();
@@ -41,6 +41,8 @@ export const Months = (props: TypeMonths) => {
     </A>
   );
 };
+
+export default Months;
 
 const formatDateParts = (input: string): { month: string; date: number } => {
   const date = new Date(input);
