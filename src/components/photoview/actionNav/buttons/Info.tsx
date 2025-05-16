@@ -59,7 +59,7 @@ export const Info = () => {
       const mediaId = items().values().next().value;
       if (!mediaId) return alert("No valid photo/video to update");
 
-      if (!captionInputEl || captionInputEl.value.trim().length === 0)
+      if (!captionInputEl || captionInputEl.value.trim().length === 0 || captionInputEl.value === "Add a Caption")
         return alert("Please enter new data to update this caption.");
 
       const caption = captionInputEl.value.trim();
@@ -119,7 +119,7 @@ export const Info = () => {
               <input
                 ref={(el) => (captionInputEl = el)}
                 type="text"
-                value={mediaInfo()?.caption}
+                value={mediaInfo()?.caption || "Add a Caption"}
                 disabled={editCaption()}
               />
 
