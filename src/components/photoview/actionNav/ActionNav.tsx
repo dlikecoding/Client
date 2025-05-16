@@ -1,5 +1,5 @@
 import { useParams } from "@solidjs/router";
-import { Match, Show, Switch } from "solid-js";
+import { createMemo, Match, Show, Switch } from "solid-js";
 
 import { useMediaContext } from "../../../context/Medias";
 import { useViewMediaContext } from "../../../context/ViewContext";
@@ -12,8 +12,9 @@ import { Recover } from "./buttons/Recover";
 import { Unhide } from "./buttons/Unhide";
 import { Delete } from "./buttons/Delete";
 import { Merge } from "./buttons/Merge";
-import { EditButtonIcon, InfoButtonIcon } from "../../svgIcons";
+import { EditButtonIcon } from "../../svgIcons";
 import { Info } from "./buttons/Info";
+import { DeleteAll } from "./buttons/DeleteAll";
 
 type ButtonConfig = {
   duplicate: string[];
@@ -27,12 +28,10 @@ type UpdateKey = "favorite" | "hidden" | "deleted";
 const buttonConfig = (isModalOpen: boolean): ButtonConfig => ({
   default: isModalOpen
     ? ["save", "favorite", "info", "edit", "delete"]
-    : ["favorite", "save", "count", "more", "delete"],
-  deleted: isModalOpen
-    ? ["recover", "permanentDelete"]
-    : ["recover", "recoverAll", "count", "permanentDeleteAll", "permanentDelete"],
+    : ["save", "favorite", "count", "more", "delete"],
+  deleted: isModalOpen ? ["recover", "permanentDelete"] : ["recover", "count", "permanentDelete", "permanentDeleteAll"],
   hidden: isModalOpen ? ["unhide", "delete"] : ["unhide", "count", "delete"],
-  duplicate: isModalOpen ? ["merge", "permanentDelete"] : ["merge", "count", "permanentDelete"],
+  duplicate: isModalOpen ? ["permanentDelete"] : ["mergeAll", "count", "permanentDelete"],
 });
 
 const ActionNav = () => {
@@ -44,15 +43,13 @@ const ActionNav = () => {
   const actions = {
     save: () => console.log("save clicked"),
 
-    favorite: () => updateMediaStatus("favorite"),
-
-    hide: () => updateMediaStatus("hidden", true),
-    unhide: () => updateMediaStatus("hidden", false),
+    mergeAll: () => console.log("Merge all"),
 
     delete: () => updateMediaStatus("deleted", true),
     recovery: () => updateMediaStatus("deleted", false),
-
-    merge: () => console.log("Merge Images"),
+    favorite: () => updateMediaStatus("favorite"),
+    hide: () => updateMediaStatus("hidden", true),
+    unhide: () => updateMediaStatus("hidden", false),
   };
 
   const updateMediaStatus = async (updateKey: UpdateKey, updateValue?: boolean) => {
@@ -77,6 +74,10 @@ const ActionNav = () => {
     if (openModal()) return;
     setIsSelected(false);
     setItems(new Map());
+
+    // Redirect to previous page when the list is empty
+    if (displayMedias.length > 0) return;
+    window.history.back();
   };
 
   // Get current pages: Album, Library, ...
@@ -97,8 +98,8 @@ const ActionNav = () => {
             <Match when={currentPage.includes("recover")}>
               <Recover action={actions.recovery} />
             </Match>
-            <Match when={currentPage.includes("merge")}>
-              <Merge action={actions.merge} />
+            <Match when={currentPage.includes("mergeAll")}>
+              <Merge action={actions.mergeAll} />
             </Match>
           </Switch>
         </div>
@@ -116,21 +117,21 @@ const ActionNav = () => {
           </Show>
 
           <Show when={currentPage.includes("edit")}>
-            <button
-              onClick={() => {
-                setIsEditing(true);
-              }}>
-              {EditButtonIcon()}
-            </button>
+            <button onClick={() => setIsEditing(true)}>{EditButtonIcon()}</button>
           </Show>
 
-          <Show when={currentPage.includes("count")}>
-            <button inert style={{ "pointer-events": "none" }}>
-              {items().size}
-            </button>
-          </Show>
+          <Switch>
+            <Match when={currentPage.includes("permanentDeleteAll") && items().size === 1}>
+              <DeleteAll />
+            </Match>
+            <Match when={currentPage.includes("count")}>
+              <button inert style={{ "pointer-events": "none" }}>
+                {items().size}
+              </button>
+            </Match>
+          </Switch>
 
-          <Show when={currentPage.includes("more") && !openModal()}>
+          <Show when={currentPage.includes("more")}>
             <MoreAction hide={actions.hide} />
           </Show>
         </div>

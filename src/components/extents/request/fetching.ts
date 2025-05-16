@@ -110,6 +110,10 @@ export const forDeleting = async (mediaIds: string[]) => {
     body: JSON.stringify({ mediasToDel: mediaIds }),
   });
 };
+
+export const forDeleteAllInRecently = async () => {
+  return await fetchData(`/api/v1/medias/recently`);
+};
 ///////////////// For /api/v1/media //////////////////////////////////////////
 
 export const forUpdateCaption = async (mediaId: string, caption: string) => {

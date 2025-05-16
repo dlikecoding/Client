@@ -80,7 +80,7 @@ header {
 .overlayLive {
   position: absolute;
   top: 3%;
-  left: 4%;
+  right: 4%;
   width: var(--iconSVGSize);
   height: var(--iconSVGSize);
   background-image: url("../../assets/svgs/live-icon.svg");

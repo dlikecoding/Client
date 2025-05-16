@@ -11,7 +11,7 @@ type DeleteProps = {
 
 export const Delete = (props: DeleteProps) => {
   const { items, setItems, setIsSelected } = useMediaContext();
-  const { setDisplayMedia } = useViewMediaContext();
+  const { displayMedias, setDisplayMedia } = useViewMediaContext();
 
   const deleteMediasOnSV = async () => {
     const listOfIds = new Set(items().values());
@@ -23,11 +23,15 @@ export const Delete = (props: DeleteProps) => {
 
     const res = await forDeleting([...listOfIds]);
     if (!res.ok) return console.error(`Failed to delete ${listOfIds}:`, res);
+
+    // Redirect to previous page when the list is empty
+    if (displayMedias.length > 0) return;
+    window.history.back();
   };
 
   const textDelete = props.isDeletePage
     ? "The photo(s) will be moved to the Recently Deleted for 30 days before being permanently deleted."
-    : "This will permanently delete the selectd photo(s). This action can't be undone";
+    : "This will permanently delete the selected photo(s). This action can't be undone";
 
   const handleDelete = () => {
     return props.isDeletePage ? props.delete() : deleteMediasOnSV();

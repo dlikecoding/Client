@@ -1,4 +1,4 @@
-import { createResource, For } from "solid-js";
+import { createResource, For, onMount } from "solid-js";
 import style from "./OverView.module.css";
 import { A } from "@solidjs/router";
 import { fetchAlbum, fetchStatistic } from "../../components/extents/request/fetching";
@@ -8,7 +8,7 @@ import placeholder from "../../assets/svgs/place-holder.svg";
 type UpdateKey = "Favorite" | "Hidden" | "Duplicate" | "Recently Deleted";
 
 const OverView = () => {
-  const { updatePage } = useManageURLContext();
+  const { resetParams, updatePage } = useManageURLContext();
 
   const [loadedStatistics] = createResource<string, string>(fetchStatistic);
   const [loadedAlbums] = createResource(fetchAlbum);
@@ -19,6 +19,8 @@ const OverView = () => {
     Duplicate: { duplicate: 1 },
     "Recently Deleted": { deleted: 1 },
   };
+
+  onMount(resetParams);
 
   return (
     <>
@@ -95,7 +97,7 @@ const OverView = () => {
         <For each={Object.entries(loadedStatistics() || {})} fallback={<div>Not Found...</div>}>
           {([key, value]) => (
             <A
-              href={parseInt(value) === 0 ? "" : `/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}
+              href={parseInt(value) === 0 ? "#" : `/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}
               onClick={() => {
                 if (parseInt(value) === 0) return;
 
