@@ -3,8 +3,6 @@ import styles from "./Types.module.css";
 import { Accessor, Component, createMemo, createSignal, onCleanup, onMount, Setter, Show } from "solid-js";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import { VIDEO_API_URL } from "../../../App";
-import { useManageURLContext } from "../../../context/ManageUrl";
-import { sleepFunc } from "../../extents/helper/helper";
 import EditVideo from "../Editing/EditVideo";
 
 interface VideoProps {

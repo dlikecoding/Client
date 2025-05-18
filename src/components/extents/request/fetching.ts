@@ -221,3 +221,6 @@ export const fetchRefetch = async () => await fetchData<any>(`/api/v1/search/ref
 export const fetchSearch = async (input: string) => {
   return await fetchData<any>(`/api/v1/search?keywords=${input}`);
 };
+
+///////////////// For Setting //////////////////////////////////////////
+export const fetchCapacity = async () => await fetchData<any>(`/api/v1/user/serverCapacity`);

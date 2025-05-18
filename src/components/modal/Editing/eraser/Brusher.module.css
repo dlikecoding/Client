@@ -1,0 +1,61 @@
+/* .mainBrusher {
+  width: 100dvw;
+  height: 100dvh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
+
+.inputBrusher {
+  position: fixed;
+  width: 100%;
+  max-width: 300px;
+  height: 50px;
+
+  bottom: 90px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  gap: 2px;
+  z-index: 1;
+
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px;
+  margin: 0;
+}
+
+.sizeBrusher {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.inputBrusher > input {
+  width: 100%;
+  height: 3px;
+  border-radius: 5px;
+
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  padding: 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: var(--button-active-color);
+
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.3s;
+}

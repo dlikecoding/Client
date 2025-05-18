@@ -27,7 +27,6 @@ const Live: Component<LiveProps> = (props) => {
 
   const CURRENT_FRAME = 0;
   // ================== Handle longpress to play live photos ===============================================
-
   const { pressed } = useMousePressed({ target: parentMediaRef });
 
   let timeId: number | undefined;

@@ -1,7 +1,6 @@
 import { Accessor, Component, createSignal, Setter, Show } from "solid-js";
 import { useManageURLContext } from "../../../context/ManageUrl";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
-import styles from "./Types.module.css";
 import EditPhoto from "../Editing/EditPhoto";
 
 interface PhotoProps {
@@ -27,8 +26,9 @@ const Photo: Component<PhotoProps> = (props) => {
       <img
         inert
         ref={(el) => (photoRef = el)}
-        class={styles.imageTag}
-        style={{ "object-fit": view.modalObjFit ? "cover" : "contain" }}
+        style={{
+          "object-fit": view.modalObjFit ? "cover" : "contain",
+        }}
         onLoad={() => setImgLoading(false)}
         onError={() => setImgLoading(true)}
         loading="lazy"

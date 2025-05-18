@@ -6,6 +6,7 @@ type EditMediaProps = {
   onCancel: () => void;
   onDone: () => void;
   children: JSX.Element;
+  dropdown?: JSX.Element;
 };
 
 const LayoutEditing: Component<EditMediaProps> = (props) => {
@@ -18,6 +19,7 @@ const LayoutEditing: Component<EditMediaProps> = (props) => {
             "backdrop-filter": "blur(20px) brightness(1)",
             "-webkit-backdrop-filter": "blur(20px) brightness(1)",
             padding: "15px 20px",
+            "align-items": "center",
           }}>
           <button
             onClick={props.onCancel}
@@ -27,7 +29,7 @@ const LayoutEditing: Component<EditMediaProps> = (props) => {
             }}>
             Cancel
           </button>
-
+          {props.dropdown}
           <button
             onClick={props.onDone}
             style={{

@@ -1,5 +1,7 @@
 import { Component, Setter } from "solid-js";
 import LayoutEditing from "./LayoutEditing";
+import Dropdown from "./options.tsx/Dropdown";
+import BrusherDrawing from "./eraser/Brusher";
 
 type EditPhotoProps = {
   photo: HTMLImageElement;
@@ -14,9 +16,8 @@ const EditPhoto: Component<EditPhotoProps> = (props) => {
   };
 
   return (
-    <LayoutEditing onCancel={handleCancel} onDone={handleDone}>
-      {/* Media-specific logic/UI */}
-      <div style={{ color: "white" }}></div>
+    <LayoutEditing onCancel={handleCancel} onDone={handleDone} dropdown={Dropdown()}>
+      <BrusherDrawing photo={props.photo} />
     </LayoutEditing>
   );
 };
