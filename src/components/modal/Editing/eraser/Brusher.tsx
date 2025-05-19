@@ -19,9 +19,11 @@ interface Position {
   y: number;
 }
 
+const MIN_MAX_BRUSH_SIZE = { min: 1, max: 300 };
+
 const BrusherDrawing: Component<BrushProps> = (props) => {
   const [isDrawing, setIsDrawing] = createSignal(false);
-  const [brushSize, setBrushSize] = createSignal(10);
+  const [brushSize, setBrushSize] = createSignal(50);
   const [lastPos, setLastPos] = createStore<Position>({ x: 0, y: 0 });
 
   let canvasRef: HTMLCanvasElement;
@@ -29,17 +31,27 @@ const BrusherDrawing: Component<BrushProps> = (props) => {
 
   const getMousePos = (e: MouseEvent) => {
     const rect = canvasRef.getBoundingClientRect();
+    const scaleX = canvasRef.width / rect.width;
+    const scaleY = canvasRef.height / rect.height;
+
     return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY,
     };
   };
 
   onMount(() => {
-    canvasRef.width = props.photo.width;
-    canvasRef.height = props.photo.height;
-    canvasRef.style.width = `${props.photo.width}px`;
-    canvasRef.style.height = `${props.photo.height}px`;
+    // Internal canvas resolution for crisp drawing
+    canvasRef.width = props.photo.naturalWidth;
+    canvasRef.height = props.photo.naturalHeight;
+
+    // Get the size the image is actually displayed at
+    const displayWidth = props.photo.clientWidth;
+    const displayHeight = props.photo.clientHeight;
+
+    // Apply the same CSS size to canvas so it overlays correctly
+    canvasRef.style.width = `${displayWidth}px`;
+    canvasRef.style.height = `${displayHeight}px`;
 
     const ctx = canvasRef.getContext("2d");
     if (ctx) {
@@ -87,17 +99,24 @@ const BrusherDrawing: Component<BrushProps> = (props) => {
 
   return (
     <>
-      <canvas
-        ref={(el) => (canvasRef = el)}
-        style={{
-          border: "1px solid black",
-          cursor: "crosshair",
-          background: "rgba(62, 255, 133, 0.699)",
-        }}
-        onMouseDown={startDrawing}
-        onMouseMove={draw}
-        onMouseUp={stopDrawing}
-      />
+      <div class={styles.mainBrusher}>
+        <canvas
+          ref={(el) => (canvasRef = el)}
+          style={{
+            width: "100%", // Fills container width
+            height: "auto", // Maintains aspect ratio
+
+            border: "1px solid black",
+            cursor: "crosshair",
+            // background: "rgba(62, 255, 133, 0.699)",
+            display: "block", // removes inline spacing
+          }}
+          onMouseDown={startDrawing}
+          onMouseMove={draw}
+          onMouseUp={stopDrawing}
+        />
+      </div>
+
       <Show when={!isDrawing()}>
         <div class={styles.inputBrusher}>
           <div class={styles.sizeBrusher}>
@@ -109,8 +128,8 @@ const BrusherDrawing: Component<BrushProps> = (props) => {
             style={{ background: getTrackBackground(brushSize()) }}
             id="brushSize"
             type="range"
-            min="1"
-            max="100"
+            min={MIN_MAX_BRUSH_SIZE.min}
+            max={MIN_MAX_BRUSH_SIZE.max}
             value={brushSize()}
             onInput={(e) => setBrushSize(Number(e.target.value))}
           />
@@ -136,31 +155,11 @@ const BrusherDrawing: Component<BrushProps> = (props) => {
 
 export default BrusherDrawing;
 
-const drawDot = (x: number, y: number, burshSize: number, ctx: CanvasRenderingContext2D) => {
-  ctx.beginPath();
-  ctx.arc(x, y, burshSize, 0, Math.PI * 2);
-  ctx.fill();
-};
-
-const drawInterpolatedDots = (
-  x1: number,
-  x2: number,
-  y1: number,
-  y2: number,
-  brushSize: number,
-  ctx: CanvasRenderingContext2D
-) => {
-  const distance = Math.hypot(x2 - x1, y2 - y1);
-  const steps = Math.ceil(distance / (brushSize * 1.5));
-  for (let i = 0; i <= steps; i++) {
-    const t = i / steps;
-    const x = x1 + (x2 - x1) * t;
-    const y = y1 + (y2 - y1) * t;
-    drawDot(x, y, brushSize, ctx);
-  }
-};
 const getTrackBackground = (size: number) => {
-  return `linear-gradient(to right, var(--button-active-color) 0%, var(--button-active-color) ${size}%, #ccc ${size}%, #ccc 100%)`;
+  const min = MIN_MAX_BRUSH_SIZE.min;
+  const max = MIN_MAX_BRUSH_SIZE.max;
+  const percentage = ((size - min) / (max - min)) * 100;
+  return `linear-gradient(to right, var(--button-active-color) 0%, var(--button-active-color) ${percentage}%, #ccc ${percentage}%, #ccc 100%)`;
 };
 
 const convertBlackToWhite = (canvasContext: CanvasRenderingContext2D, canvasRef: HTMLCanvasElement) => {

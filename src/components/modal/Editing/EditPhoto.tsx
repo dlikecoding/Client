@@ -1,7 +1,8 @@
 import { Component, Setter } from "solid-js";
 import LayoutEditing from "./LayoutEditing";
-import Dropdown from "./options.tsx/Dropdown";
+
 import BrusherDrawing from "./eraser/Brusher";
+import Dropdown from "./options.tsx/Dropdown";
 
 type EditPhotoProps = {
   photo: HTMLImageElement;

@@ -1,11 +1,13 @@
-/* .mainBrusher {
+.mainBrusher {
   width: 100dvw;
-  height: 100dvh;
+  height: auto;
 
+  max-width: 100%;
+  max-height: 90dvh;
   display: flex;
   justify-content: center;
   align-items: center;
-} */
+}
 
 .inputBrusher {
   position: fixed;
