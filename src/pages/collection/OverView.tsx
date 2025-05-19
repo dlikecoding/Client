@@ -1,4 +1,4 @@
-import { createResource, For, onMount } from "solid-js";
+import { createResource, For, onMount, Show } from "solid-js";
 import style from "./OverView.module.css";
 import { A } from "@solidjs/router";
 import { fetchAlbum, fetchStatistic } from "../../components/extents/request/fetching";
@@ -92,25 +92,28 @@ const OverView = () => {
       </div>
       {/* //////////////////////////// */}
 
-      <h3>Utilities</h3>
-      <div class={style.media_section}>
-        <For each={Object.entries(loadedStatistics() || {})} fallback={<div>Not Found...</div>}>
-          {([key, value]) => (
-            <A
-              href={parseInt(value) === 0 ? "#" : `/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}
-              onClick={() => {
-                if (parseInt(value) === 0) return;
+      <Show when={loadedStatistics()}>
+        <h3>Utilities</h3>
+        <div class={style.media_section}>
+          <For each={Object.entries(loadedStatistics()!)}>
+            {([key, value]) => (
+              <A
+                href={parseInt(value) === 0 ? "#" : `/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}
+                onClick={() => {
+                  if (parseInt(value) === 0) return;
 
-                const updateData = gotoPage[key as UpdateKey];
-                if (updateData) return updatePage(updateData);
-                console.warn(`No update action found for: ${key}`);
-              }}>
-              <span>{key}</span>
-              <span>{value}</span>
-            </A>
-          )}
-        </For>
-      </div>
+                  const updateData = gotoPage[key as UpdateKey];
+                  if (updateData) return updatePage(updateData);
+                  console.warn(`No update action found for: ${key}`);
+                }}>
+                <span>{key}</span>
+                <span>{value}</span>
+              </A>
+            )}
+          </For>
+        </div>
+      </Show>
+
       <br />
       <br />
       <br />

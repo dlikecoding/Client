@@ -25,6 +25,7 @@ const Setting = () => {
 
   onMount(async () => {
     const svCap = await fetchCapacity();
+    if (!svCap) return;
 
     const total = svCap.total;
     const used = svCap.used;
@@ -33,12 +34,12 @@ const Setting = () => {
     const live = (svCap.live / total) * 100;
     const video = (svCap.video / total) * 100;
 
-    const other = ((total - svCap.all) / total) * 100;
+    const other = ((used - svCap.all) / total) * 100;
     const free = (svCap.free / total) * 100;
 
     setSpaceInfo({ free, photo, live, video, other, total, used });
   });
-  console.log(spaceInfo);
+
   return (
     <>
       <header style={{ position: "relative" }}>
@@ -49,10 +50,6 @@ const Setting = () => {
           <AccountButton />
         </div>
       </header>
-      {JSON.stringify(spaceInfo)}
-      {/* <div class={styles.barChart}>
-          <canvas id="barChart" data-chartjs={JSON.stringify({})}></canvas>
-        </div> */}
 
       <div class={styles.storageContainer}>
         <div class={styles.storageChart}>
@@ -68,7 +65,7 @@ const Setting = () => {
             <span style={{ width: `${spaceInfo.video}%` }} class={`${styles.storage} ${styles.videos}`}></span>
             <span style={{ width: `${spaceInfo.other}%` }} class={`${styles.storage} ${styles.others}`}></span>
             <span style={{ width: `${spaceInfo.free}%` }} class={`${styles.storage} ${styles.freeStorages}`}>
-              {convertFileSize(spaceInfo.free)}
+              {convertFileSize(spaceInfo.total! - spaceInfo.used!)}
             </span>
           </div>
 
@@ -101,3 +98,9 @@ const Setting = () => {
 };
 
 export default Setting;
+
+{
+  /* <div class={styles.barChart}>
+          <canvas id="barChart" data-chartjs={JSON.stringify({})}></canvas>
+        </div> */
+}
