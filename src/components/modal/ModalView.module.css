@@ -128,7 +128,7 @@ header > .modalTitle {
 /* /////////////////////////////////////// */
 .modalThumbs > .thumbSlider {
   position: relative;
-  width: 350px;
+  width: 390px;
 }
 
 .thumbSlider > .thumbsVideos {
@@ -137,6 +137,11 @@ header > .modalTitle {
   justify-content: center;
   align-items: center;
   width: 100%;
+}
+
+.thumbSlider > .thumbsVideos > img {
+  width: 55px;
+  height: auto;
 }
 
 .inputSlider {
@@ -152,12 +157,12 @@ header > .modalTitle {
 }
 
 .inputSlider::-webkit-slider-thumb {
-  box-shadow: 1px 0 10px white;
+  box-shadow: 0 0 5px white;
   border: 0.7px solid black;
 
   background: white;
 
-  height: 50px;
+  height: 55px;
   width: 3px;
   border-radius: 5px;
 

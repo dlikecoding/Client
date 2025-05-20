@@ -25,8 +25,10 @@ const Photo: Component<PhotoProps> = (props) => {
     <>
       <img
         inert
+        // class={styles.imageTag}
         ref={(el) => (photoRef = el)}
         style={{
+          // "min-height": "100%",
           "object-fit": view.modalObjFit ? "cover" : "contain",
         }}
         onLoad={() => setImgLoading(false)}
@@ -36,7 +38,6 @@ const Photo: Component<PhotoProps> = (props) => {
         alt={`Modal Image`}
       />
       <Show when={isEditing() && isVisible()}>
-        {/* {isSeeking() && <Spinner />} */}
         {photoRef! && <EditPhoto photo={photoRef} setIsEditing={setIsEditing} />}
       </Show>
     </>

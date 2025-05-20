@@ -13,19 +13,13 @@ const LayoutEditing: Component<EditMediaProps> = (props) => {
   return (
     <Portal>
       <div class={styles.modalContainer} style={{ "z-index": 1, background: "transparent" }}>
-        <header
-          style={{
-            background: "var(--popup-bground)",
-            "backdrop-filter": "blur(20px) brightness(1)",
-            "-webkit-backdrop-filter": "blur(20px) brightness(1)",
-            padding: "15px 20px",
-            "align-items": "center",
-          }}>
+        <header>
           <button
             onClick={props.onCancel}
             style={{
               padding: "7px 15px",
               color: "var(--button-active-color)",
+              "text-shadow": "0 0 1px 1px black",
             }}>
             Cancel
           </button>
@@ -35,6 +29,7 @@ const LayoutEditing: Component<EditMediaProps> = (props) => {
             style={{
               padding: "7px 15px",
               color: "var(--button-active-color)",
+              "text-shadow": "0 0 1px 1px black",
             }}>
             Done
           </button>

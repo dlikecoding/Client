@@ -1,4 +1,4 @@
-import { createContext, useContext, JSX, ParentComponent } from "solid-js";
+import { createContext, useContext, JSX, ParentComponent, onMount, onCleanup } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
 
 type AuthContextType = {
@@ -26,6 +26,16 @@ const AuthContext = createContext<AuthContextType>(undefined);
 
 export const AuthProvider: ParentComponent = (props) => {
   const [loggedUser, setLoggedUser] = createStore<UserLogged>(defaultUser);
+
+  if (import.meta.env.VITE_DEV_MODE !== "dev") {
+    onMount(() => {
+      document.addEventListener("contextmenu", (e) => e.preventDefault());
+    });
+
+    onCleanup(() => {
+      document.removeEventListener("contextmenu", (e) => e.preventDefault());
+    });
+  }
 
   return <AuthContext.Provider value={{ loggedUser, setLoggedUser }}>{props.children}</AuthContext.Provider>;
 };
