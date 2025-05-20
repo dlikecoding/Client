@@ -1,7 +1,8 @@
 import { RecoverButtonIcon } from "../../../svgIcons";
 import { SlideUp } from "../popover/SlideUp";
-import { ButtonProps } from "./ButtonProps";
+
 import { useMediaContext } from "../../../../context/Medias";
+import { ButtonProps } from "../ActionNav";
 
 export const Recover = (props: ButtonProps) => {
   const { items } = useMediaContext();

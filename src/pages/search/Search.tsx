@@ -8,7 +8,6 @@ const Search = () => {
   onMount(async () => await fetchRefetch());
 
   const [keyword, setKeyword] = createSignal<string>("");
-  // const [isTyping, setIsTyping] = createSignal<boolean>(false);
 
   const { updatePage } = useManageURLContext();
   const [loadingSearch] = createResource(keyword, fetchSearch);
@@ -16,7 +15,6 @@ const Search = () => {
   return (
     <>
       <header style={{ position: "relative" }}>
-        {/* height: isTyping() ? "0" : "65px" */}
         <div>
           <h1>Search</h1>
         </div>

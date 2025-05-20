@@ -1,14 +1,17 @@
+import { Accessor } from "solid-js";
+import { MediaType } from "../../../context/ViewContext";
+
 /**
  * Returns the first element that is a descendant of node that matches selectors.
  * @param classType data-X this X is a dataset name
  * @param dataID dataID is data in that dataset
  * @returns HTMLDivElement
  */
-export const getElementBySelector = (classType: string, dataID: string) => {
+export const getElementBySelector = (classType: string, dataID: number) => {
   return document.querySelector<HTMLElement>(`[data-${classType}="${dataID}"]`);
 };
 
-export const scrollIntoViewFc = (classType: string, dataID: string): void => {
+export const scrollIntoViewFc = (classType: string, dataID: number): void => {
   const targetEl = getElementBySelector(classType, dataID);
   if (targetEl) targetEl.scrollIntoView({ behavior: "instant", block: "center" });
 };
@@ -16,6 +19,10 @@ export const scrollIntoViewFc = (classType: string, dataID: string): void => {
 // export const sleepFunc = (ms: number): Promise<void> => {
 //   return new Promise((resolve) => setTimeout(resolve, ms));
 // };
+
+export const getMediaByIndex = (displayMedias: MediaType[], items: Map<number, number>): MediaType[] => {
+  return Array.from(items.keys().map((index) => displayMedias[index]));
+};
 
 export const formatTime = (timestamp: string): { weekday: string; date: string; time: string } => {
   if (!timestamp) return { weekday: "", date: "", time: "" };

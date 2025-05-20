@@ -1,6 +1,4 @@
-import { createMemo } from "solid-js";
 import Footer from "./Footer";
-import { useLocation, useNavigate } from "@solidjs/router";
 const Layout = (props: any) => {
   // const location = useLocation();
 

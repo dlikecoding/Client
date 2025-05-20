@@ -18,7 +18,7 @@ export type MediaInfo = {
   gps_longitude: string;
 
   make?: string;
-  media: string;
+  media: number;
 
   mime_type: string;
   model?: string;
@@ -148,7 +148,7 @@ export const Info = () => {
                 <p>From {mediaInfo()?.user_name || "Unknown"}</p>
               </div>
             </div>
-            <div class={styles.addLocation}>Central Park, New York</div>
+            {/* <div class={styles.addLocation}>Central Park, New York</div> */}
           </div>
         </Show>
       </div>

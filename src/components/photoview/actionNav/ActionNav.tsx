@@ -1,5 +1,5 @@
 import { useParams } from "@solidjs/router";
-import { createMemo, Match, Show, Switch } from "solid-js";
+import { Match, Show, Switch } from "solid-js";
 
 import { useMediaContext } from "../../../context/Medias";
 import { useViewMediaContext } from "../../../context/ViewContext";
@@ -15,6 +15,10 @@ import { Merge } from "./buttons/Merge";
 import { EditButtonIcon } from "../../svgIcons";
 import { Info } from "./buttons/Info";
 import { DeleteAll } from "./buttons/DeleteAll";
+
+export type ButtonProps = {
+  action: () => void;
+};
 
 type ButtonConfig = {
   duplicate: string[];
@@ -41,8 +45,6 @@ const ActionNav = () => {
   const { openModal, setIsEditing, displayMedias, setDisplayMedia } = useViewMediaContext();
 
   const actions = {
-    save: () => console.log("save clicked"),
-
     mergeAll: () => console.log("Merge all"),
 
     delete: () => updateMediaStatus("deleted", true),
@@ -91,7 +93,7 @@ const ActionNav = () => {
     <>
       <footer inert={disableButtons()} style={{ "z-index": 1 }} class={`${disableButtons() ? "footerDisabled" : ""}`}>
         <div class="actions__toolbar__column is_left">
-          <Switch fallback={<Save action={actions.save} />}>
+          <Switch fallback={<Save />}>
             <Match when={currentPage.includes("unhide")}>
               <Unhide action={actions.unhide} />
             </Match>

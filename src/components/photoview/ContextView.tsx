@@ -74,7 +74,7 @@ const ContextView = () => {
    * and then load more element to dom (only ONCE)*/
   const lastElement = () => {
     // If lastEl exist, since setLastEl inside Index loop, return.
-    const lastEl = getElementBySelector("idx", (displayMedias.length - 1).toString());
+    const lastEl = getElementBySelector("idx", displayMedias.length - 1);
     if (lastEl) setLastEl(lastEl); // Set lastEl everytime user change sort or filter.
   };
 
@@ -200,13 +200,3 @@ const toDate = (mediaType: MediaType): string => {
   const year = date.getFullYear();
   return `${month} ${day}, ${year}`;
 };
-
-// /**
-//  * Returns an element with the specified `data-idx` attribute.
-//  * @param index - The index to match.
-//  * @returns The matching element or `null` if not found.
-//  */
-// const getLastElement = (index: number) => {
-//   return document.querySelector<HTMLElement>(`[data-idx="${index}"]`);
-// };
-/* <p> PhotoView - ID: {params.id} - Page: {params.pages} </p> */

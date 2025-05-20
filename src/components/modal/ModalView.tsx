@@ -17,7 +17,7 @@ import ActionNav from "../photoview/actionNav/ActionNav";
 
 interface ElementModal {
   elIndex: number;
-  elId: string;
+  elId: number;
 }
 
 interface ModalProps {
@@ -85,7 +85,7 @@ const Modal: Component<ModalProps> = (props) => {
     };
   });
 
-  const setSelectCurrentItem = (index: number, mediaId: string) => {
+  const setSelectCurrentItem = (index: number, mediaId: number) => {
     setCurrent({ elId: mediaId, elIndex: index });
     setOneItem(current.elIndex, current.elId);
   };
@@ -200,7 +200,7 @@ export default Modal;
  * Scrolls to the specified element using its data-modalid attribute.
  * @param modalid - The unique identifier of the target element.
  */
-const scrollToModalElement = (modalid: string): void => {
+const scrollToModalElement = (modalid: number): void => {
   scrollIntoViewFc("modalid", modalid);
 };
 
@@ -208,7 +208,7 @@ const scrollToModalElement = (modalid: string): void => {
  * Scrolls to the specified element using its data-modalid attribute.
  * @param mediaId - The unique identifier of the target element.
  */
-const scrollToViewElement = (mediaId: string): void => {
+const scrollToViewElement = (mediaId: number): void => {
   scrollIntoViewFc("id", mediaId);
 };
 

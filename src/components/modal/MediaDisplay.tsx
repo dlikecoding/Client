@@ -14,7 +14,7 @@ interface MediaTypeProps {
   showImageOnly: Accessor<boolean>;
   setShowImageOnly: Setter<boolean>;
 
-  setSelectCurrentItem: (index: number, mediaId: string) => void;
+  setSelectCurrentItem: (index: number, mediaId: number) => void;
   setLastEl?: Setter<HTMLElement | null | undefined>;
 }
 

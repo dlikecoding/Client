@@ -1,5 +1,5 @@
-import { useLocation, useNavigate } from "@solidjs/router";
-import { createContext, useContext, JSX, createMemo, onCleanup, createSignal } from "solid-js";
+import { useLocation } from "@solidjs/router";
+import { createContext, useContext, JSX, createMemo } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
 
 const LOCALSTORAGE_VIEW_KEY = "zoomAspect";

@@ -1,4 +1,3 @@
-import { Setter } from "solid-js";
 import styles from "./SlideUp.module.css";
 
 type SlideUpProps = {

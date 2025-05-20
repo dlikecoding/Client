@@ -56,7 +56,7 @@ export const fetchStatistic = async () => {
 
 export const fetchAlbum = async () => await fetchData<any[]>(`/api/v1/album`);
 
-export const fetchAddAlbum = async (mediaIds: string[], albumId?: number, albumTitle?: string) => {
+export const fetchAddAlbum = async (mediaIds: number[], albumId?: number, albumTitle?: string) => {
   return await fetch(`/api/v1/album/add`, {
     method: "PUT",
     headers: {
@@ -71,7 +71,7 @@ export const fetchAddAlbum = async (mediaIds: string[], albumId?: number, albumT
   });
 };
 
-export const fetchRemoveAlbum = async (mediaIds: string[], albumId?: number) => {
+export const fetchRemoveAlbum = async (mediaIds: number[], albumId?: number) => {
   return await fetch(`/api/v1/album/remove`, {
     method: "PUT",
     headers: {
@@ -85,7 +85,7 @@ export const fetchRemoveAlbum = async (mediaIds: string[], albumId?: number) => 
   });
 };
 
-export const forUpdating = async (mediaIds: string[], updateKey: string, updateValue: boolean) => {
+export const forUpdating = async (mediaIds: number[], updateKey: string, updateValue: boolean) => {
   return await fetch(`/api/v1/medias`, {
     method: "PUT",
     headers: {
@@ -100,7 +100,7 @@ export const forUpdating = async (mediaIds: string[], updateKey: string, updateV
   });
 };
 
-export const forDeleting = async (mediaIds: string[]) => {
+export const forDeleting = async (mediaIds: number[]) => {
   return await fetch(`/api/v1/medias`, {
     method: "DELETE",
     headers: {
@@ -116,7 +116,7 @@ export const forDeleteAllInRecently = async () => {
 };
 ///////////////// For /api/v1/media //////////////////////////////////////////
 
-export const forUpdateCaption = async (mediaId: string, caption: string) => {
+export const forUpdateCaption = async (mediaId: number, caption: string) => {
   return await fetch(`/api/v1/media/caption`, {
     method: "PUT",
     headers: {
@@ -130,7 +130,7 @@ export const forUpdateCaption = async (mediaId: string, caption: string) => {
   });
 };
 
-export const fetchPhotoInfo = async (mediaId: string, filterType: string): Promise<MediaInfo | undefined> => {
+export const fetchPhotoInfo = async (mediaId: number, filterType: string): Promise<MediaInfo | undefined> => {
   try {
     return await fetchData<MediaInfo>(`/api/v1/media?id=${mediaId}&filterType=${filterType}`);
   } catch (error) {

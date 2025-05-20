@@ -4,6 +4,7 @@ import { useMediaContext } from "../../context/Medias";
 import { useManageURLContext } from "../../context/ManageUrl";
 import { MediaType, useViewMediaContext } from "../../context/ViewContext";
 import placeholder from "../../assets/svgs/place-holder.svg";
+
 interface PhotoProps {
   media: MediaType;
   lastItem?: (el: HTMLElement) => void;
@@ -21,7 +22,7 @@ const PhotoCard: Component<PhotoProps> = (props) => {
   const { view } = useManageURLContext();
   const { setOpenModal } = useViewMediaContext();
 
-  const handleImageClick = (idx: number, mediaId: string) => {
+  const handleImageClick = (idx: number, mediaId: number) => {
     if (!isSelected()) {
       window.history.pushState({ state: "Photo Modal" }, "", window.location.href);
 

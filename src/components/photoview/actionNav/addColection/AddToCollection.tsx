@@ -8,7 +8,7 @@ interface AddToCollectionProps {
   setAddToCollection: Setter<boolean>;
   entityType: "Album" | "Dataset";
   fetchItems: () => Promise<any[] | undefined>;
-  updateItems: (ids: string[], entityId?: number, entityTitle?: string) => Promise<{ ok: boolean }>;
+  updateItems: (ids: number[], entityId?: number, entityTitle?: string) => Promise<{ ok: boolean }>;
 }
 
 const AddToCollection = (props: AddToCollectionProps) => {
