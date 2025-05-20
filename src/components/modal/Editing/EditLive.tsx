@@ -1,12 +1,12 @@
 import styles from "../ModalView.module.css";
-import { Component, createSignal, onMount, Setter } from "solid-js";
+import { Component, createMemo, createSignal, onMount, Setter } from "solid-js";
 import { List } from "@solid-primitives/list";
 import { useViewMediaContext } from "../../../context/ViewContext";
 import LayoutEditing from "./LayoutEditing";
 
 type LiveProps = {
   liveRef: HTMLVideoElement;
-  setLoading: Setter<boolean>;
+  setLoading: Setter<boolean>; // Show loading while seeking video
   setIsEditing: Setter<boolean>;
 };
 
@@ -15,11 +15,14 @@ type FrameLive = {
   position: number;
 };
 
-const START_POSITION = 0.5;
+const THUMB_HEIGHT = 50;
+const NUMBER_OF_FRAMES = 11;
 
 const EditLive: Component<LiveProps> = (props) => {
   const [thumbnails, setThumbnails] = createSignal<FrameLive[]>([]);
   const [framePosition, setFramePosition] = createSignal<number>(0);
+
+  const [maxDuration, setMaxDuration] = createSignal<number>(0);
 
   const { setIsEditing } = useViewMediaContext();
 
@@ -28,9 +31,7 @@ const EditLive: Component<LiveProps> = (props) => {
     props.setLoading(true);
 
     await extractFrames(liveRef, setThumbnails);
-    await waitForSeek(liveRef, START_POSITION);
-    setFramePosition(START_POSITION);
-
+    setMaxDuration(liveRef.duration);
     props.setLoading(false);
   });
 
@@ -38,6 +39,10 @@ const EditLive: Component<LiveProps> = (props) => {
     await waitForSeek(props.liveRef, position);
     setFramePosition(position);
   };
+
+  createMemo(() => {
+    console.log(framePosition());
+  });
 
   const onDone = () => {
     console.log("Clicked Done!");
@@ -49,15 +54,21 @@ const EditLive: Component<LiveProps> = (props) => {
   return (
     <LayoutEditing onCancel={() => setIsEditing(false)} onDone={onDone}>
       <div class={styles.modalThumbs}>
-        <List each={thumbnails()}>
-          {(media) => (
-            <div
-              style={media().position === framePosition() ? { width: "70px", height: "60px", margin: "0 5px" } : {}}
-              onClick={() => changeTimePosition(media().position)}>
-              <img inert src={media().imageBase} />
-            </div>
-          )}
-        </List>
+        <div class={styles.thumbSlider}>
+          <div class={styles.thumbsVideos}>
+            <List each={thumbnails()}>{(media) => <img inert src={media().imageBase} />}</List>
+          </div>
+
+          <input
+            class={styles.inputSlider}
+            type="range"
+            min="0"
+            max={maxDuration()}
+            step="any"
+            value={framePosition()}
+            onInput={(e) => changeTimePosition(parseFloat(e.currentTarget.value))}
+          />
+        </div>
       </div>
     </LayoutEditing>
   );
@@ -74,16 +85,19 @@ const extractFrames = async (video: HTMLVideoElement, setThumbnails: Setter<Fram
     video.load();
   });
 
+  const aspect = video.videoWidth / video.videoHeight;
+
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
-  const interval = START_POSITION; // seconds between frames
+
   const duration = video.duration;
+  const interval = duration / NUMBER_OF_FRAMES; // seconds between frames
   const frames: FrameLive[] = [];
 
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
+  canvas.height = THUMB_HEIGHT;
+  canvas.width = THUMB_HEIGHT * aspect;
 
-  for (let t = START_POSITION; t < duration; t += interval) {
+  for (let t = interval; t < duration; t += interval) {
     await waitForSeek(video, t);
 
     ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
