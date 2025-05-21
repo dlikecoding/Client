@@ -83,15 +83,7 @@ const EditLive: Component<LiveProps> = (props) => {
 export default EditLive;
 
 const extractFrames = async (video: HTMLVideoElement, setThumbnails: Setter<FrameLive[]>) => {
-  if (!video) return;
-
-  if (!video.readyState) {
-    // Wait for metadata to load
-    await new Promise<void>((resolve) => {
-      video.onloadedmetadata = () => resolve();
-      video.load();
-    });
-  }
+  if (!video || !video.readyState) return;
 
   const aspect = video.videoWidth / video.videoHeight;
 

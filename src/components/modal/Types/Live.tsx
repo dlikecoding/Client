@@ -23,6 +23,12 @@ const Live: Component<LiveProps> = (props) => {
   let liveRef: HTMLVideoElement;
   const isVisible = () => props.isVisible;
 
+  createMemo(async () => {
+    const livePhoto = liveRef;
+    if (!isVisible() || !livePhoto) return;
+    livePhoto.load();
+  });
+
   // ================== Handle longpress to play live photos ===============================================
   const [isSeeking, setIsSeeking] = createSignal(false);
   const { isEditing, setIsEditing } = useViewMediaContext();
@@ -62,6 +68,7 @@ const Live: Component<LiveProps> = (props) => {
         ref={(el) => (liveRef = el)}
         inert
         poster={props.media.thumb_path}
+        onLoadedData={(e) => (e.currentTarget.currentTime = props.media.selected_frame)}
         onPlay={() => liveRef.fastSeek(0)}
         onPause={() => liveRef.fastSeek(props.media.selected_frame)}
         preload="metadata"
