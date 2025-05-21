@@ -1,9 +1,10 @@
 import styles from "./Types.module.css";
 
-import { Accessor, Component, createMemo, createSignal, onCleanup, onMount, Setter, Show } from "solid-js";
+import { Accessor, Component, createMemo, Setter, Show } from "solid-js";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import { VIDEO_API_URL } from "../../../App";
 import EditVideo from "../Editing/EditVideo";
+import { createStore } from "solid-js/store";
 
 interface VideoProps {
   media: MediaType;
@@ -13,11 +14,16 @@ interface VideoProps {
   setShowImageOnly: Setter<boolean>;
 }
 
+type VideoStatus = {
+  isPlaying: boolean;
+  isLoading: boolean;
+};
+
 const SEEK_AMOUNT = 10; //Amount seek video
 
 const Video: Component<VideoProps> = (props) => {
   let videoRef: HTMLVideoElement | undefined;
-  const [isPlaying, setIsPlaying] = createSignal<boolean>(false);
+  const [vidStatus, setVidStatus] = createStore<VideoStatus>({ isLoading: true, isPlaying: false });
 
   const isVisible = () => props.isVisible;
 
@@ -30,12 +36,17 @@ const Video: Component<VideoProps> = (props) => {
 
   const { isEditing, setIsEditing } = useViewMediaContext();
 
+  createMemo(() => {
+    if (!isVisible()) return;
+    console.log();
+    console.log(vidStatus.isLoading);
+  });
   return (
     <>
       <Show when={!props.showImageOnly()}>
         <div class={styles.videoControler}>
           <button
-            style={{ visibility: isPlaying() ? "visible" : "hidden" }}
+            style={{ visibility: vidStatus.isPlaying ? "visible" : "hidden" }}
             onClick={() => {
               props.setShowImageOnly(true);
               seekBackward(videoRef);
@@ -44,11 +55,11 @@ const Video: Component<VideoProps> = (props) => {
           </button>
 
           <button class={styles.playPauseBtn} onClick={() => toggleVideo(videoRef!)}>
-            {isPlaying() ? PauseButtonIcon() : PlayButtonIcon()}
+            {vidStatus.isPlaying ? PauseButtonIcon() : PlayButtonIcon()}
           </button>
 
           <button
-            style={{ visibility: isPlaying() ? "visible" : "hidden" }}
+            style={{ visibility: vidStatus.isPlaying ? "visible" : "hidden" }}
             onClick={() => {
               props.setShowImageOnly(true);
               seekForward(videoRef);
@@ -58,26 +69,31 @@ const Video: Component<VideoProps> = (props) => {
         </div>
       </Show>
 
+      {/* <Show when={vidStatus.isLoading}>
+        <img inert loading="lazy" src={props.media.thumb_path} alt={`Modal Image`} />
+      </Show> */}
+
       <video
         inert
         ref={videoRef}
         poster={props.media.thumb_path}
-        onPlay={() => setIsPlaying(true)}
+        onLoad={() => setVidStatus("isLoading", true)}
+        onLoadedData={() => setVidStatus("isLoading", false)}
+        onPlay={() => setVidStatus("isPlaying", true)}
         onPause={() => {
           props.setShowImageOnly(false);
-          setIsPlaying(false);
+          setVidStatus("isPlaying", false);
         }}
         preload="metadata"
         controls={false}
         controlslist="nodownload"
         playsinline={true}
         crossorigin="use-credentials">
-        {/* ///////// DEVELOPMENT //////////////////////////////////////// */}
         <source src={`${VIDEO_API_URL}${props.media.source_file}`} type={props.media.mime_type} />
-        {/* <source src={props.media.SourceFile} type={props.media.MIMEType} /> */}
 
         <p>Your browser doesn't support the video tag.</p>
       </video>
+
       <Show when={isEditing() && isVisible()}>
         {videoRef! && <EditVideo video={videoRef} setIsEditing={setIsEditing} />}
       </Show>

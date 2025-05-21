@@ -13,7 +13,6 @@ interface PhotoProps {
 
 const Photo: Component<PhotoProps> = (props) => {
   let photoRef: HTMLImageElement;
-  const { view } = useManageURLContext();
   const { isEditing, setIsEditing } = useViewMediaContext();
 
   // Tracking image onload -> load thumbnail, when done -> load original
@@ -27,10 +26,6 @@ const Photo: Component<PhotoProps> = (props) => {
         inert
         // class={styles.imageTag}
         ref={(el) => (photoRef = el)}
-        style={{
-          // "min-height": "100%",
-          "object-fit": view.modalObjFit ? "cover" : "contain",
-        }}
         onLoad={() => setImgLoading(false)}
         onError={() => setImgLoading(true)}
         loading="lazy"
