@@ -37,12 +37,12 @@ export type MediaInfo = {
 
   // For Video/Live
   frame_rate: number;
+  video_duration: string;
   duration: number;
 };
 
 export const Info = () => {
   const { items } = useMediaContext();
-  const { displayMedias } = useViewMediaContext();
 
   let popoverDiv: HTMLDivElement | null = null;
   let captionInputEl: HTMLInputElement | null = null;
@@ -74,18 +74,12 @@ export const Info = () => {
   const [mediaInfo, setMediaInfo] = createSignal<MediaInfo>();
 
   const requestInfo = async () => {
-    const media = items().entries().next().value;
-    if (!media) return alert("No valid photo/video to get info");
-    const [index, mediaId] = media;
-
-    if (index === undefined || !mediaId) return;
+    const mediaId = items().values().next().value;
+    if (!mediaId) return alert("No valid photo/video to get info");
 
     // If request the same infor for same photo, return
     if (mediaInfo()?.media === mediaId) return;
-
-    const fileType = displayMedias[index].file_type;
-    if (!fileType) return;
-    const result = await fetchPhotoInfo(mediaId, fileType);
+    const result = await fetchPhotoInfo(mediaId);
     if (!result) return;
     setMediaInfo(result);
   };
@@ -144,11 +138,12 @@ export const Info = () => {
               </div>
               <div>
                 {mediaInfo()?.frame_rate && <p>{mediaInfo()?.frame_rate} FPS</p>}
-                <p>Upload: {formatTime(mediaInfo()!.upload_at).date}</p>
-                <p>From {mediaInfo()?.user_name || "Unknown"}</p>
+                {mediaInfo()?.video_duration && <p>{mediaInfo()?.video_duration}</p>}
+                <p>Posted: {formatTime(mediaInfo()!.upload_at).date}</p>
+                <p>By {mediaInfo()?.user_name || "Unknown"}</p>
               </div>
             </div>
-            {/* <div class={styles.addLocation}>Central Park, New York</div> */}
+            <div class={styles.addLocation}>Central Park, New York</div>
           </div>
         </Show>
       </div>

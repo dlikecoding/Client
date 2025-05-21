@@ -113,6 +113,7 @@ const Modal: Component<ModalProps> = (props) => {
       scrollToViewElement(current.elId);
     }
   };
+
   return (
     <Portal>
       <div class={styles.modalContainer} style={{ "z-index": 1 }}>
@@ -139,7 +140,9 @@ const Modal: Component<ModalProps> = (props) => {
             </button>
             <button popoverTarget="more-modal-popover">{CustomButtonIcon()}</button>
             <div popover="auto" id="more-modal-popover" class="popover-container devices_filter_popover">
-              <div>TESTING...</div>
+              <div onClick={() => setView("showThumb", (prev) => !prev)}>
+                Thumbnails {view.showThumb ? "OFF" : "ON"}
+              </div>
               <div>TESTING...</div>
               <div>TESTING...</div>
             </div>
@@ -166,25 +169,20 @@ const Modal: Component<ModalProps> = (props) => {
           </div>
         </div>
 
-        <div classList={{ [styles.modalThumbs]: true, [styles.fadeOut]: showImageOnly() || displayMedias.length <= 1 }}>
-          <List each={modalMedias()} fallback={<NotFound />}>
-            {(media, index) => (
-              <div
-                style={media().media_id === current.elId ? { width: "70px", height: "60px", margin: "0 5px" } : {}}
-                data-thumbId={media().media_id}
-                // onClick={() => {
-                //   const numberOfSteps = calculateIndex(index(), current.elIndex, displayMedias.length);
-                //   const navigateToIndex = current.elIndex + numberOfSteps;
-
-                //   if (current.elIndex === navigateToIndex) return;
-                //   updateCurrent(navigateToIndex);
-                // }}
-              >
-                <img inert src={media().thumb_path} />
-              </div>
-            )}
-          </List>
-        </div>
+        <Show when={view.showThumb}>
+          <div
+            classList={{ [styles.modalThumbs]: true, [styles.fadeOut]: showImageOnly() || displayMedias.length <= 1 }}>
+            <List each={modalMedias()} fallback={<NotFound />}>
+              {(media) => (
+                <div
+                  style={media().media_id === current.elId ? { width: "70px", height: "60px", margin: "0 5px" } : {}}
+                  data-thumbId={media().media_id}>
+                  <img inert src={media().thumb_path} />
+                </div>
+              )}
+            </List>
+          </div>
+        </Show>
 
         <div classList={{ [styles.fadeOut]: showImageOnly() }}>
           <ActionNav />

@@ -1,12 +1,16 @@
 import styles from "../ModalView.module.css";
-import { Component, createMemo, createSignal, onMount, Setter } from "solid-js";
-import { List } from "@solid-primitives/list";
-import { useViewMediaContext } from "../../../context/ViewContext";
+import { Accessor, Component, createSignal, Index, onMount, Setter, Show } from "solid-js";
+import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import LayoutEditing from "./LayoutEditing";
+import { fetchNewFrameLivePhoto } from "../../extents/request/fetching";
+import { getMediaByIndex } from "../../extents/helper/helper";
+import { useMediaContext } from "../../../context/Medias";
 
 type LiveProps = {
+  media: MediaType;
   liveRef: HTMLVideoElement;
   setLoading: Setter<boolean>; // Show loading while seeking video
+  isLoading: Accessor<boolean>;
   setIsEditing: Setter<boolean>;
 };
 
@@ -20,18 +24,15 @@ const NUMBER_OF_FRAMES = 11;
 
 const EditLive: Component<LiveProps> = (props) => {
   const [thumbnails, setThumbnails] = createSignal<FrameLive[]>([]);
-  const [framePosition, setFramePosition] = createSignal<number>(0);
-
-  const [maxDuration, setMaxDuration] = createSignal<number>(0);
+  const [framePosition, setFramePosition] = createSignal<number>(props.media.selected_frame);
 
   const { setIsEditing } = useViewMediaContext();
 
   onMount(async () => {
-    const liveRef = props.liveRef;
     props.setLoading(true);
+    const liveRef = props.liveRef;
 
     await extractFrames(liveRef, setThumbnails);
-    setMaxDuration(liveRef.duration);
     props.setLoading(false);
   });
 
@@ -40,34 +41,39 @@ const EditLive: Component<LiveProps> = (props) => {
     setFramePosition(position);
   };
 
-  createMemo(() => {
-    console.log(framePosition());
-  });
+  const { items } = useMediaContext();
+  const { setDisplayMedia } = useViewMediaContext();
 
-  const onDone = () => {
-    console.log("Clicked Done!");
+  const onDone = async () => {
     // Update frame to new frame
-    // Create new thumbnail with new position
-    // Set new current frame
+    const res = await fetchNewFrameLivePhoto(props.media.media_id, framePosition());
+    if (!res.ok) alert("Failed to update frame position");
+
+    // Update UI with new pos
+    setDisplayMedia([...items().keys()], "selected_frame", framePosition());
+
+    setIsEditing(false);
   };
 
   return (
     <LayoutEditing onCancel={() => setIsEditing(false)} onDone={onDone}>
       <div class={styles.modalThumbs}>
         <div class={styles.thumbSlider}>
-          <div class={styles.thumbsVideos}>
-            <List each={thumbnails()}>{(media) => <img inert src={media().imageBase} />}</List>
+          <div class={styles.thumbsLive}>
+            <Index each={thumbnails()}>{(thumbs) => <img inert src={thumbs().imageBase} />}</Index>
           </div>
 
-          <input
-            class={styles.inputSlider}
-            type="range"
-            min="0"
-            max={maxDuration()}
-            step="any"
-            value={framePosition()}
-            onInput={(e) => changeTimePosition(parseFloat(e.currentTarget.value))}
-          />
+          <Show when={!props.isLoading()}>
+            <input
+              class={styles.inputSlider}
+              type="range"
+              min="0"
+              max={props.media.duration}
+              step="any"
+              value={framePosition()}
+              onInput={(e) => changeTimePosition(parseFloat(e.currentTarget.value))}
+            />
+          </Show>
         </div>
       </div>
     </LayoutEditing>
@@ -79,11 +85,13 @@ export default EditLive;
 const extractFrames = async (video: HTMLVideoElement, setThumbnails: Setter<FrameLive[]>) => {
   if (!video) return;
 
-  // Wait for metadata to load
-  await new Promise<void>((resolve) => {
-    video.onloadedmetadata = () => resolve();
-    video.load();
-  });
+  if (!video.readyState) {
+    // Wait for metadata to load
+    await new Promise<void>((resolve) => {
+      video.onloadedmetadata = () => resolve();
+      video.load();
+    });
+  }
 
   const aspect = video.videoWidth / video.videoHeight;
 

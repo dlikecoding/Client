@@ -7,7 +7,7 @@ import {
   adminRestore,
   adminUpdateUserStatus,
 } from "../../components/extents/request/fetching";
-import { createMemo, createResource, Index, Show } from "solid-js";
+import { createResource, Index, Show } from "solid-js";
 import { createStore } from "solid-js/store";
 import ImportLoading from "../../components/extents/ImportLoading";
 import Loading from "../../components/extents/Loading";
@@ -18,6 +18,7 @@ export interface loadedDashboard {
   users?: UserType[];
   sysStatus: boolean;
   lastBackup: string;
+  lastRestore: string;
   missedData: { thumbnail: number; hashcode: number; caption: number };
 }
 
@@ -162,7 +163,7 @@ const Dashboard = () => {
 
         <Show when={dashboardData()?.lastBackup}>
           <div class={styles.restore}>
-            <div>Last restore: {"N/A"}</div>
+            <div>Last restore: {dashboardData()?.lastRestore || "N/A"}</div>
             <button popoverTarget="restore-database">Restore</button>
             <SlideUp
               idElement="restore-database"

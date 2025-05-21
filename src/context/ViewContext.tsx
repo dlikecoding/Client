@@ -14,6 +14,9 @@ export interface MediaType {
   file_size: number;
   upload_at: string;
   create_date: string;
+
+  duration: number;
+  selected_frame: number;
 }
 
 interface ContextProps {

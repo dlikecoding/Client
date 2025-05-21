@@ -130,9 +130,23 @@ export const forUpdateCaption = async (mediaId: number, caption: string) => {
   });
 };
 
-export const fetchPhotoInfo = async (mediaId: number, filterType: string): Promise<MediaInfo | undefined> => {
+export const fetchNewFrameLivePhoto = async (mediaId: number, framePos: number) => {
+  return await fetch(`/api/v1/media/live-frame`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "same-origin",
+    body: JSON.stringify({
+      mediaId: mediaId,
+      framePos: framePos,
+    }),
+  });
+};
+
+export const fetchPhotoInfo = async (mediaId: number): Promise<MediaInfo | undefined> => {
   try {
-    return await fetchData<MediaInfo>(`/api/v1/media?id=${mediaId}&filterType=${filterType}`);
+    return await fetchData<MediaInfo>(`/api/v1/media?id=${mediaId}`);
   } catch (error) {
     console.log("fetchPhotoInfo:", error);
   }
