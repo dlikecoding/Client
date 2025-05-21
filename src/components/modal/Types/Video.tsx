@@ -26,10 +26,6 @@ const Video: Component<VideoProps> = (props) => {
     if (!isVisible()) {
       if (videoRef && !videoRef.paused) return videoRef.pause(); //Video is not visible, pausing...
     }
-    // if (videoRef && isVisible()) {
-    //   await sleepFunc(1000);
-    //   if (isVisible()) return await videoRef.play();
-    // }
   });
 
   const { isEditing, setIsEditing } = useViewMediaContext();

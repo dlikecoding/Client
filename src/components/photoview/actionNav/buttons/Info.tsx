@@ -4,7 +4,6 @@ import { useMediaContext } from "../../../../context/Medias";
 
 import { DoneButtonIcon, GenerateButtonIcon, InfoButtonIcon } from "../../../svgIcons";
 import { fetchPhotoInfo, forUpdateCaption } from "../../../extents/request/fetching";
-import { useViewMediaContext } from "../../../../context/ViewContext";
 import { convertFileSize, formatTime } from "../../../extents/helper/helper";
 
 export type MediaInfo = {

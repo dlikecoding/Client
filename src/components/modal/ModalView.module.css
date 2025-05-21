@@ -63,10 +63,7 @@ header > .modalTitle {
 .mediaContainer > img {
   width: 100%;
   max-width: 100%;
-  max-height: 90dvh;
-
-  opacity: 1;
-  transition: opacity 0.3s linear;
+  max-height: var(--modal-object-fit);
 }
 
 /* /////////////////// THUMBNAIL //////////////////////// */

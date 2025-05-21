@@ -26,7 +26,7 @@ interface ModalProps {
   startIdxView: Accessor<number>;
 }
 
-const BUFFER_ITEM = 3;
+const BUFFER_ITEM = 1;
 const ITEM_HEIGHT = window.innerHeight + 100; // Full innerHeight + 100px for gap
 const VIEWPORT_HEIGHT = ITEM_HEIGHT * BUFFER_ITEM;
 
@@ -113,6 +113,12 @@ const Modal: Component<ModalProps> = (props) => {
       scrollToViewElement(current.elId);
     }
   };
+
+  // Create auto change object fit for images and videos in modal:
+  createMemo(() => {
+    const objectFit = view.modalObjFit ? "100dvh" : "90dvh";
+    document.documentElement.style.setProperty("--modal-object-fit", objectFit);
+  });
 
   return (
     <Portal>

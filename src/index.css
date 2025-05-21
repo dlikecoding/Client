@@ -18,6 +18,8 @@
   --popup-bdropfilter: blur(20px) brightness(1);
 
   --iconSVGSize: 25px;
+
+  --modal-object-fit: 90dvh;
 }
 
 /* ================== GLOBAL STYLES ================== */
@@ -351,9 +353,9 @@ button:disabled {
 }
 
 .devices_filter_popover {
-  transform-origin: top center;
-  top: 62px;
-  right: 45px;
+  transform-origin: top right;
+  top: 60px;
+  right: 15px;
 }
 
 /* Clear filter button */
