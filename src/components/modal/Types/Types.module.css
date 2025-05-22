@@ -34,8 +34,8 @@
   gap: 4px;
 
   position: absolute;
-  top: 65px;
-  left: 30px;
+  top: 60px;
+  left: 15px;
   background: rgba(33, 33, 33, 0.473);
 
   text-shadow: 1px 1px 5px rgba(164, 164, 164, 0.178);
@@ -44,8 +44,8 @@
 }
 
 .liveIcon > svg {
-  width: 20px;
-  height: 20px;
+  width: 17px;
+  height: 17px;
 }
 /* /////////////////// PHOTO //////////////////////// */
 /* .imageTag {

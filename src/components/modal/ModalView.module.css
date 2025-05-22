@@ -2,15 +2,10 @@
   position: fixed;
   top: 0;
   left: 0;
-  /* bottom: 0;
-  right: 0; */
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
   width: 100dvw;
   height: 100dvh;
+
   background: var(--bg-primary);
   overflow: hidden;
 }
@@ -169,4 +164,34 @@ header > .modalTitle {
 
   cursor: pointer;
   appearance: none;
+}
+
+/* /////////////// Layout Editing //////////////////////// */
+
+.modalContainer > header > .editButton {
+  padding: 10px;
+  text-shadow: 0 0 1px 1px black;
+  background: aliceblue;
+
+  background: var(--popup-bground);
+  backdrop-filter: blur(20px) brightness(1);
+  -webkit-backdrop-filter: blur(20px) brightness(1);
+
+  border-radius: 4em;
+
+  display: flex;
+  align-items: center;
+
+  width: 21px;
+  height: 21px;
+}
+
+.finished > svg {
+  fill: var(--button-active-color);
+  stroke: var(--button-active-color);
+}
+
+.canceled > svg {
+  fill: var(--button-delete-color);
+  stroke: var(--button-delete-color);
 }

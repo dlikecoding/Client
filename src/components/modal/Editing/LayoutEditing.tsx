@@ -1,6 +1,7 @@
 import styles from "../ModalView.module.css";
 import { Component, JSX } from "solid-js";
 import { Portal } from "solid-js/web";
+import { CloseIcon, DoneButtonIcon } from "../../svgIcons";
 
 type EditMediaProps = {
   onCancel: () => void;
@@ -14,24 +15,12 @@ const LayoutEditing: Component<EditMediaProps> = (props) => {
     <Portal>
       <div class={styles.modalContainer} style={{ "z-index": 1, background: "transparent" }}>
         <header>
-          <button
-            onClick={props.onCancel}
-            style={{
-              padding: "7px 15px",
-              color: "var(--button-active-color)",
-              "text-shadow": "0 0 1px 1px black",
-            }}>
-            Cancel
+          <button onClick={props.onCancel} class={`${styles.editButton} ${styles.canceled}`}>
+            {CloseIcon()}
           </button>
           {props.dropdown}
-          <button
-            onClick={props.onDone}
-            style={{
-              padding: "7px 15px",
-              color: "var(--button-active-color)",
-              "text-shadow": "0 0 1px 1px black",
-            }}>
-            Done
+          <button onClick={props.onDone} class={`${styles.editButton} ${styles.finished}`}>
+            {DoneButtonIcon()}
           </button>
         </header>
 

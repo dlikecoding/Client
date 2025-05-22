@@ -1,5 +1,5 @@
 import styles from "./Types.module.css";
-import { Accessor, Component, createMemo, createSignal, onCleanup, onMount, Setter, Show } from "solid-js";
+import { Accessor, Component, createMemo, createSignal,Setter, Show } from "solid-js";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import { VIDEO_API_URL } from "../../../App";
 import EditLive from "../Editing/EditLive";

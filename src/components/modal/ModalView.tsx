@@ -26,7 +26,7 @@ interface ModalProps {
   startIdxView: Accessor<number>;
 }
 
-const BUFFER_ITEM = 1;
+const BUFFER_ITEM = 3;
 const ITEM_HEIGHT = window.innerHeight + 100; // Full innerHeight + 100px for gap
 const VIEWPORT_HEIGHT = ITEM_HEIGHT * BUFFER_ITEM;
 
@@ -149,8 +149,8 @@ const Modal: Component<ModalProps> = (props) => {
               <div onClick={() => setView("showThumb", (prev) => !prev)}>
                 Thumbnails {view.showThumb ? "OFF" : "ON"}
               </div>
-              <div>TESTING...</div>
-              <div>TESTING...</div>
+              <div>Placehodler</div>
+              <div>Placehodler</div>
             </div>
           </div>
         </header>

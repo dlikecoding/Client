@@ -76,7 +76,7 @@ export const AccountIcon = () => (
 
 export const CloseIcon = () => (
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path stroke-width="1.7" d="m19.5 4.5-15 15M4.5 4.5l15 15"></path>
+    <path stroke-width="2.5" d="m19.5 4.5-15 15M4.5 4.5l15 15"></path>
   </svg>
 );
 

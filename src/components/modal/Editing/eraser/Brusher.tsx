@@ -100,21 +100,7 @@ const BrusherDrawing: Component<BrushProps> = (props) => {
   return (
     <>
       <div class={styles.mainBrusher}>
-        <canvas
-          ref={(el) => (canvasRef = el)}
-          style={{
-            width: "100%", // Fills container width
-            height: "auto", // Maintains aspect ratio
-
-            border: "1px solid black",
-            cursor: "crosshair",
-            // background: "rgba(62, 255, 133, 0.699)",
-            display: "block", // removes inline spacing
-          }}
-          onMouseDown={startDrawing}
-          onMouseMove={draw}
-          onMouseUp={stopDrawing}
-        />
+        <canvas ref={(el) => (canvasRef = el)} onMouseDown={startDrawing} onMouseMove={draw} onMouseUp={stopDrawing} />
       </div>
 
       <Show when={!isDrawing()}>

@@ -3,7 +3,6 @@ import { Accessor, Component, createSignal, Index, onMount, Setter, Show } from 
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import LayoutEditing from "./LayoutEditing";
 import { fetchNewFrameLivePhoto } from "../../extents/request/fetching";
-import { getMediaByIndex } from "../../extents/helper/helper";
 import { useMediaContext } from "../../../context/Medias";
 
 type LiveProps = {
