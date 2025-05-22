@@ -19,16 +19,10 @@ const Select = () => {
   });
 
   return (
-    <button onClick={() => setIsSelected((prev) => !prev)} style={{ padding: "5px 10px" }}>
+    <button onClick={() => setIsSelected((prev) => !prev)} style={{ "padding-left": "15px", "padding-right": "15px" }}>
       {!isSelected() ? "Select" : "Cancel"}
     </button>
   );
 };
 
 export default Select;
-
-function hideElementsByClass(className: string) {
-  document.querySelectorAll(`.${className}`).forEach((el) => {
-    (el as HTMLElement).style.display = "none";
-  });
-}

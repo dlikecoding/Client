@@ -10,6 +10,12 @@
   padding: 7px;
 }
 
+.restore > button,
+.backup > button {
+  width: 60px;
+  text-align: center;
+}
+
 .maintainSys {
   display: flex;
   flex-direction: column;

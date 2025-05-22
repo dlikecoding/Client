@@ -207,8 +207,9 @@ export const UnHiddenIcon = () => (
 );
 
 export const GoBackIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-    <path stroke-width="1" d="M14.96 18.96 8 12l6.96-6.96.71.71L9.41 12l6.25 6.25-.7.71z"></path>
+  <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+    <polyline fill="none" points="19.946,35.891 9.057,25 19.947,14.11 " stroke-linecap="round" stroke-width="3.5" />
+    <line stroke-linecap="round" stroke-width="3.5" x1="41" x2="9.662" y1="25" y2="25" />
   </svg>
 );
 

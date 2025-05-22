@@ -170,23 +170,10 @@ header > .modalTitle {
 
 .modalContainer > header > .editButton {
   padding: 10px;
-  text-shadow: 0 0 1px 1px black;
-  background: aliceblue;
-
-  background: var(--popup-bground);
-  backdrop-filter: blur(20px) brightness(1);
-  -webkit-backdrop-filter: blur(20px) brightness(1);
-
-  border-radius: 4em;
-
-  display: flex;
-  align-items: center;
-
-  width: 21px;
-  height: 21px;
 }
 
 .finished > svg {
+  /* filter: drop-shadow(1px 1px 1px rgb(255, 255, 255)); */
   fill: var(--button-active-color);
   stroke: var(--button-active-color);
 }

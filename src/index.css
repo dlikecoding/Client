@@ -1,6 +1,6 @@
 /* ================== ROOT VARIABLES ================== */
 :root {
-  --font-info: 500 12px/12px sans-serif;
+  --font-info: 500 13px sans-serif;
   /* --font-navigate: 500 17px/16px system-ui, "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif; */
   /* --font-headers: 600 45px/45px system-ui, "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif; */
   --svg-color: rgb(239, 239, 239);
@@ -152,25 +152,33 @@ button {
 }
 
 /* For all buttons -------------------- */
-.buttonContainer > button {
+.buttonContainer > button,
+header > button {
   inset: unset;
   position: relative;
   font: var(--font-info);
   border: none;
+
+  pointer-events: auto;
 
   background: var(--popup-bground);
   backdrop-filter: blur(20px) brightness(1);
   -webkit-backdrop-filter: blur(20px) brightness(1);
 
   border-radius: 4em;
-  padding: 5px;
+  padding: 7px;
 
-  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 25px;
+  height: 25px;
 }
 
 .buttonContainer > button > svg {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
 }
 
 /* ================== FOOTER CONTROL BAR ================== */
@@ -346,7 +354,7 @@ button:disabled {
 .filter_timeline {
   position: absolute;
   transform-origin: top right;
-  top: 62px;
+  top: 65px;
   right: 15px;
   margin: 0 5px;
   min-width: 190px;
@@ -354,7 +362,7 @@ button:disabled {
 
 .devices_filter_popover {
   transform-origin: top right;
-  top: 60px;
+  top: 65px;
   right: 15px;
 }
 
@@ -366,9 +374,11 @@ button:disabled {
   z-index: 1;
   font-size: smaller;
   text-decoration: underline;
+
   display: flex;
   justify-content: end;
-  padding: 2px;
+
+  padding: 5px;
   color: white;
 }
 

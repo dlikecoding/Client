@@ -31,16 +31,15 @@
   justify-content: space-between;
   align-items: center;
 
-  gap: 4px;
+  gap: 5px;
 
   position: absolute;
-  top: 60px;
+  top: 70px;
   left: 15px;
   background: rgba(33, 33, 33, 0.473);
 
-  text-shadow: 1px 1px 5px rgba(164, 164, 164, 0.178);
   padding: 3px 9px 3px 5px;
-  border-radius: 30px;
+  border-radius: 2em;
 }
 
 .liveIcon > svg {
