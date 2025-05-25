@@ -64,35 +64,35 @@ const App = () => {
         <Route path="/forget" component={ForgetPW} />
 
         {/* Protected Routes (Wrapped Inside a Route) */}
-        <Route component={AuthGuard}>
-          <Route component={Layout}>
-            <Route path="/" component={HomepageRedirect} />
+        {/* <Route component={AuthGuard}> */}
+        <Route component={Layout}>
+          <Route path="/" component={HomepageRedirect} />
 
-            <Route path="/user">
-              <Route path="/" component={Profile} />
-              <Route path="/admin" component={Dashboard} />
-            </Route>
+          <Route path="/user">
+            <Route path="/" component={Profile} />
+            <Route path="/admin" component={Dashboard} />
+          </Route>
 
-            <Route path="/library" component={Library}>
-              <Route path="/" component={GroupView}>
-                <Route path="/" />
-                <Route path="/month" />
-              </Route>
-              <Route path="/:pages" component={PhotoView} matchFilters={filters.LIBRARY} />
+          <Route path="/library" component={Library}>
+            <Route path="/" component={GroupView}>
+              <Route path="/" />
+              <Route path="/month" />
             </Route>
+            <Route path="/:pages" component={PhotoView} matchFilters={filters.LIBRARY} />
+          </Route>
 
-            <Route path="/collection" component={Collection}>
-              <Route path="/" component={OverView} />
-              <Route path="/:pages/:id" component={PhotoView} matchFilters={filters.COLLECTION} />
-              <Route path="/:pages" component={PhotoView} matchFilters={filters.UTILITIES} />
-            </Route>
+          <Route path="/collection" component={Collection}>
+            <Route path="/" component={OverView} />
+            <Route path="/:pages/:id" component={PhotoView} matchFilters={filters.COLLECTION} />
+            <Route path="/:pages" component={PhotoView} matchFilters={filters.UTILITIES} />
+          </Route>
 
-            <Route path="/:pages" component={ContextSearch} matchFilters={filters.SEARCH}>
-              <Route path="/" component={Search} />
-              <Route path="/:keywords" component={PhotoView} matchFilters={filters.SEARCH} />
-            </Route>
+          <Route path="/:pages" component={ContextSearch} matchFilters={filters.SEARCH}>
+            <Route path="/" component={Search} />
+            <Route path="/:keywords" component={PhotoView} matchFilters={filters.SEARCH} />
           </Route>
         </Route>
+        {/* </Route> */}
       </Route>
 
       <Route path="*" component={NotFound} />

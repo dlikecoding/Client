@@ -11,9 +11,6 @@
 
 canvas {
   /* background: rgba(62, 255, 133, 0.699); */
-
-  width: 100%;
-  height: auto;
   border: 1px solid black;
   cursor: crosshair;
 }

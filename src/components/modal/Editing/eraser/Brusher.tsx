@@ -1,4 +1,4 @@
-import { Accessor, Component, createMemo, createSignal, onCleanup, onMount, Setter, Show } from "solid-js";
+import { Component, createSignal, onCleanup, onMount, Show } from "solid-js";
 import styles from "./Brusher.module.css";
 import {
   BrushButtonIcon,
@@ -45,13 +45,14 @@ const BrusherDrawing: Component<BrushProps> = (props) => {
     canvasRef.width = props.photo.naturalWidth;
     canvasRef.height = props.photo.naturalHeight;
 
-    // Get the size the image is actually displayed at
-    const displayWidth = props.photo.clientWidth;
-    const displayHeight = props.photo.clientHeight;
-
     // Apply the same CSS size to canvas so it overlays correctly
-    canvasRef.style.width = `${displayWidth}px`;
-    canvasRef.style.height = `${displayHeight}px`;
+    if (canvasRef.width >= canvasRef.height) {
+      canvasRef.style.width = "100%";
+      canvasRef.style.height = "auto";
+    } else {
+      canvasRef.style.width = "auto";
+      canvasRef.style.height = "100%";
+    }
 
     const ctx = canvasRef.getContext("2d");
     if (ctx) {
