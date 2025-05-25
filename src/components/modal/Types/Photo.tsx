@@ -1,39 +1,41 @@
-import { Accessor, Component, createSignal, Setter, Show } from "solid-js";
-import { useManageURLContext } from "../../../context/ManageUrl";
+import { Accessor, Component, createMemo, createSignal, Show } from "solid-js";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import EditPhoto from "../Editing/EditPhoto";
 
 interface PhotoProps {
   media: MediaType;
+  currentChild: HTMLImageElement;
   isVisible: boolean;
-
-  showImageOnly: Accessor<boolean>;
-  setShowImageOnly: Setter<boolean>;
 }
 
 const Photo: Component<PhotoProps> = (props) => {
-  let photoRef: HTMLImageElement;
-  const { isEditing, setIsEditing } = useViewMediaContext();
+  const media = () => props.media;
+  const isVisible = () => props.isVisible;
+  const currentChild = () => props.currentChild;
+
+  const { isEditing } = useViewMediaContext();
+
+  const isPhotoVisible = createMemo(() => isVisible() && currentChild());
 
   // Tracking image onload -> load thumbnail, when done -> load original
   const [imgLoading, setImgLoading] = createSignal<boolean>(true);
-
-  const isVisible = () => props.isVisible;
 
   return (
     <>
       <img
         inert
-        // class={styles.imageTag}
-        ref={(el) => (photoRef = el)}
         onLoad={() => setImgLoading(false)}
         onError={() => setImgLoading(true)}
         loading="lazy"
-        src={imgLoading() ? props.media.thumb_path : props.media.source_file}
+        src={imgLoading() ? media().thumb_path : media().source_file}
         alt={`Modal Image`}
       />
-      <Show when={isEditing() && isVisible()}>
-        {photoRef! && <EditPhoto photo={photoRef} setIsEditing={setIsEditing} />}
+
+      {/* ////////////// All addon element must start here /////////////////////////////// */}
+
+      {/* ////////////// For editing /////////////////////////////// */}
+      <Show when={isEditing() && isPhotoVisible()}>
+        <EditPhoto photo={currentChild()} />
       </Show>
     </>
   );

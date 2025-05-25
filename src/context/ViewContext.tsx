@@ -28,6 +28,9 @@ interface ContextProps {
 
   isEditing: Accessor<boolean>;
   setIsEditing: Setter<boolean>;
+
+  showImageOnly: Accessor<boolean>;
+  setShowImageOnly: Setter<boolean>;
 }
 
 const ViewMediaContext = createContext<ContextProps>();
@@ -37,6 +40,8 @@ export const ViewMediaProvider = (props: any) => {
 
   const [openModal, setOpenModal] = createSignal<boolean>(false);
   const [isEditing, setIsEditing] = createSignal<boolean>(false);
+
+  const [showImageOnly, setShowImageOnly] = createSignal<boolean>(false);
 
   createMemo(() => {
     if (!openModal()) setIsEditing(false);
@@ -53,6 +58,9 @@ export const ViewMediaProvider = (props: any) => {
 
         isEditing,
         setIsEditing,
+
+        showImageOnly,
+        setShowImageOnly,
       }}>
       {props.children}
     </ViewMediaContext.Provider>

@@ -1,17 +1,18 @@
 import { Component } from "solid-js";
-import { Setter } from "solid-js";
 import LayoutEditing from "./LayoutEditing";
+import { useViewMediaContext } from "../../../context/ViewContext";
 
 type EditVideoProps = {
   video: HTMLVideoElement;
-  setIsEditing: Setter<boolean>;
 };
 
 const EditVideo: Component<EditVideoProps> = (props) => {
-  const handleCancel = () => props.setIsEditing(false);
+  const { setIsEditing } = useViewMediaContext();
+
+  const handleCancel = () => setIsEditing(false);
   const handleDone = () => {
     // implement video save logic
-    props.setIsEditing(false);
+    setIsEditing(false);
   };
 
   return (

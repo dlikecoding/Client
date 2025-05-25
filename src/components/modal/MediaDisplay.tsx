@@ -11,9 +11,6 @@ interface MediaTypeProps {
   topPos: number;
   viewIndex: number;
 
-  showImageOnly: Accessor<boolean>;
-  setShowImageOnly: Setter<boolean>;
-
   setSelectCurrentItem: (index: number, mediaId: number) => void;
   setLastEl?: Setter<HTMLElement | null | undefined>;
 }
@@ -23,15 +20,23 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
   const media = () => props.media;
   const viewIndex = () => props.viewIndex;
 
-  const [isVisible, setIsVisible] = createSignal(false);
-  const { isEditing } = useViewMediaContext();
+  const [currentChild, setCurrentChild] = createSignal<HTMLVideoElement | HTMLImageElement>();
+  const [isVisible, setIsVisible] = createSignal<boolean>(false);
+  const { isEditing, setShowImageOnly } = useViewMediaContext();
+
   // Tracking if element is visible, then set the current index to this
   onMount(() => {
     useIntersectionObserver(
       mediaRef,
       ([{ isIntersecting }]) => {
         setIsVisible(isIntersecting); // pass intersection status to child components
+
         if (!isIntersecting) return;
+
+        // get current display child element like img/video tags
+        if (mediaRef && mediaRef.children.length > 0) {
+          setCurrentChild(mediaRef.children[0] as HTMLVideoElement | HTMLImageElement);
+        }
 
         // Set the current index when the item is visible in Modal
         props.setSelectCurrentItem(viewIndex(), media().media_id);
@@ -43,7 +48,7 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
     );
   });
 
-  createMemo(() => props.setShowImageOnly(isEditing()));
+  createMemo(() => setShowImageOnly(isEditing()));
 
   return (
     <div
@@ -51,33 +56,23 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
       class={styles.mediaContainer}
       style={{ top: `${props.topPos}px` }}
       data-modalid={media().media_id} // This media_id is needed to scrollIntoView
-      onClick={() => {
+      onClick={(e) => {
+        if (e.target !== e.currentTarget) return;
         if (isEditing()) return;
-        props.setShowImageOnly((prev) => !prev);
+        setShowImageOnly((prev) => !prev);
       }}>
       <Switch fallback={<div>Unknown type</div>}>
         <Match when={media().file_type === "Photo"}>
-          <Photo
-            media={media()}
-            isVisible={isVisible()}
-            showImageOnly={props.showImageOnly}
-            setShowImageOnly={props.setShowImageOnly}
-          />
+          <Photo media={media()} isVisible={isVisible()} currentChild={currentChild() as HTMLImageElement} />
         </Match>
         <Match when={media().file_type === "Video"}>
-          <Video
-            media={media()}
-            isVisible={isVisible()}
-            showImageOnly={props.showImageOnly}
-            setShowImageOnly={props.setShowImageOnly}
-          />
+          <Video media={media()} isVisible={isVisible()} currentChild={currentChild() as HTMLVideoElement} />
         </Match>
         <Match when={media().file_type === "Live"}>
           <Live
             media={media()}
             isVisible={isVisible()}
-            showImageOnly={props.showImageOnly}
-            setShowImageOnly={props.setShowImageOnly}
+            currentChild={currentChild() as HTMLVideoElement}
             clickableArea={mediaRef!}
           />
         </Match>

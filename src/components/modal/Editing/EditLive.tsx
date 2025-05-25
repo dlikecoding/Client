@@ -1,5 +1,5 @@
 import styles from "../ModalView.module.css";
-import { Accessor, Component, createSignal, Index, onMount, Setter, Show } from "solid-js";
+import { Component, createSignal, Index, onMount, Setter } from "solid-js";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import LayoutEditing from "./LayoutEditing";
 import { fetchNewFrameLivePhoto } from "../../extents/request/fetching";
@@ -7,10 +7,9 @@ import { useMediaContext } from "../../../context/Medias";
 
 type LiveProps = {
   media: MediaType;
-  liveRef: HTMLVideoElement;
-  setLoading: Setter<boolean>; // Show loading while seeking video
-  isLoading: Accessor<boolean>;
-  setIsEditing: Setter<boolean>;
+  currentChild: HTMLVideoElement;
+  isLoading: boolean;
+  setIsLoading: Setter<boolean>; // Show loading while seeking video
 };
 
 type FrameLive = {
@@ -22,21 +21,26 @@ const THUMB_HEIGHT = 50;
 const NUMBER_OF_FRAMES = 11;
 
 const EditLive: Component<LiveProps> = (props) => {
+  const currentChild = () => props.currentChild;
+  const media = () => props.media;
+  const isLoading = () => props.isLoading;
+
   const [thumbnails, setThumbnails] = createSignal<FrameLive[]>([]);
-  const [framePosition, setFramePosition] = createSignal<number>(props.media.selected_frame);
+  const [framePosition, setFramePosition] = createSignal<number>(media().selected_frame);
 
   const { setIsEditing } = useViewMediaContext();
 
   onMount(async () => {
-    props.setLoading(true);
-    const liveRef = props.liveRef;
+    props.setIsLoading(true);
 
-    await extractFrames(liveRef, setThumbnails);
-    props.setLoading(false);
+    await extractFrames(currentChild(), setThumbnails);
+
+    await waitForSeek(currentChild(), media().selected_frame);
+    props.setIsLoading(false);
   });
 
   const changeTimePosition = async (position: number) => {
-    await waitForSeek(props.liveRef, position);
+    await waitForSeek(currentChild(), position);
     setFramePosition(position);
   };
 
@@ -45,7 +49,7 @@ const EditLive: Component<LiveProps> = (props) => {
 
   const onDone = async () => {
     // Update frame to new frame
-    const res = await fetchNewFrameLivePhoto(props.media.media_id, framePosition());
+    const res = await fetchNewFrameLivePhoto(media().media_id, framePosition());
     if (!res.ok) alert("Failed to update frame position");
 
     // Update UI with new pos
@@ -62,17 +66,15 @@ const EditLive: Component<LiveProps> = (props) => {
             <Index each={thumbnails()}>{(thumbs) => <img inert src={thumbs().imageBase} />}</Index>
           </div>
 
-          <Show when={!props.isLoading()}>
-            <input
-              class={styles.inputSlider}
-              type="range"
-              min="0"
-              max={props.media.duration}
-              step="any"
-              value={framePosition()}
-              onInput={(e) => changeTimePosition(parseFloat(e.currentTarget.value))}
-            />
-          </Show>
+          <input
+            classList={{ [styles.inputSlider]: true, [styles.onloadSlider]: isLoading() }}
+            type="range"
+            min="0"
+            max={media().duration}
+            step="any"
+            value={framePosition()}
+            onInput={(e) => changeTimePosition(parseFloat(e.currentTarget.value))}
+          />
         </div>
       </div>
     </LayoutEditing>

@@ -19,7 +19,7 @@
 
   --iconSVGSize: 25px;
 
-  --modal-object-fit: 90dvh;
+  --modal-object-fit: cover;
 }
 
 /* ================== GLOBAL STYLES ================== */

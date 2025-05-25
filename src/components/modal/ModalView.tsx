@@ -27,16 +27,14 @@ interface ModalProps {
 }
 
 const BUFFER_ITEM = 3;
-const ITEM_HEIGHT = window.innerHeight + 100; // Full innerHeight + 100px for gap
+const ITEM_HEIGHT = window.innerHeight + 300; // Full innerHeight + 100px for gap
 const VIEWPORT_HEIGHT = ITEM_HEIGHT * BUFFER_ITEM;
 
 const VISIBLE_ITEM = Math.ceil(VIEWPORT_HEIGHT / ITEM_HEIGHT) + 2;
 
 const Modal: Component<ModalProps> = (props) => {
-  const { setOpenModal, displayMedias } = useViewMediaContext();
+  const { showImageOnly, setOpenModal, displayMedias } = useViewMediaContext();
   const { items, setItems, setOneItem } = useMediaContext();
-
-  const [showImageOnly, setShowImageOnly] = createSignal(false);
 
   const { view, setView } = useManageURLContext();
 
@@ -53,7 +51,7 @@ const Modal: Component<ModalProps> = (props) => {
   });
 
   ///////////////// Virtualization Modal /////////////////////////////////////////////////
-  let containerRef!: HTMLDivElement;
+  let containerRef: HTMLDivElement;
   const [scrollTop, setScrollTop] = createSignal(current.elIndex * ITEM_HEIGHT);
 
   const startIndex = createMemo(() => Math.max(0, Math.floor(scrollTop() / ITEM_HEIGHT) - 1));
@@ -116,7 +114,7 @@ const Modal: Component<ModalProps> = (props) => {
 
   // Create auto change object fit for images and videos in modal:
   createMemo(() => {
-    const objectFit = view.modalObjFit ? "100dvh" : "90dvh";
+    const objectFit = view.modalObjFit ? "contain" : "cover";
     document.documentElement.style.setProperty("--modal-object-fit", objectFit);
   });
 
@@ -142,7 +140,7 @@ const Modal: Component<ModalProps> = (props) => {
             <button
               // style={{ visibility: displayMedias[current.elIndex]?.file_type !== "Photo" ? "hidden" : "visible" }}
               onClick={() => setView("modalObjFit", (prev) => !prev)}>
-              {view.modalObjFit ? CompressIcon() : ExpandIcon()}
+              {view.modalObjFit ? ExpandIcon() : CompressIcon()}
             </button>
             <button popoverTarget="more-modal-popover">{CustomButtonIcon()}</button>
             <div popover="auto" id="more-modal-popover" class="popover-container devices_filter_popover">
@@ -155,7 +153,7 @@ const Modal: Component<ModalProps> = (props) => {
           </div>
         </header>
 
-        <div class={styles.modalImages} ref={containerRef} id="modalImages" onScroll={onScrollModal}>
+        <div class={styles.modalImages} ref={(el) => (containerRef = el)} id="modalImages" onScroll={onScrollModal}>
           <div class={styles.visualList} style={{ height: `${displayMedias.length * ITEM_HEIGHT}px` }}>
             <For each={visualModal()}>
               {(media, index) => (
@@ -167,8 +165,6 @@ const Modal: Component<ModalProps> = (props) => {
                   viewIndex={startIndex() + index()}
                   media={media}
                   setSelectCurrentItem={setSelectCurrentItem}
-                  setShowImageOnly={setShowImageOnly}
-                  showImageOnly={showImageOnly}
                 />
               )}
             </For>
@@ -217,8 +213,8 @@ const scrollToViewElement = (mediaId: number): void => {
 };
 
 // There is an issue when change displaySize to 10 or diffrent number, When clicked on specific item, it does not return the correct element.
-const DISPLAY_SIZE = 11; // We want to show at least 7 elements
-const BUFFER_SIZE = Math.floor(DISPLAY_SIZE / 2); // 3 elements before and after the current index
+const DISPLAY_THUMBS_SIZE = 7; // We want to show at least 7 elements
+const BUFFER_SIZE = Math.floor(DISPLAY_THUMBS_SIZE / 2); // 3 elements before and after the current index
 
 /**
  * Retrieves a sublist of elements centered around the current index, adjusting for boundaries.
@@ -230,19 +226,19 @@ const getSublist = (elements: MediaType[], currentIndex: number): MediaType[] =>
   //(MediaType & { index: number })[]
   const totalElements = elements.length;
 
-  // If the list has fewer elements than DISPLAY_SIZE, return the full list
-  if (totalElements <= DISPLAY_SIZE) return elements; //elements.map((item, index) => ({ ...item, index }));
+  // If the list has fewer elements than DISPLAY_THUMBS_SIZE, return the full list
+  if (totalElements <= DISPLAY_THUMBS_SIZE) return elements; //elements.map((item, index) => ({ ...item, index }));
 
   // Define initial sublist range
   let startIndex = Math.max(0, currentIndex - BUFFER_SIZE);
   let endIndex = Math.min(totalElements - 1, currentIndex + BUFFER_SIZE);
 
-  // Adjust window if it doesn’t fit within DISPLAY_SIZE
-  if (endIndex - startIndex + 1 < DISPLAY_SIZE) {
+  // Adjust window if it doesn’t fit within DISPLAY_THUMBS_SIZE
+  if (endIndex - startIndex + 1 < DISPLAY_THUMBS_SIZE) {
     if (startIndex === 0) {
-      endIndex = Math.min(DISPLAY_SIZE - 1, totalElements - 1);
+      endIndex = Math.min(DISPLAY_THUMBS_SIZE - 1, totalElements - 1);
     } else if (endIndex === totalElements - 1) {
-      startIndex = Math.max(0, totalElements - DISPLAY_SIZE);
+      startIndex = Math.max(0, totalElements - DISPLAY_THUMBS_SIZE);
     }
   }
 

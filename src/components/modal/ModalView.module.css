@@ -12,6 +12,7 @@
 
 header > .modalTitle {
   position: absolute;
+  margin-top: 7px;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -57,18 +58,22 @@ header > .modalTitle {
 .mediaContainer > video,
 .mediaContainer > img {
   width: 100%;
-  max-width: 100%;
-  max-height: var(--modal-object-fit);
+  height: 100%;
+  object-fit: var(--modal-object-fit);
+  transition: opacity 0.5s ease-in-out;
 }
 
 /* /////////////////// THUMBNAIL //////////////////////// */
 .modalThumbs {
   position: fixed;
-  width: 100%;
+  width: 350px;
   height: 50px;
 
+  left: 50%;
+  transform: translateX(-50%);
+
   bottom: 90px;
-  left: 0;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -100,6 +105,10 @@ header > .modalTitle {
 .fadeOut {
   opacity: 0;
   transition: opacity 0.3s linear;
+}
+
+.fadeOut button {
+  pointer-events: none;
 }
 
 /*  MEDIA DISPLAY /////////////////////////////////////// */
@@ -164,6 +173,22 @@ header > .modalTitle {
 
   cursor: pointer;
   appearance: none;
+}
+
+.onloadSlider::-webkit-slider-runnable-track {
+  background: linear-gradient(90deg, rgba(53, 133, 246, 0.136));
+  border-radius: 5px;
+  animation: glow-pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(53, 133, 246, 0.352);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(53, 133, 246, 0.487);
+  }
 }
 
 /* /////////////// Layout Editing //////////////////////// */

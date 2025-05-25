@@ -1,25 +1,28 @@
-import { Component, onMount, Setter } from "solid-js";
+import { Component, onMount } from "solid-js";
 import LayoutEditing from "./LayoutEditing";
 
 import BrusherDrawing from "./eraser/Brusher";
 import Dropdown from "./options.tsx/Dropdown";
 import { useManageURLContext } from "../../../context/ManageUrl";
+import { useViewMediaContext } from "../../../context/ViewContext";
 
 type EditPhotoProps = {
   photo: HTMLImageElement;
-  setIsEditing: Setter<boolean>;
 };
 
 const EditPhoto: Component<EditPhotoProps> = (props) => {
-  const handleCancel = () => props.setIsEditing(false);
+  const { setIsEditing } = useViewMediaContext();
+
+  const handleCancel = () => setIsEditing(false);
+
   const handleDone = () => {
     // photo save logic
-    props.setIsEditing(false);
+    setIsEditing(false);
   };
 
   const { setView } = useManageURLContext();
+  onMount(() => setView("modalObjFit", true));
 
-  onMount(() => setView("modalObjFit", false));
   return (
     <LayoutEditing onCancel={handleCancel} onDone={handleDone} dropdown={Dropdown()}>
       <BrusherDrawing photo={props.photo} />

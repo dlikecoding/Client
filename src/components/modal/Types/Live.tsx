@@ -1,9 +1,9 @@
 import styles from "./Types.module.css";
-import { Accessor, Component, createMemo, createSignal,Setter, Show } from "solid-js";
+import { Accessor, Component, createMemo, createSignal, Setter, Show } from "solid-js";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import { VIDEO_API_URL } from "../../../App";
 import EditLive from "../Editing/EditLive";
-import Spinner from "../../extents/Spinner";
+
 import { useMousePressed } from "solidjs-use";
 import { safePlayVideo } from "../../extents/helper/helper";
 import { LivePhotoIcon } from "../../svgIcons";
@@ -11,86 +11,89 @@ import { LivePhotoIcon } from "../../svgIcons";
 interface LiveProps {
   media: MediaType;
   isVisible: boolean;
-
-  showImageOnly: Accessor<boolean>;
-  setShowImageOnly: Setter<boolean>;
+  currentChild: HTMLVideoElement;
 
   clickableArea: HTMLDivElement;
 }
 
 const Live: Component<LiveProps> = (props) => {
-  const parentMediaRef = props.clickableArea;
-  let liveRef: HTMLVideoElement;
+  const currentChild = () => props.currentChild;
+  const media = () => props.media;
   const isVisible = () => props.isVisible;
 
+  const isLiveVisible = createMemo(() => isVisible() && currentChild());
+
+  const parentMediaRef = props.clickableArea;
+  const [isLoading, setIsLoading] = createSignal<boolean>(true);
+
   createMemo(async () => {
-    const livePhoto = liveRef;
-    if (!isVisible() || !livePhoto) return;
-    livePhoto.load();
+    if (!isLiveVisible()) return setIsLoading(true);
+    currentChild().load();
+    setIsLoading(false);
   });
 
   // ================== Handle longpress to play live photos ===============================================
-  const [isSeeking, setIsSeeking] = createSignal(false);
-  const { isEditing, setIsEditing } = useViewMediaContext();
+  const { isEditing, setShowImageOnly, showImageOnly } = useViewMediaContext();
   const { pressed } = useMousePressed({ target: parentMediaRef });
 
   let timeId: number | undefined;
 
   createMemo(() => {
-    if (!isVisible()) return;
-    if (!liveRef) return;
+    if (!isLiveVisible()) return;
 
     if (pressed()) {
       timeId = setTimeout(async () => {
-        props.setShowImageOnly(true);
+        setShowImageOnly(true);
 
-        return await safePlayVideo(liveRef);
+        return await safePlayVideo(currentChild());
       }, 300);
     }
 
     if (!pressed()) {
       clearTimeout(timeId);
-      if (!liveRef.paused) liveRef.pause();
+      if (!currentChild().paused) currentChild().pause();
     }
   });
 
   return (
     <>
-      <Show when={!props.showImageOnly()}>
+      <video
+        style={{ opacity: isLoading() ? 0 : 1 }}
+        inert
+        onLoad={() => setIsLoading(true)}
+        onLoadedData={(e) => (e.currentTarget.currentTime = media().selected_frame)}
+        onPlay={() => currentChild().fastSeek(0)}
+        onPause={() => currentChild().fastSeek(media().selected_frame)}
+        preload="metadata"
+        controls={false}
+        controlslist="nodownload"
+        playsinline={true}
+        crossorigin="use-credentials">
+        <source src={`${VIDEO_API_URL}${media().source_file}`} type={media().mime_type} />
+        <p>Your browser doesn't support the video tag.</p>
+      </video>
+
+      {/* ////////////// All addon element must start here /////////////////////////////// */}
+      <Show when={!showImageOnly()}>
         <div class={styles.liveIcon}>
           {LivePhotoIcon()}
           <span>LIVE</span>
         </div>
       </Show>
 
-      <video
-        style={{ display: isSeeking() ? "none" : "" }}
-        ref={(el) => (liveRef = el)}
+      {/* /////////////////////////////////////// */}
+      <img
+        class={styles.overlayImg}
+        style={{ opacity: isLoading() ? 1 : 0 }}
         inert
-        poster={props.media.thumb_path}
-        onLoadedData={(e) => (e.currentTarget.currentTime = props.media.selected_frame)}
-        onPlay={() => liveRef.fastSeek(0)}
-        onPause={() => liveRef.fastSeek(props.media.selected_frame)}
-        preload="metadata"
-        controls={false}
-        controlslist="nodownload"
-        playsinline={true}
-        crossorigin="use-credentials">
-        <source src={`${VIDEO_API_URL}${props.media.source_file}`} type={props.media.mime_type} />
-        <p>Your browser doesn't support the video tag.</p>
-      </video>
+        loading="lazy"
+        src={media().thumb_path}
+        alt={`Modal Image Overlay`}
+      />
 
-      <Show when={isEditing() && isVisible()}>
-        {isSeeking() && <Spinner />}
-        {liveRef! && (
-          <EditLive
-            media={props.media}
-            liveRef={liveRef}
-            setLoading={setIsSeeking}
-            setIsEditing={setIsEditing}
-            isLoading={isSeeking}
-          />
-        )}
+      {/* ////////////// For editing /////////////////////////////// */}
+      <Show when={isEditing() && isLiveVisible()}>
+        <EditLive media={media()} currentChild={currentChild()} isLoading={isLoading()} setIsLoading={setIsLoading} />
       </Show>
     </>
   );
