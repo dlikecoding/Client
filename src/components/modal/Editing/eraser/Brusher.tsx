@@ -128,7 +128,13 @@ const BrusherDrawing: Component<BrushProps> = (props) => {
           </div>
           <div class="actions__toolbar__column is_middle">
             {/* <button>{ZoomButtonIcon()}</button> */}
-            <button onClick={() => saveToServer(canvasContext, canvasRef)}>{GenerateButtonIcon()} Remove</button>
+            <button
+              onClick={() => {
+                return;
+                // saveToServer(canvasContext, canvasRef)
+              }}>
+              {GenerateButtonIcon()} Remove
+            </button>
             {/* <button>{BrushButtonIcon()}</button> */}
           </div>
           <div class="actions__toolbar__column is_right">
@@ -149,55 +155,55 @@ const getTrackBackground = (size: number) => {
   return `linear-gradient(to right, var(--button-active-color) 0%, var(--button-active-color) ${percentage}%, #ccc ${percentage}%, #ccc 100%)`;
 };
 
-const convertBlackToWhite = (canvasContext: CanvasRenderingContext2D, canvasRef: HTMLCanvasElement) => {
-  if (!canvasContext) return;
-  const imageData = canvasContext?.getImageData(0, 0, canvasRef.width, canvasRef.height);
+// const convertBlackToWhite = (canvasContext: CanvasRenderingContext2D, canvasRef: HTMLCanvasElement) => {
+//   if (!canvasContext) return;
+//   const imageData = canvasContext?.getImageData(0, 0, canvasRef.width, canvasRef.height);
 
-  const data = imageData?.data;
-  if (!data) return;
+//   const data = imageData?.data;
+//   if (!data) return;
 
-  for (let i = 0; i < data.length; i += 4) {
-    const isDrawn = data[i] > 0 || data[i + 1] > 0 || data[i + 2] > 0;
-    data[i] = isDrawn ? 255 : 0;
-    data[i + 1] = isDrawn ? 255 : 0;
-    data[i + 2] = isDrawn ? 255 : 0;
-    data[i + 3] = 255;
-  }
+//   for (let i = 0; i < data.length; i += 4) {
+//     const isDrawn = data[i] > 0 || data[i + 1] > 0 || data[i + 2] > 0;
+//     data[i] = isDrawn ? 255 : 0;
+//     data[i + 1] = isDrawn ? 255 : 0;
+//     data[i + 2] = isDrawn ? 255 : 0;
+//     data[i + 3] = 255;
+//   }
 
-  canvasContext?.putImageData(imageData, 0, 0);
-};
+//   canvasContext?.putImageData(imageData, 0, 0);
+// };
 
 // Save canvas content as an image and send to server
-const saveToServer = async (canvasContext: CanvasRenderingContext2D, canvasRef: HTMLCanvasElement): Promise<void> => {
-  if (!canvasContext) return;
+// const saveToServer = async (canvasContext: CanvasRenderingContext2D, canvasRef: HTMLCanvasElement): Promise<void> => {
+//   if (!canvasContext) return;
 
-  convertBlackToWhite(canvasContext, canvasRef);
-  const imageData = canvasRef.toDataURL("image/png");
+//   convertBlackToWhite(canvasContext, canvasRef);
+//   const imageData = canvasRef.toDataURL("image/png");
 
-  const link = document.createElement("a");
-  link.href = imageData;
-  link.download = "bw-image.png";
-  link.click();
+//   const link = document.createElement("a");
+//   link.href = imageData;
+//   link.download = "bw-image.png";
+//   link.click();
 
-  /**
-    const formData = new FormData();
-    formData.append("image", imageData); // The server should expect this key ('image')
+//   /**
+//     const formData = new FormData();
+//     formData.append("image", imageData); // The server should expect this key ('image')
 
-    try {
-      // Send the image to the server (replace with your actual endpoint)
-      const response = await fetch("https://yourserver.com/upload", {
-        method: "POST",
-        body: formData,
-      });
+//     try {
+//       // Send the image to the server (replace with your actual endpoint)
+//       const response = await fetch("https://yourserver.com/upload", {
+//         method: "POST",
+//         body: formData,
+//       });
 
-      if (response.ok) {
-        alert("Image saved successfully!");
-      } else {
-        alert("Failed to save image.");
-      }
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      alert("Error uploading image.");
-    }
-     */
-};
+//       if (response.ok) {
+//         alert("Image saved successfully!");
+//       } else {
+//         alert("Failed to save image.");
+//       }
+//     } catch (error) {
+//       console.error("Error uploading image:", error);
+//       alert("Error uploading image.");
+//     }
+//      */
+// };

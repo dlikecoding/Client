@@ -1,5 +1,5 @@
 import styles from "./Types.module.css";
-import modelS from "./../ModalView.module.css";
+import modalS from "./../ModalView.module.css";
 
 import { Component, createMemo, Show } from "solid-js";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
@@ -101,10 +101,10 @@ const Video: Component<VideoProps> = (props) => {
 
       <Show when={isVisibleAndLoaded() && !view.showThumb}>
         {/* Design a videoPlayer control when video play, user able to control it */}
-        <div classList={{ [modelS.modalThumbs]: true, [modelS.fadeOut]: showImageOnly() }}>
+        <div classList={{ [modalS.modalThumbs]: true, [modalS.fadeOut]: showImageOnly() }}>
           <div class={styles.videoControler}>
-            {/* <button onClick={() => seekBackward(videoRef!)}>{BackwardButtonIcon()}</button>
-            <button onClick={() => seekForward(videoRef!)}>{ForwardButtonIcon()}</button> */}
+            <button onClick={() => seekBackward(currentChild())}>{BackwardButtonIcon()}</button>
+            <button onClick={() => seekForward(currentChild())}>{ForwardButtonIcon()}</button>
 
             <button onClick={() => toggleVideo(currentChild())}>
               {vidStatus.isPlaying ? PauseButtonIcon() : PlayButtonIcon()}
@@ -122,7 +122,18 @@ const Video: Component<VideoProps> = (props) => {
             {/* NEED TO-DO Improve this funtion to prevent calculate time every second */}
             {media().video_duration}
 
-            <button onClick={() => currentChild().requestFullscreen()}>{FullScreenIcon()}</button>
+            {/* <button
+              onClick={() => {
+                if (currentChild().requestFullscreen) {
+                  currentChild().requestFullscreen();
+                } else if ((currentChild() as any).webkitRequestFullscreen) {
+                  (currentChild() as any).webkitRequestFullscreen();
+                }
+
+                // currentChild().requestFullscreen() || currentChild().webkitEnterFullscreen();
+              }}>
+              {FullScreenIcon()}
+            </button> */}
           </div>
         </div>
       </Show>

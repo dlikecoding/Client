@@ -3,17 +3,16 @@ import styles from "./ModalView.module.css";
 import { Portal } from "solid-js/web";
 import { Accessor, Component, createMemo, createSignal, For, onMount, Setter, Show } from "solid-js";
 import { createStore } from "solid-js/store";
-import { List } from "@solid-primitives/list";
 
 import { useManageURLContext } from "../../context/ManageUrl";
 import { MediaType, useViewMediaContext } from "../../context/ViewContext";
 import { useMediaContext } from "../../context/Medias";
-import { CompressIcon, CustomButtonIcon, ExpandIcon, GoBackIcon } from "../svgIcons";
+import { CompressIcon, ExpandIcon, GoBackIcon } from "../svgIcons";
 
 import { formatTime, scrollIntoViewFc } from "../extents/helper/helper";
 import MediaDisplay from "./MediaDisplay";
-import NotFound from "../extents/NotFound";
 import ActionNav from "../photoview/actionNav/ActionNav";
+import { useResizeObserver } from "solidjs-use";
 
 interface ElementModal {
   elIndex: number;
@@ -27,9 +26,11 @@ interface ModalProps {
 }
 
 const BUFFER_ITEM = 3;
-const ITEM_HEIGHT = window.innerHeight + 300; // Full innerHeight + 100px for gap
-const VIEWPORT_HEIGHT = ITEM_HEIGHT * BUFFER_ITEM;
 
+const PADDING = 200;
+const ITEM_HEIGHT = window.innerHeight + PADDING; // Full innerHeight + 100px for gap
+
+const VIEWPORT_HEIGHT = ITEM_HEIGHT * BUFFER_ITEM;
 const VISIBLE_ITEM = Math.ceil(VIEWPORT_HEIGHT / ITEM_HEIGHT) + 2;
 
 const Modal: Component<ModalProps> = (props) => {
@@ -52,6 +53,7 @@ const Modal: Component<ModalProps> = (props) => {
 
   ///////////////// Virtualization Modal /////////////////////////////////////////////////
   let containerRef: HTMLDivElement;
+
   const [scrollTop, setScrollTop] = createSignal(current.elIndex * ITEM_HEIGHT);
 
   const startIndex = createMemo(() => Math.max(0, Math.floor(scrollTop() / ITEM_HEIGHT) - 1));
@@ -81,6 +83,9 @@ const Modal: Component<ModalProps> = (props) => {
       handleCloseModal();
       scrollToViewElement(current.elId); // scroll to view to the current id in PhotoView
     };
+
+    // Observer window.innerHeight on change to prevent photo overlapping
+    useResizeObserver(containerRef, (_entries) => {});
   });
 
   const setSelectCurrentItem = (index: number, mediaId: number) => {
@@ -95,9 +100,6 @@ const Modal: Component<ModalProps> = (props) => {
     return formatTime(curEl.create_date);
   });
 
-  /** Create sublist for thumbnails */
-  const modalMedias = () => getSublist(displayMedias, current.elIndex);
-
   const endIdxView = () => props.endIdxView();
   const startIdxView = () => props.startIdxView();
 
@@ -111,6 +113,9 @@ const Modal: Component<ModalProps> = (props) => {
       scrollToViewElement(current.elId);
     }
   };
+
+  /** Create sublist for thumbnails */
+  // const modalMedias = () => getSublist(displayMedias, current.elIndex);
 
   // Create auto change object fit for images and videos in modal:
   createMemo(() => {
@@ -137,19 +142,17 @@ const Modal: Component<ModalProps> = (props) => {
             <p style={{ "font-size": "12px" }}>{displayTime().time}</p>
           </div>
           <div class="buttonContainer">
-            <button
-              // style={{ visibility: displayMedias[current.elIndex]?.file_type !== "Photo" ? "hidden" : "visible" }}
-              onClick={() => setView("modalObjFit", (prev) => !prev)}>
+            <button onClick={() => setView("modalObjFit", (prev) => !prev)}>
               {view.modalObjFit ? ExpandIcon() : CompressIcon()}
             </button>
-            <button popoverTarget="more-modal-popover">{CustomButtonIcon()}</button>
+            {/* <button popoverTarget="more-modal-popover">{CustomButtonIcon()}</button>
             <div popover="auto" id="more-modal-popover" class="popover-container devices_filter_popover">
               <div onClick={() => setView("showThumb", (prev) => !prev)}>
                 Thumbnails {view.showThumb ? "OFF" : "ON"}
               </div>
               <div>Placehodler</div>
               <div>Placehodler</div>
-            </div>
+            </div> */}
           </div>
         </header>
 
@@ -171,7 +174,7 @@ const Modal: Component<ModalProps> = (props) => {
           </div>
         </div>
 
-        <Show when={view.showThumb}>
+        {/* <Show when={view.showThumb}>
           <div
             classList={{ [styles.modalThumbs]: true, [styles.fadeOut]: showImageOnly() || displayMedias.length <= 1 }}>
             <List each={modalMedias()} fallback={<NotFound />}>
@@ -184,7 +187,7 @@ const Modal: Component<ModalProps> = (props) => {
               )}
             </List>
           </div>
-        </Show>
+        </Show> */}
 
         <div classList={{ [styles.fadeOut]: showImageOnly() }}>
           <ActionNav />

@@ -57,6 +57,9 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
       style={{ top: `${props.topPos}px` }}
       data-modalid={media().media_id} // This media_id is needed to scrollIntoView
       onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+
         if (e.target !== e.currentTarget) return;
         if (isEditing()) return;
         setShowImageOnly((prev) => !prev);
