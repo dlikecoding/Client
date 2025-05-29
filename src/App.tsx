@@ -4,7 +4,7 @@ import { Navigate, Route, Router } from "@solidjs/router";
 import AuthGuard from "./pages/auth/AuthGuard";
 import { AuthProvider } from "./context/AuthProvider";
 
-export const VIDEO_API_URL = import.meta.env.VITE_VIDEO_URL || "";
+export const VIDEO_API_URL = import.meta.env.VITE_DEV_MODE === "dev" ? import.meta.env.VITE_VIDEO_URL : "";
 
 const HomepageRedirect = () => <Navigate href="/library/" />;
 
@@ -27,8 +27,9 @@ const App = () => {
   const PhotoView = lazy(() => import("./components/photoview/PhotoView"));
 
   // Admin Dashboard
-  const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
   const Profile = lazy(() => import("./pages/user/Profile"));
+  const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
+  const Logged = lazy(() => import("./pages/admin/Logged"));
 
   // Catch all unknown URL
   const NotFound = lazy(() => import("./components/extents/NotFound"));
@@ -70,7 +71,10 @@ const App = () => {
 
             <Route path="/user">
               <Route path="/" component={Profile} />
-              <Route path="/admin" component={Dashboard} />
+              <Route path="/admin">
+                <Route path="/" component={Dashboard} />
+                <Route path="/logged" component={Logged} />
+              </Route>
             </Route>
 
             <Route path="/library" component={Library}>

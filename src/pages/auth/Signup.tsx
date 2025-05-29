@@ -1,7 +1,8 @@
-import { A } from "@solidjs/router";
 import styles from "./Guard.module.css";
+import { A } from "@solidjs/router";
 import { startRegistration, WebAuthnError, type RegistrationResponseJSON } from "@simplewebauthn/browser";
 import { createStore } from "solid-js/store";
+import { reqMethodHelper } from "../../components/extents/request/fetching";
 
 interface UserInput {
   name?: string;
@@ -17,14 +18,13 @@ const Signup = () => {
 
     // 1. Get challenge from server
     const initResponse = await fetch(`api/v1/auth/init-register?email=${user.email}&username=${user.name}`, {
-      credentials: "include",
+      credentials: "same-origin",
     });
 
     const options = await initResponse.json();
     if (!initResponse.ok) return setMessage({ status: false, msg: options.error }); // Stop further execution
 
     // 2. Create passkey
-    // const registrationJSON = await startRegistration(options); // Make sure startRegistration is defined elsewhere
     let registrationJSON: RegistrationResponseJSON;
     try {
       // Pass the options to the authenticator and wait for a response
@@ -38,22 +38,13 @@ const Signup = () => {
     }
 
     // 3. Save passkey in DB
-    const verifyResponse = await fetch(`api/v1/auth/verify-register`, {
-      credentials: "include",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(registrationJSON),
-    });
+    const verifyResponse = await reqMethodHelper("api/v1/auth/verify-register", "POST", registrationJSON);
 
     const verifyData = await verifyResponse.json();
     if (!verifyResponse.ok) return setMessage({ status: false, msg: verifyData.error });
 
     if (!verifyData.verified) return setMessage({ status: false, msg: `Failed to register` });
     window.location.replace("/login");
-
-    // ? setMessage({ status: true, msg: `Successfully registered ${user.email}` })
   };
   return (
     <div class={styles.ring}>

@@ -40,6 +40,14 @@ const fetchData = async <T>(url: string): Promise<T | undefined> => {
   }
 };
 
+export const reqMethodHelper = async (url: string, method: string, body: Object) =>
+  await fetch(`${url}`, {
+    method: method,
+    headers: { "Content-Type": "application/json" },
+    credentials: "same-origin",
+    body: JSON.stringify(body),
+  });
+
 export const fetchMediaYears = async () => await fetchData<any[]>(`/api/v1/medias`);
 
 export const fetchMedias = (queries: SearchQuery, pageNumber: number = 0) => {
@@ -56,101 +64,49 @@ export const fetchStatistic = async () => {
 
 export const fetchAlbum = async () => await fetchData<any[]>(`/api/v1/album`);
 
-export const fetchAddAlbum = async (mediaIds: number[], albumId?: number, albumTitle?: string) => {
-  return await fetch(`/api/v1/album/add`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "same-origin",
-    body: JSON.stringify({
-      mediaIds: mediaIds,
-      albumId: albumId,
-      albumTitle: albumTitle,
-    }),
+export const fetchAddAlbum = async (mediaIds: number[], albumId?: number, albumTitle?: string) =>
+  await reqMethodHelper("/api/v1/album/add", "PUT", {
+    mediaIds: mediaIds,
+    albumId: albumId,
+    albumTitle: albumTitle,
   });
-};
 
-export const fetchRemoveAlbum = async (mediaIds: number[], albumId?: number) => {
-  return await fetch(`/api/v1/album/remove`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "same-origin",
-    body: JSON.stringify({
-      mediaIds: mediaIds,
-      albumId: albumId,
-    }),
+export const fetchRemoveAlbum = async (mediaIds: number[], albumId?: number) =>
+  await reqMethodHelper("/api/v1/album/remove", "PUT", {
+    mediaIds: mediaIds,
+    albumId: albumId,
   });
-};
 
-export const forUpdating = async (mediaIds: number[], updateKey: string, updateValue: boolean) => {
-  return await fetch(`/api/v1/medias`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "same-origin",
-    body: JSON.stringify({
-      mediaIds: mediaIds,
-      updateKey: updateKey,
-      updateValue: updateValue,
-    }),
+export const forUpdating = async (mediaIds: number[], updateKey: string, updateValue: boolean) =>
+  await reqMethodHelper("/api/v1/medias", "PUT", {
+    mediaIds: mediaIds,
+    updateKey: updateKey,
+    updateValue: updateValue,
   });
-};
 
-export const forDeleting = async (mediaIds: number[]) => {
-  return await fetch(`/api/v1/medias`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "same-origin",
-    body: JSON.stringify({ mediasToDel: mediaIds }),
+export const forDeleting = async (mediaIds: number[]) =>
+  await reqMethodHelper("/api/v1/medias", "DELETE", {
+    mediasToDel: mediaIds,
   });
-};
 
-export const forDeleteAllInRecently = async () => {
-  return await fetchData(`/api/v1/medias/recently`);
-};
+export const forDeleteAllInRecently = async () => await fetchData(`/api/v1/medias/recently`);
+
 ///////////////// For /api/v1/media //////////////////////////////////////////
-
-export const forUpdateCaption = async (mediaId: number, caption: string) => {
-  return await fetch(`/api/v1/media/caption`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "same-origin",
-    body: JSON.stringify({
-      mediaId: mediaId,
-      caption: caption,
-    }),
+export const forUpdateCaption = async (mediaId: number, caption: string) =>
+  await reqMethodHelper("/api/v1/media/caption", "PUT", {
+    mediaId: mediaId,
+    caption: caption,
   });
-};
 
-export const fetchNewFrameLivePhoto = async (mediaId: number, framePos: number) => {
-  return await fetch(`/api/v1/media/live-frame`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "same-origin",
-    body: JSON.stringify({
-      mediaId: mediaId,
-      framePos: framePos,
-    }),
+export const fetchNewFrameLivePhoto = async (mediaId: number, framePos: number) =>
+  await reqMethodHelper("/api/v1/media/live-frame", "PUT", {
+    mediaId: mediaId,
+    framePos: framePos,
   });
-};
 
-export const fetchPhotoInfo = async (mediaId: number): Promise<MediaInfo | undefined> => {
-  try {
-    return await fetchData<MediaInfo>(`/api/v1/media?id=${mediaId}`);
-  } catch (error) {
-    console.log("fetchPhotoInfo:", error);
-  }
-};
+export const fetchPhotoInfo = async (mediaId: number): Promise<MediaInfo | undefined> =>
+  await fetchData<MediaInfo>(`/api/v1/media?id=${mediaId}`);
+
 ///////////////// For Uploading //////////////////////////////////////////
 const fetchStreamData = async (response: Response, setMessages: SetStoreFunction<ProcessMesg>) => {
   try {
@@ -195,30 +151,15 @@ export const adminIntegrateData = async (
   importArgs: ImportArgs,
   driveLocation: "internal" | "external"
 ) => {
-  const response = await fetch(`/api/v1/admin/${driveLocation}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "same-origin",
-    body: JSON.stringify({
-      sourcePath: importArgs.path,
-      aimode: importArgs.aimode,
-    }),
+  const response = await reqMethodHelper(`/api/v1/admin/${driveLocation}`, "POST", {
+    sourcePath: importArgs.path,
+    aimode: importArgs.aimode,
   });
   await fetchStreamData(response, setMessages);
 };
 
-export const adminUpdateUserStatus = async (userEmail: string) => {
-  return await fetch(`/api/v1/admin/changeStatus`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "same-origin",
-    body: JSON.stringify({ userEmail: userEmail }),
-  });
-};
+export const adminUpdateUserStatus = async (userEmail: string) =>
+  await reqMethodHelper("/api/v1/admin/changeStatus", "PUT", { userEmail: userEmail });
 
 export const adminBackup = async () => await fetchData<any>(`/api/v1/admin/backup`);
 export const adminRestore = async () => await fetchData<any>(`/api/v1/admin/restore`);
@@ -229,6 +170,11 @@ export const adminReindex = async (setMessages: SetStoreFunction<ProcessMesg>) =
   });
   await fetchStreamData(res, setMessages);
 };
+
+///////////////////////// System logs ////////////////////////////////////////////////////////////
+export const fetchSystemLogs = async () => await fetchData<any[]>(`/api/v1/admin/all-logs`);
+export const fetchDeleteSystemlogs = async (ids: number[]) =>
+  await reqMethodHelper("/api/v1/admin/all-logs", "DELETE", { ids: ids });
 
 ///////////////// For Searching //////////////////////////////////////////
 export const fetchRefetch = async () => await fetchData<any>(`/api/v1/search/refreshView`);
