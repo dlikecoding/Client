@@ -3,6 +3,7 @@ import { MediaType } from "../../../context/ViewContext";
 import { SetStoreFunction } from "solid-js/store";
 import { ImportArgs, ProcessMesg } from "../../../pages/admin/Dashboard";
 import { MediaInfo } from "../../photoview/actionNav/buttons/Info";
+import { LoadLogs } from "../../../pages/admin/Logged";
 
 const buildQueryString = (params: object): string =>
   Object.entries(params)
@@ -172,9 +173,9 @@ export const adminReindex = async (setMessages: SetStoreFunction<ProcessMesg>) =
 };
 
 ///////////////////////// System logs ////////////////////////////////////////////////////////////
-export const fetchSystemLogs = async () => await fetchData<any[]>(`/api/v1/admin/all-logs`);
-export const fetchDeleteSystemlogs = async (ids: number[]) =>
-  await reqMethodHelper("/api/v1/admin/all-logs", "DELETE", { ids: ids });
+export const fetchAllLogs = async () => await fetchData<LoadLogs>(`/api/v1/admin/all-logs`);
+export const fetchDeleteLogs = async (ids: number[], logType: "system" | "user" = "system") =>
+  await reqMethodHelper("/api/v1/admin/all-logs", "DELETE", { ids: ids, logType: logType });
 
 ///////////////// For Searching //////////////////////////////////////////
 export const fetchRefetch = async () => await fetchData<any>(`/api/v1/search/refreshView`);
