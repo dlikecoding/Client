@@ -25,6 +25,21 @@ header {
   transition: top 0.2s ease, left 0.2s ease;
 }
 
+.paddingInfo {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+
+  font: 550 14px system-ui, "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif;
+  padding: 15px 0;
+  margin: 0;
+
+  width: 100%;
+
+  /* background: gray; */
+}
+
 .imageContainer {
   position: absolute;
   width: 100%;

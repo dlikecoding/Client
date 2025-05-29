@@ -3,6 +3,7 @@ import { createMemo, createResource, createSignal, For, Show } from "solid-js";
 import { fetchDeleteLogs, fetchAllLogs } from "../../components/extents/request/fetching";
 import { formatTimeAgo } from "solidjs-use";
 import { createStore } from "solid-js/store";
+import { CloseIcon } from "../../components/svgIcons";
 
 type DeleteLog = {
   sysIds: number[];
@@ -117,38 +118,54 @@ const Logged = () => {
     </div>
   );
 
+  let popoverDiv: HTMLDivElement | null = null;
+  const [getLogs, setGetLogs] = createSignal(false);
   return (
     <>
-      <h1>Logs Management</h1>
+      <h3 style={{ "margin-top": "50px" }}>Logs Manager</h3>
+      <button popovertarget="info-contents" onClick={() => setGetLogs((prev) => !prev)}>
+        show
+      </button>
+      <Show when={getLogs()}>
+        <div ref={(el) => (popoverDiv = el)} popover="auto" id="info-contents" class={styles.mainPopoverLog}>
+          <h1>Logs Management</h1>
 
-      {/* System Logs */}
-      <Show when={systemLogs().length > 0}>
-        <div class={styles.headerLog}>
-          <h3>System Logs</h3>
+          {/* System Logs */}
+          <Show when={systemLogs().length > 0}>
+            <div class={styles.headerLog}>
+              <h3>System Logs</h3>
+              <button
+                style={{
+                  color: `${deleteLog.sysIds.length > 0 ? "var(--button-delete-color)" : "var(--button-active-color)"}`,
+                }}
+                onClick={() => toggleSelection("system")}>
+                {isSelectSystemLog() ? (deleteLog.sysIds.length > 0 ? "Delete" : "Cancel") : "Select"}
+              </button>
+            </div>
+            {renderSystemLogs()}
+          </Show>
+
+          {/* User Logs */}
+          <Show when={userLogs().length > 0}>
+            <div class={styles.headerLog}>
+              <h3>User Logs</h3>
+              <button
+                style={{
+                  color: `${deleteLog.uIds.length > 0 ? "var(--button-delete-color)" : "var(--button-active-color)"}`,
+                }}
+                onClick={() => toggleSelection("user")}>
+                {isSelectUserLog() ? (deleteLog.uIds.length > 0 ? "Delete" : "Cancel") : "Select"}
+              </button>
+            </div>
+            {renderUserLogs()}
+          </Show>
+
           <button
-            style={{
-              color: `${deleteLog.sysIds.length > 0 ? "var(--button-delete-color)" : "var(--button-active-color)"}`,
-            }}
-            onClick={() => toggleSelection("system")}>
-            {isSelectSystemLog() ? (deleteLog.sysIds.length > 0 ? "Delete" : "Cancel") : "Select"}
+            style={{ position: "absolute", bottom: 0, right: 0, margin: "40px" }}
+            onClick={() => setGetLogs(false)}>
+            {CloseIcon()}
           </button>
         </div>
-        {renderSystemLogs()}
-      </Show>
-
-      {/* User Logs */}
-      <Show when={userLogs().length > 0}>
-        <div class={styles.headerLog}>
-          <h3>User Logs</h3>
-          <button
-            style={{
-              color: `${deleteLog.uIds.length > 0 ? "var(--button-delete-color)" : "var(--button-active-color)"}`,
-            }}
-            onClick={() => toggleSelection("user")}>
-            {isSelectUserLog() ? (deleteLog.uIds.length > 0 ? "Delete" : "Cancel") : "Select"}
-          </button>
-        </div>
-        {renderUserLogs()}
       </Show>
     </>
   );

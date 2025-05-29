@@ -39,9 +39,7 @@ const GroupView = () => {
 
         <Match when={displayMedias().length > 0}>
           <Index each={displayMedias()}>
-            {(photo) => {
-              return <Dynamic component={isYear() ? Years : Months} photo={photo()} />;
-            }}
+            {(photo) => <Dynamic component={isYear() ? Years : Months} photo={photo()} />}
           </Index>
         </Match>
       </Switch>

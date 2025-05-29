@@ -122,6 +122,10 @@ const ContextView = () => {
   // Reset params on closed (This dose not reset year and month )
   onCleanup(() => resetLibrary());
 
+  const calculateTopPadding = createMemo(() => {
+    const minPadding = paramsUrl.pages === "all" ? height() - 170 : height() - 130;
+    return Math.max(minPadding, Math.ceil(displayMedias.length / view.nColumn) * itemDimention());
+  });
   return (
     <>
       <header style={{ "z-index": 1 }}>
@@ -164,7 +168,7 @@ const ContextView = () => {
 
         <div
           class={style.virtualContainer}
-          style={{ height: `${(displayMedias.length / view.nColumn) * itemDimention()}px`, "padding-bottom": "150px" }}>
+          style={{ height: `${(displayMedias.length / view.nColumn) * itemDimention()}px` }}>
           <For each={visibleRows()}>
             {(media, index) => (
               <PhotoCard
@@ -175,6 +179,15 @@ const ContextView = () => {
               />
             )}
           </For>
+
+          <div
+            class={style.paddingInfo}
+            style={{
+              height: `${paramsUrl.pages === "all" ? 140 : 100}px`,
+              top: `${calculateTopPadding()}px`,
+            }}>
+            {displayMedias.length} Photos and Videos
+          </div>
         </div>
       </div>
 

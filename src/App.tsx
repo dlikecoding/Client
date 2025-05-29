@@ -29,7 +29,6 @@ const App = () => {
   // Admin Dashboard
   const Profile = lazy(() => import("./pages/user/Profile"));
   const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
-  const Logged = lazy(() => import("./pages/admin/Logged"));
 
   // Catch all unknown URL
   const NotFound = lazy(() => import("./components/extents/NotFound"));
@@ -71,10 +70,7 @@ const App = () => {
 
             <Route path="/user">
               <Route path="/" component={Profile} />
-              <Route path="/admin">
-                <Route path="/" component={Dashboard} />
-                <Route path="/logged" component={Logged} />
-              </Route>
+              <Route path="/admin" component={Dashboard} />
             </Route>
 
             <Route path="/library" component={Library}>

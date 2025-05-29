@@ -185,6 +185,8 @@ header > button {
 
 /* ================== FOOTER CONTROL BAR ================== */
 footer {
+  overflow: hidden;
+
   position: fixed;
   bottom: 38px;
   left: 0;

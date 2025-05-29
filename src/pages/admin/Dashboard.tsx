@@ -13,6 +13,8 @@ import ImportLoading from "../../components/extents/ImportLoading";
 import Loading from "../../components/extents/Loading";
 import NotFound from "../../components/extents/NotFound";
 import { SlideUp } from "../../components/photoview/actionNav/popover/SlideUp";
+import { Portal } from "solid-js/web";
+import Logged from "./Logged";
 
 export interface loadedDashboard {
   users?: UserType[];
@@ -193,34 +195,38 @@ const Dashboard = () => {
         </Show>
       </div>
 
-      <h3 style={{ "margin-top": "50px" }}>Users Active Status</h3>
-      <div class={styles.userContainer}>
-        <Index each={dashboardData()?.users}>
-          {(user) => (
-            <div class={styles.userCard}>
-              <img src="/src/assets/svgs/avatar.svg" style={{ "background-position": "center" }} />
-              <div class={styles.userInfo}>
-                <h3>{user().user_name ? user().user_name : ""}</h3>
-                <p>{user().user_email}</p>
-                <a href="#">User Logs</a>
-              </div>
-              <div class={styles.userStatus}>
-                <p> {user().status ? "Active" : "Suspended"}</p>
+      <Show when={dashboardData() && dashboardData()?.users && dashboardData()?.users?.length! > 0}>
+        <h3 style={{ "margin-top": "50px" }}>Users Active Status</h3>
+        <div class={styles.userContainer}>
+          <Index each={dashboardData()?.users}>
+            {(user) => (
+              <div class={styles.userCard}>
+                <img src="/src/assets/svgs/avatar.svg" style={{ "background-position": "center" }} />
+                <div class={styles.userInfo}>
+                  <h3>{user().user_name ? user().user_name : ""}</h3>
+                  <p>{user().user_email}</p>
+                  <a href="#">User Logs</a>
+                </div>
+                <div class={styles.userStatus}>
+                  <p> {user().status ? "Active" : "Suspended"}</p>
 
-                <div class={styles.toggleStatus}>
-                  <input
-                    checked={user().status}
-                    onInput={() => handleChange(user())}
-                    type="checkbox"
-                    id={`toggle-${user().reg_user_id}`}
-                  />
-                  <label for={`toggle-${user().reg_user_id}`}></label>
+                  <div class={styles.toggleStatus}>
+                    <input
+                      checked={user().status}
+                      onInput={() => handleChange(user())}
+                      type="checkbox"
+                      id={`toggle-${user().reg_user_id}`}
+                    />
+                    <label for={`toggle-${user().reg_user_id}`}></label>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </Index>
-      </div>
+            )}
+          </Index>
+        </div>
+      </Show>
+
+      <Logged />
     </>
   );
 };
