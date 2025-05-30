@@ -1,19 +1,23 @@
 import { useMediaContext } from "../../../../context/Medias";
 import { MediaType, useViewMediaContext } from "../../../../context/ViewContext";
-import { getMediaByIndex } from "../../../extents/helper/helper";
 import { SaveButtonIcon } from "../../../svgIcons";
 
 const LIMIT_MEMORY = 1 * 1024 * 1024 * 1024;
 const LIMIT_NUMBER_OF_FILES = 10;
 
 export const Save = () => {
-  const { items } = useMediaContext();
-  const { displayMedias } = useViewMediaContext();
+  const { items, setItems, setIsSelected } = useMediaContext();
+  const { openModal, displayMedias } = useViewMediaContext();
 
   const saveButtonClick = async () => {
-    if (!items()) return;
+    if (!items() || !items().size) return;
 
-    const selectedMedias = getMediaByIndex(displayMedias, items());
+    const selectedMedias: MediaType[] = [];
+
+    for (const [index, _mediaId] of items()) {
+      selectedMedias.push(displayMedias[index]);
+    }
+
     if (selectedMedias.length > LIMIT_NUMBER_OF_FILES)
       return alert(`Selected ${selectedMedias.length} over the limit. Please select ${LIMIT_NUMBER_OF_FILES} or less`);
 
@@ -21,6 +25,10 @@ export const Save = () => {
     if (!shareFiles || shareFiles.length < selectedMedias.length) return alert(`Some files not allow to download.`);
 
     await startSharingFiles(shareFiles);
+
+    if (openModal()) return;
+    setIsSelected(false);
+    setItems(new Map());
   };
 
   return <button onClick={saveButtonClick}>{SaveButtonIcon()}</button>;
@@ -33,12 +41,12 @@ const startSharingFiles = async (shareFiles: File[]) => {
         await navigator.share({ files: shareFiles });
       } catch (error: any) {
         if (!error.toString().includes("AbortError")) {
-          console.log("Error sharing files:", error);
+          console.log(`Error sharing files: ${error}`);
         }
       }
     }
   } catch (error) {
-    console.log("Error:", error);
+    console.log(`Error sharing files: ${error}`);
   }
 };
 
@@ -53,7 +61,7 @@ const validateShareFiles = async (medias: MediaType[]): Promise<File[]> => {
     if (!file) continue;
 
     if (totalSize > LIMIT_MEMORY) {
-      alert("Selected files over memory support. Please select file with smaller size.");
+      alert("Selected files over memory support (over 1.0GB). Please select file with smaller size.");
       return [];
     }
 

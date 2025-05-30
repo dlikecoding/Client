@@ -123,11 +123,11 @@ const Logged = () => {
   return (
     <>
       <h3 style={{ "margin-top": "50px" }}>Logs Manager</h3>
-      <button popovertarget="info-contents" onClick={() => setGetLogs((prev) => !prev)}>
+      <button popovertarget="show-logs-content" onClick={() => setGetLogs((prev) => !prev)}>
         show
       </button>
       <Show when={getLogs()}>
-        <div ref={(el) => (popoverDiv = el)} popover="auto" id="info-contents" class={styles.mainPopoverLog}>
+        <div ref={(el) => (popoverDiv = el)} popover="auto" id="show-logs-content" class={styles.mainPopoverLog}>
           <h1>Logs Management</h1>
 
           {/* System Logs */}

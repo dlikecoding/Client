@@ -19,8 +19,7 @@ const Upload = () => {
   const [selectAiMode, setSelectAiMode] = createSignal<0 | 1>(0);
 
   const resetFileInput = (message: string = "") => {
-    const input = fileInputEl();
-    if (input) input.value = "";
+    if (fileInputEl) fileInputEl.value = "";
     if (message !== "") setStreamMesg({ mesg: message, isRunning: false });
   };
 
@@ -48,18 +47,20 @@ const Upload = () => {
     resetFileInput();
   };
 
-  const [hasAgreed, setHasAgreed] = createSignal<boolean>(localStorage.getItem("NoticeUpload") === "false");
+  // const [hasAgreed, setHasAgreed] = createSignal<boolean>(localStorage.getItem("NoticeUpload") === "false");
   const clickedConfirm = () => {
-    document.getElementById("uploadPopover")?.hidePopover();
-    fileUploaded();
+    popoverDiv?.hidePopover();
+    fileInputEl?.click();
   };
 
-  const changeCheckbox = (event: any) => {
-    const isChecked = event.target.checked;
-    setHasAgreed(isChecked);
-    localStorage.setItem("NoticeUpload", isChecked.toString());
-  };
+  // const changeCheckbox = (event: any) => {
+  //   const isChecked = event.target.checked;
+  //   setHasAgreed(isChecked);
+  //   localStorage.setItem("NoticeUpload", isChecked.toString());
+  // };
 
+  let popoverDiv: HTMLDivElement | null = null;
+  let fileInputEl: HTMLInputElement | null = null;
   return (
     <>
       <Show when={streamMesg.mesg}>
@@ -68,36 +69,20 @@ const Upload = () => {
         </Portal>
       </Show>
 
-      <button
-        onClick={() => {
-          if (!hasAgreed()) return document.getElementById("uploadPopover")?.showPopover();
-          fileUploaded();
-        }}>
-        {UploadIcon()}
-      </button>
+      <button popovertarget="upload-contents">{UploadIcon()}</button>
 
-      <div popover="auto" id="uploadPopover" class={styles.uploadDialog}>
-        <div class={styles.checkboxLabel}>
-          <h2 class={styles.dialogTitle}>Upload Instructions</h2>
-
-          <div class={styles.checkboxInput}>
-            <input type="checkbox" id="dontShowAgain" name="dontShowAgain" onChange={changeCheckbox} />
-            <label for="dontShowAgain">Don't show again.</label>
-          </div>
-        </div>
+      <div ref={(el) => (popoverDiv = el)} popover="auto" id="upload-contents" class={styles.uploadDialog}>
+        <h2 class={styles.dialogTitle}>Upload Instructions</h2>
 
         <div class={styles.instructionsContent}>
           <p>
-            <b>Select</b> <u>Photos</u> or <u>Videos</u> to upload to your gallery.
+            Each file should have a <b>size</b> of less than <b>1 GB</b>.
           </p>
           <p>
-            + Files should have a <b>size</b> of less than <b>1 GB</b>.
+            The <b>total size</b> of all files should not exceed <b>2 GB</b> per session.
           </p>
           <p>
-            + The total <b>size</b> of all files should not exceed <b>2 GB</b> per session.
-          </p>
-          <p>
-            + Before uploading, select the <b>Most Compatible</b> option:
+            Before uploading, select the <b>Most Compatible</b> option:
           </p>
           <ul>
             <li>
@@ -113,11 +98,11 @@ const Upload = () => {
             class={styles.checkboxInput}
             onChange={() => setSelectAiMode((prev) => (prev === 0 ? 1 : 0))}
           />
-          <label for="enabledAI">Computer Vision for Search Engine ({selectAiMode() ? "Enabled" : "Disabled"})</label>
+          <label for="enabledAI">Computer Vision for Searching ({selectAiMode() ? "Enabled" : "Disabled"})</label>
         </div>
 
         <div class={styles.dialogActions}>
-          <button class={styles.cancelButton} onClick={() => document.getElementById("uploadPopover")?.hidePopover()}>
+          <button class={styles.cancelButton} onClick={() => popoverDiv?.hidePopover()}>
             Cancel
           </button>
           <button class={styles.confirmButton} onClick={clickedConfirm}>
@@ -126,6 +111,7 @@ const Upload = () => {
         </div>
       </div>
       <input
+        ref={(el) => (fileInputEl = el)}
         type="file"
         id="fileInput"
         style={{ display: "none" }}
@@ -139,6 +125,3 @@ const Upload = () => {
 };
 
 export default Upload;
-
-const fileInputEl = () => document.getElementById("fileInput") as HTMLInputElement;
-const fileUploaded = () => fileInputEl().click();

@@ -18,6 +18,8 @@
 
   user-select: none;
   -webkit-user-select: none;
+
+  animation: zoomIn 0.3s ease;
 }
 
 .checkboxLabel {
@@ -31,6 +33,7 @@
 }
 
 .dialogTitle {
+  padding-left: 20px;
   font-size: 20px;
   font-weight: bold;
 }
@@ -71,4 +74,13 @@
 .dialogActions > .confirmButton {
   border-left: 1px solid rgba(255, 255, 255, 0.2);
   font-weight: 600;
+}
+
+@keyframes zoomIn {
+  from {
+    scale: 0;
+  }
+  to {
+    scale: 1;
+  }
 }
