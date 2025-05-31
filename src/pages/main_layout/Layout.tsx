@@ -11,7 +11,7 @@ const Layout = (props: any) => {
 
   return (
     <>
-      <main class="mainHomePage">{props.children}</main>
+      {props.children}
       <Footer />
     </>
   );

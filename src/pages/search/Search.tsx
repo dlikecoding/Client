@@ -5,15 +5,18 @@ import { fetchRefetch, fetchSearch } from "../../components/extents/request/fetc
 import { useManageURLContext } from "../../context/ManageUrl";
 
 const Search = () => {
-  onMount(async () => await fetchRefetch());
+  const { resetParams, updatePage } = useManageURLContext();
+
+  onMount(async () => {
+    resetParams();
+    await fetchRefetch();
+  });
 
   const [keyword, setKeyword] = createSignal<string>("");
-
-  const { updatePage } = useManageURLContext();
   const [loadingSearch] = createResource(keyword, fetchSearch);
 
   return (
-    <>
+    <main class="mainHomePage">
       <header style={{ position: "relative" }}>
         <div>
           <h1>Search</h1>
@@ -28,19 +31,13 @@ const Search = () => {
           placeholder="Find photos using keywords ... "
           onInput={(e) => setKeyword(e.target.value)}
           value={keyword()}
-          // onFocus={() => setIsTyping(true)}
-          // onBlur={() => setIsTyping(false)}
         />
       </div>
       <div class={styles.searchResult}>
         {loadingSearch() && (
           <Index each={loadingSearch().suggestCount}>
             {(each) => (
-              <button
-                onClick={() => {
-                  setKeyword(each().word);
-                  // setIsTyping(false);
-                }}>
+              <button onClick={() => setKeyword(each().word)}>
                 <span>{each().word}</span>
                 <span>{each().ndoc}</span>
               </button>
@@ -70,10 +67,10 @@ const Search = () => {
               <p>There were no reults for "{keyword()}." Try new search.</p>
             </div>
           }>
-          <Index each={loadingSearch().data}>{(media) => <img src={media().thumb_path} alt="Image 1" />}</Index>
+          <Index each={loadingSearch().data}>{(media) => <img inert src={media().thumb_path} alt="Image 1" />}</Index>
         </Show>
       </div>
-    </>
+    </main>
   );
 };
 

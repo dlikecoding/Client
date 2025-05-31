@@ -3,7 +3,7 @@ import styles from "./PhotoView.module.css";
 import { useMediaContext } from "../../context/Medias";
 import { useManageURLContext } from "../../context/ManageUrl";
 import { MediaType, useViewMediaContext } from "../../context/ViewContext";
-import placeholder from "../../assets/svgs/place-holder.svg";
+// import placeholder from "../../assets/svgs/place-holder.svg";
 
 interface PhotoProps {
   media: MediaType;
@@ -43,7 +43,7 @@ const PhotoCard: Component<PhotoProps> = (props) => {
     };
   });
 
-  const [imgLoading, setImgLoading] = createSignal<boolean>(true);
+  // const [imgLoading, setImgLoading] = createSignal<boolean>(true);
   return (
     <div
       ref={lastItem()}
@@ -75,10 +75,10 @@ const PhotoCard: Component<PhotoProps> = (props) => {
         </Switch>
 
         <img
-          onLoad={() => setImgLoading(false)}
-          onError={() => setImgLoading(true)}
-          src={imgLoading() ? placeholder : media().thumb_path}
-          alt="Gallery"
+          // onLoad={() => setImgLoading(false)}
+          // onError={() => setImgLoading(true)}
+          src={media().thumb_path}
+          alt="Image not found"
           class={`${view.objectFit ? styles.cover : styles.contain} ${items().has(index()) ? styles.grayscale : ""}`}
         />
       </div>

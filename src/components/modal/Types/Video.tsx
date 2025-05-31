@@ -60,6 +60,8 @@ const Video: Component<VideoProps> = (props) => {
         onLoad={() => setVidStatus("isLoading", true)}
         onLoadedData={() => setVidStatus("isLoading", false)}
         onPlay={(e) => {
+          e.preventDefault();
+
           setVidStatus("isPlaying", true);
           if (view.showThumb) setView("showThumb", false);
         }}
@@ -69,9 +71,9 @@ const Video: Component<VideoProps> = (props) => {
         }}
         onTimeUpdate={(e) => setVidStatus("currentTime", e.currentTarget.currentTime)}
         preload="metadata"
-        controls={false}
+        // controls={false}
         controlslist="nodownload"
-        playsinline={true}
+        playsinline
         crossorigin="use-credentials">
         <source src={`${VIDEO_API_URL}${media().source_file}`} type={media().mime_type} />
 
@@ -117,7 +119,10 @@ const Video: Component<VideoProps> = (props) => {
               min="0"
               max={media().duration}
               value={vidStatus.currentTime}
-              onInput={(e) => (currentChild().currentTime = Number(e.target.value))}
+              onInput={(e) => {
+                e.preventDefault();
+                currentChild().currentTime = Number(e.target.value);
+              }}
             />
             {/* NEED TO-DO Improve this funtion to prevent calculate time every second */}
             {media().video_duration}

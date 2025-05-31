@@ -23,7 +23,7 @@ const OverView = () => {
   onMount(resetParams);
 
   return (
-    <>
+    <main class="mainHomePage">
       <header style={{ position: "relative" }}>
         <div>
           <h1>Collection</h1> {/* Portfolio */}
@@ -60,7 +60,7 @@ const OverView = () => {
 
       {/* //////////////////////////// */}
       <h3>
-        Dataset
+        Dataset (Comming soon)
         <button class={style.atag_group_views} on:click={() => console.log("Dataset clicked")}>
           Edit
         </button>
@@ -113,13 +113,8 @@ const OverView = () => {
           </For>
         </div>
       </Show>
-
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-    </>
+      <div style={{ height: "100px" }}></div>
+    </main>
   );
 };
 

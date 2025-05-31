@@ -31,7 +31,7 @@ const GroupView = () => {
   });
 
   return (
-    <div class={styles.groupContainer}>
+    <main class={`mainHomePage ${styles.groupContainer}`}>
       <Switch fallback={<NotFound errorCode="Not Found 404" message="No data available for the selected period." />}>
         <Match when={loadedMedias.loading}>
           <Loading />
@@ -43,7 +43,7 @@ const GroupView = () => {
           </Index>
         </Match>
       </Switch>
-    </div>
+    </main>
   );
 };
 

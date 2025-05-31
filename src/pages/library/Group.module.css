@@ -4,8 +4,8 @@
 }
 
 .groupContainer {
-  height: 100dvh;
-  width: 100dvw;
+  /* height: 100%;
+  width: 100dvw; */
 
   display: flex;
   flex-wrap: wrap;
@@ -18,7 +18,7 @@
 .mediaContainer {
   position: relative;
   border-radius: 15px;
-  height: 290px;
+  height: 250px;
   color: var(--svg-color);
 }
 
@@ -47,7 +47,7 @@
 
 .monthViewContainer {
   position: relative;
-  height: 350px;
+  height: 300px;
   width: 100%;
   color: var(--svg-color);
   text-decoration: none;

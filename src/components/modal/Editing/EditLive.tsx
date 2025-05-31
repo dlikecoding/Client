@@ -73,7 +73,10 @@ const EditLive: Component<LiveProps> = (props) => {
             max={media().duration}
             step="any"
             value={framePosition()}
-            onInput={(e) => changeTimePosition(parseFloat(e.currentTarget.value))}
+            onInput={(e) => {
+              e.preventDefault();
+              changeTimePosition(parseFloat(e.currentTarget.value));
+            }}
           />
         </div>
       </div>

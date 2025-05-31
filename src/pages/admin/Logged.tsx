@@ -130,10 +130,10 @@ const Logged = () => {
         <div ref={(el) => (popoverDiv = el)} popover="auto" id="show-logs-content" class={styles.mainPopoverLog}>
           <h1>Logs Management</h1>
 
-          {/* System Logs */}
           <Show when={systemLogs().length > 0}>
             <div class={styles.headerLog}>
               <h3>System Logs</h3>
+
               <button
                 style={{
                   color: `${deleteLog.sysIds.length > 0 ? "var(--button-delete-color)" : "var(--button-active-color)"}`,

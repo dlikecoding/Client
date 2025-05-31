@@ -109,7 +109,7 @@ const Dashboard = () => {
     refetch();
   };
   return (
-    <>
+    <main class={"mainHomePage"}>
       {dashboardData.loading && <Loading />}
       {dashboardData.error && <NotFound />}
 
@@ -227,7 +227,7 @@ const Dashboard = () => {
       </Show>
 
       <Logged />
-    </>
+    </main>
   );
 };
 

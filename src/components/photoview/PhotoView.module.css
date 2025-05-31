@@ -10,6 +10,7 @@ header {
   width: 100%;
   overflow-x: hidden;
   overflow-y: scroll;
+  overscroll-behavior: "smooth";
 }
 
 .container > .virtualContainer {

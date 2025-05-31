@@ -126,8 +126,9 @@ const ContextView = () => {
     const minPadding = paramsUrl.pages === "all" ? height() - 170 : height() - 130;
     return Math.max(minPadding, Math.ceil(displayMedias.length / view.nColumn) * itemDimention());
   });
+
   return (
-    <>
+    <main class="mainHomePage" style={{ overflow: "hidden" }}>
       <header style={{ "z-index": 1 }}>
         <div inert>
           <h1>{viewPageTitles.get(paramsUrl.pages)}</h1>
@@ -198,7 +199,7 @@ const ContextView = () => {
       <Show when={openModal()}>
         <ModalView setLastEl={setLastEl} startIdxView={startIndex} endIdxView={endIndex} />
       </Show>
-    </>
+    </main>
   );
 };
 
