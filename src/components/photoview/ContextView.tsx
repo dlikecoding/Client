@@ -197,7 +197,12 @@ const ContextView = () => {
       </Show>
 
       <Show when={openModal()}>
-        <ModalView setLastEl={setLastEl} startIdxView={startIndex} endIdxView={endIndex} />
+        <ModalView
+          // visibleRows={visibleRows}
+          setLastEl={setLastEl}
+          startIdxView={startIndex}
+          endIdxView={endIndex}
+        />
       </Show>
     </main>
   );

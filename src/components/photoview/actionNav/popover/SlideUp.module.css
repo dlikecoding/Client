@@ -47,7 +47,7 @@
 
 @keyframes slideUp {
   from {
-    bottom: -300px;
+    bottom: -700px;
   }
   to {
     bottom: 0;

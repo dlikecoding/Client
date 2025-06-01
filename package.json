@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun x --bun vite",
-    "buildX": "bun x --bun vite build --emptyOutDir",
+    "buildX": "rm -rf ../serverBunX/dist && bun x --bun vite build --emptyOutDir",
     "preview": "vite preview",
     "up": "bun upgrade && bun update"
   },

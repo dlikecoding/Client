@@ -13,6 +13,8 @@ import { formatTime, scrollIntoViewFc } from "../extents/helper/helper";
 import MediaDisplay from "./MediaDisplay";
 import ActionNav from "../photoview/actionNav/ActionNav";
 import { useResizeObserver } from "solidjs-use";
+// import NotFound from "../extents/NotFound";
+// import { List } from "@solid-primitives/list";
 
 interface ElementModal {
   elIndex: number;
@@ -20,6 +22,8 @@ interface ElementModal {
 }
 
 interface ModalProps {
+  // visibleRows: Accessor<MediaType[]>;
+
   setLastEl: Setter<HTMLElement | null | undefined>;
   endIdxView: Accessor<number>;
   startIdxView: Accessor<number>;
@@ -38,6 +42,8 @@ const Modal: Component<ModalProps> = (props) => {
   const { items, setItems, setOneItem } = useMediaContext();
 
   const { view, setView } = useManageURLContext();
+
+  // const visibleRows = () => props.visibleRows();
 
   // when this modal close
   const handleCloseModal = () => {
@@ -81,7 +87,7 @@ const Modal: Component<ModalProps> = (props) => {
     window.onpopstate = (event) => {
       if (!event.state) return;
       handleCloseModal();
-      scrollToViewElement(current.elId); // scroll to view to the current id in PhotoView
+      scrollToViewElement(current.elId, "nearest"); // scroll to view to the current id in PhotoView
     };
 
     // Observer window.innerHeight on change to prevent photo overlapping
@@ -109,6 +115,7 @@ const Modal: Component<ModalProps> = (props) => {
     e.preventDefault();
     setScrollTop(containerRef.scrollTop);
 
+    // In the case user loading passed the range of ContextView, scroll to that element in context view
     if (current.elIndex === endIdxView() || current.elIndex === startIdxView()) {
       scrollToViewElement(current.elId);
     }
@@ -150,7 +157,7 @@ const Modal: Component<ModalProps> = (props) => {
               <div onClick={() => setView("showThumb", (prev) => !prev)}>
                 Thumbnails {view.showThumb ? "OFF" : "ON"}
               </div>
-              <div>Placehodler</div>
+              <div>Auto Play (ON) </div>
               <div>Placehodler</div>
             </div> */}
           </div>
@@ -177,11 +184,15 @@ const Modal: Component<ModalProps> = (props) => {
         {/* <Show when={view.showThumb}>
           <div
             classList={{ [styles.modalThumbs]: true, [styles.fadeOut]: showImageOnly() || displayMedias.length <= 1 }}>
-            <List each={modalMedias()} fallback={<NotFound />}>
-              {(media) => (
+            <List each={visibleRows()} fallback={<NotFound />}>
+              {(media, index) => (
                 <div
-                  style={media().media_id === current.elId ? { width: "70px", height: "60px", margin: "0 5px" } : {}}
-                  data-thumbId={media().media_id}>
+                  style={media().media_id === current.elId ? { width: "50px", margin: "0 5px" } : {}}
+                  // data-thumbId={media().media_id}
+                  onClick={() => {
+                    console.log(media().media_id, index(), startIndex(), endIdxView());
+                    // setSelectCurrentItem
+                  }}>
                   <img inert src={media().thumb_path} />
                 </div>
               )}
@@ -201,7 +212,7 @@ export default Modal;
 
 /**
  * Scrolls to the specified element using its data-modalid attribute.
- * @param modalid - The unique identifier of the target element.
+ * @param modalid - Modal id unique identifier of the target element.
  */
 const scrollToModalElement = (modalid: number): void => {
   scrollIntoViewFc("modalid", modalid);
@@ -209,50 +220,50 @@ const scrollToModalElement = (modalid: number): void => {
 
 /**
  * Scrolls to the specified element using its data-modalid attribute.
- * @param mediaId - The unique identifier of the target element.
+ * @param id - ContextView id unique identifier of the target element.
  */
-const scrollToViewElement = (mediaId: number): void => {
-  scrollIntoViewFc("id", mediaId);
+const scrollToViewElement = (mediaId: number, block: ScrollLogicalPosition = "center"): void => {
+  scrollIntoViewFc("id", mediaId, block);
 };
 
-// There is an issue when change displaySize to 10 or diffrent number, When clicked on specific item, it does not return the correct element.
-const DISPLAY_THUMBS_SIZE = 7; // We want to show at least 7 elements
-const BUFFER_SIZE = Math.floor(DISPLAY_THUMBS_SIZE / 2); // 3 elements before and after the current index
+// // There is an issue when change displaySize to 10 or diffrent number, When clicked on specific item, it does not return the correct element.
+// const DISPLAY_THUMBS_SIZE = 7; // We want to show at least 7 elements
+// const BUFFER_SIZE = Math.floor(DISPLAY_THUMBS_SIZE / 2); // 3 elements before and after the current index
 
-/**
- * Retrieves a sublist of elements centered around the current index, adjusting for boundaries.
- * @param elements - The full list of media elements.
- * @param currentIndex - The index of the currently active element.
- * @returns A sublist of elements, dynamically adjusted based on the current index.
- */
-const getSublist = (elements: MediaType[], currentIndex: number): MediaType[] => {
-  //(MediaType & { index: number })[]
-  const totalElements = elements.length;
+// /**
+//  * Retrieves a sublist of elements centered around the current index, adjusting for boundaries.
+//  * @param elements - The full list of media elements.
+//  * @param currentIndex - The index of the currently active element.
+//  * @returns A sublist of elements, dynamically adjusted based on the current index.
+//  */
+// const getSublist = (elements: MediaType[], currentIndex: number): MediaType[] => {
+//   //(MediaType & { index: number })[]
+//   const totalElements = elements.length;
 
-  // If the list has fewer elements than DISPLAY_THUMBS_SIZE, return the full list
-  if (totalElements <= DISPLAY_THUMBS_SIZE) return elements; //elements.map((item, index) => ({ ...item, index }));
+//   // If the list has fewer elements than DISPLAY_THUMBS_SIZE, return the full list
+//   if (totalElements <= DISPLAY_THUMBS_SIZE) return elements; //elements.map((item, index) => ({ ...item, index }));
 
-  // Define initial sublist range
-  let startIndex = Math.max(0, currentIndex - BUFFER_SIZE);
-  let endIndex = Math.min(totalElements - 1, currentIndex + BUFFER_SIZE);
+//   // Define initial sublist range
+//   let startIndex = Math.max(0, currentIndex - BUFFER_SIZE);
+//   let endIndex = Math.min(totalElements - 1, currentIndex + BUFFER_SIZE);
 
-  // Adjust window if it doesn’t fit within DISPLAY_THUMBS_SIZE
-  if (endIndex - startIndex + 1 < DISPLAY_THUMBS_SIZE) {
-    if (startIndex === 0) {
-      endIndex = Math.min(DISPLAY_THUMBS_SIZE - 1, totalElements - 1);
-    } else if (endIndex === totalElements - 1) {
-      startIndex = Math.max(0, totalElements - DISPLAY_THUMBS_SIZE);
-    }
-  }
+//   // Adjust window if it doesn’t fit within DISPLAY_THUMBS_SIZE
+//   if (endIndex - startIndex + 1 < DISPLAY_THUMBS_SIZE) {
+//     if (startIndex === 0) {
+//       endIndex = Math.min(DISPLAY_THUMBS_SIZE - 1, totalElements - 1);
+//     } else if (endIndex === totalElements - 1) {
+//       startIndex = Math.max(0, totalElements - DISPLAY_THUMBS_SIZE);
+//     }
+//   }
 
-  const subModalList = elements.slice(startIndex, endIndex + 1);
-  // const subModalListIds = Array.from({ length: endIndex - startIndex + 1 }, (_, i) => ({
-  //   ...elements[startIndex + i],
-  //   index: startIndex + i,
-  // }));
+//   const subModalList = elements.slice(startIndex, endIndex + 1);
+//   // const subModalListIds = Array.from({ length: endIndex - startIndex + 1 }, (_, i) => ({
+//   //   ...elements[startIndex + i],
+//   //   index: startIndex + i,
+//   // }));
 
-  return subModalList;
-};
+//   return subModalList;
+// };
 
 // /**
 //  * Calculates the step difference required to move from the current index

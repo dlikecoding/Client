@@ -79,7 +79,7 @@ export const Info = () => {
     // If request the same infor for same photo, return
     if (mediaInfo()?.media === mediaId) return;
     const result = await fetchPhotoInfo(mediaId);
-    if (!result) return;
+    if (!result) return console.log("Missing info");
     setMediaInfo(result);
   };
 
@@ -97,13 +97,13 @@ export const Info = () => {
   });
   return (
     <>
-      <button popovertarget="info-contents" onClick={requestInfo}>
+      <button popovertarget="information-popover" onClick={requestInfo}>
         {InfoButtonIcon()}
       </button>
       <div
         ref={(el) => (popoverDiv = el)}
         popover="auto"
-        id="info-contents"
+        id="information-popover"
         class={styles.slideupContents}
         style={{ "max-width": "600px", width: "100%", "border-radius": 0 }}>
         <Show when={mediaInfo()}>

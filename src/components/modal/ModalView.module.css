@@ -67,7 +67,7 @@ header > .modalTitle {
 .modalThumbs {
   position: fixed;
   width: 350px;
-  height: 50px;
+  height: 40px;
 
   left: 50%;
   transform: translateX(-50%);
@@ -80,6 +80,9 @@ header > .modalTitle {
 
   gap: 2px;
   z-index: 1;
+
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .modalThumbs > div {
@@ -88,9 +91,10 @@ header > .modalTitle {
   height: 100%;
   transition: width 0.3s linear;
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-shrink: 0; /* Important to allow scrolling */
+
+  border-radius: 2px;
+  overflow: hidden;
 }
 
 .modalThumbs > div > img {

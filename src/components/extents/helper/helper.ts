@@ -11,9 +11,9 @@ export const getElementBySelector = (classType: string, dataID: number) => {
   return document.querySelector<HTMLElement>(`[data-${classType}="${dataID}"]`);
 };
 
-export const scrollIntoViewFc = (classType: string, dataID: number): void => {
+export const scrollIntoViewFc = (classType: string, dataID: number, block: ScrollLogicalPosition = "center"): void => {
   const targetEl = getElementBySelector(classType, dataID);
-  if (targetEl) targetEl.scrollIntoView({ behavior: "instant", block: "center" });
+  if (targetEl) targetEl.scrollIntoView({ behavior: "instant", block: block });
 };
 
 // export const sleepFunc = (ms: number): Promise<void> => {

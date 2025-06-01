@@ -22,7 +22,7 @@ export const Favorite = (props: FavoriteProps) => {
     if (!items().size) return false;
 
     const index = items().keys().next().value;
-    if (index) return displayMedias[index].favorite;
+    if (index && displayMedias[index]) return displayMedias[index].favorite;
 
     return false;
   });
