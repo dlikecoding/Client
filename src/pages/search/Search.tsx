@@ -1,6 +1,6 @@
 import styles from "./Search.module.css";
 import { A } from "@solidjs/router";
-import { createResource, createSignal, Index, onMount, Show } from "solid-js";
+import { Accessor, createMemo, createResource, createSignal, Index, onMount, Show } from "solid-js";
 import { fetchRefetch, fetchSearch } from "../../components/extents/request/fetching";
 import { useManageURLContext } from "../../context/ManageUrl";
 
@@ -15,6 +15,9 @@ const Search = () => {
   const [keyword, setKeyword] = createSignal<string>("");
   const [loadingSearch] = createResource(keyword, fetchSearch);
 
+  const countPhotos: Accessor<number> = createMemo(() =>
+    loadingSearch() && loadingSearch().data.length > 0 ? loadingSearch().data[0].total_count : 0
+  );
   return (
     <main class="mainHomePage">
       <header style={{ position: "relative" }}>
@@ -37,7 +40,13 @@ const Search = () => {
         {loadingSearch() && (
           <Index each={loadingSearch().suggestCount}>
             {(each) => (
-              <button onClick={() => setKeyword(each().word)}>
+              <button
+                onClick={() => {
+                  setKeyword((prev) => {
+                    const lastSpace = prev.trim().lastIndexOf(" ");
+                    return prev.substring(0, lastSpace) + " " + each().word;
+                  });
+                }}>
                 <span>{each().word}</span>
                 <span>{each().ndoc}</span>
               </button>
@@ -47,13 +56,14 @@ const Search = () => {
       </div>
       <Show when={loadingSearch()}>
         <h3>
-          {loadingSearch() && loadingSearch().data.length > 0 ? loadingSearch().data[0].total_count : "0"} Photos
+          {countPhotos()} Photos
           <A
-            href={keyword() ? `/search/${keyword()}` : "/search/all"}
+            href={!keyword() ? "#" : "/search/all"}
             onClick={() => {
+              if (!keyword()) return;
               updatePage({ searchKey: keyword() });
             }}
-            class="atag_group_views">
+            classList={{ atag_group_views: true, [styles.disableLink]: !keyword() || !countPhotos() }}>
             See All
           </A>
         </h3>
@@ -67,7 +77,29 @@ const Search = () => {
               <p>There were no reults for "{keyword()}." Try new search.</p>
             </div>
           }>
-          <Index each={loadingSearch().data}>{(media) => <img inert src={media().thumb_path} alt="Image 1" />}</Index>
+          <Index each={loadingSearch().data}>
+            {
+              (media) => (
+                <A
+                  href={!keyword() ? "#" : `/search/${media().media_id}`}
+                  classList={{ [styles.imagesContainer]: true, [styles.disableLink]: !keyword() }}
+                  onClick={() => {
+                    if (!keyword()) return;
+                    updatePage({ searchKey: keyword() });
+                  }}>
+                  <Show when={media().favorite}>
+                    <div class={styles.overlayFavorite}></div>
+                  </Show>
+
+                  <p class={styles.caption}>{media().caption}</p>
+
+                  <img inert src={media().thumb_path} alt="Image not found" />
+                </A>
+              )
+
+              // <img inert src={media().thumb_path} alt="Image not found" />
+            }
+          </Index>
         </Show>
       </div>
     </main>

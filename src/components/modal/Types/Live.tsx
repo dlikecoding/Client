@@ -64,7 +64,7 @@ const Live: Component<LiveProps> = (props) => {
         onLoadedData={(e) => (e.currentTarget.currentTime = media().selected_frame)}
         onPlay={() => currentChild().fastSeek(0)}
         onPause={() => currentChild().fastSeek(media().selected_frame)}
-        preload="metadata"
+        preload={isVisible() && currentChild() ? "metadata" : "none"}
         controls={false}
         controlslist="nodownload"
         playsinline={true}

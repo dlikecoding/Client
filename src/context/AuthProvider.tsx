@@ -28,6 +28,7 @@ export const AuthProvider: ParentComponent = (props) => {
   const [loggedUser, setLoggedUser] = createStore<UserLogged>(defaultUser);
 
   if (import.meta.env.VITE_DEV_MODE !== "dev") {
+    // Prevent user use right click on website
     onMount(() => {
       document.addEventListener("contextmenu", (e) => e.preventDefault());
     });

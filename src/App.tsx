@@ -51,7 +51,8 @@ const App = () => {
     },
     SEARCH: {
       pages: ["search"],
-      keywords: /^[a-zA-Z0-9\s]*$/,
+      mediaId: /^\d+$/,
+      // keywords: /^[a-zA-Z0-9 -]*$/,
     },
   };
 
@@ -89,7 +90,7 @@ const App = () => {
 
             <Route path="/:pages" component={ContextSearch} matchFilters={filters.SEARCH}>
               <Route path="/" component={Search} />
-              <Route path="/:keywords" component={PhotoView} matchFilters={filters.SEARCH} />
+              <Route path="/:mediaId" component={PhotoView} />
             </Route>
           </Route>
         </Route>

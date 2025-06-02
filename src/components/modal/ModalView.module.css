@@ -67,7 +67,7 @@ header > .modalTitle {
 .modalThumbs {
   position: fixed;
   width: 350px;
-  height: 40px;
+  height: 50px;
 
   left: 50%;
   transform: translateX(-50%);
@@ -81,30 +81,39 @@ header > .modalTitle {
   gap: 2px;
   z-index: 1;
 
-  overflow-x: auto;
-  overflow-y: hidden;
+  /* overflow-x: auto;
+  overflow-y: hidden; */
 }
 
-.modalThumbs > div {
+.modalThumbs .smallThumbs,
+.modalThumbs .videoControler {
   position: relative;
   width: 30px;
   height: 100%;
+}
+
+.modalThumbs > .videoControler {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* This is for thumbnail in modal view */
+/* .modalThumbs > .smallThumbs {
   transition: width 0.3s linear;
-
-  flex-shrink: 0; /* Important to allow scrolling */
-
+  flex-shrink: 0;
   border-radius: 2px;
   overflow: hidden;
 }
 
-.modalThumbs > div > img {
+.modalThumbs .smallThumb > img {
   position: absolute;
   width: 100%;
   height: 100%;
   aspect-ratio: 9/16;
   object-fit: cover;
   border-radius: 2px;
-}
+} */
 
 .fadeOut {
   opacity: 0;

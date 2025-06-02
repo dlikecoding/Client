@@ -18,6 +18,9 @@ const Upload = () => {
   const [streamMesg, setStreamMesg] = createStore<ProcessMesg>({ mesg: "", isRunning: false });
   const [selectAiMode, setSelectAiMode] = createSignal<0 | 1>(0);
 
+  let popoverDiv: HTMLDivElement | null = null;
+  let fileInputEl: HTMLInputElement | null = null;
+
   const resetFileInput = (message: string = "") => {
     if (fileInputEl) fileInputEl.value = "";
     if (message !== "") setStreamMesg({ mesg: message, isRunning: false });
@@ -53,14 +56,6 @@ const Upload = () => {
     fileInputEl?.click();
   };
 
-  // const changeCheckbox = (event: any) => {
-  //   const isChecked = event.target.checked;
-  //   setHasAgreed(isChecked);
-  //   localStorage.setItem("NoticeUpload", isChecked.toString());
-  // };
-
-  let popoverDiv: HTMLDivElement | null = null;
-  let fileInputEl: HTMLInputElement | null = null;
   return (
     <>
       <Show when={streamMesg.mesg}>

@@ -70,8 +70,8 @@ const Video: Component<VideoProps> = (props) => {
           setVidStatus("isPlaying", false);
         }}
         onTimeUpdate={(e) => setVidStatus("currentTime", e.currentTarget.currentTime)}
-        preload="metadata"
-        // controls={false}
+        preload={isVisible() && currentChild() ? "metadata" : "none"}
+        controls={false}
         controlslist="nodownload"
         playsinline
         crossorigin="use-credentials">
