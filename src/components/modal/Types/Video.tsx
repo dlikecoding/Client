@@ -7,6 +7,7 @@ import { VIDEO_API_URL } from "../../../App";
 import EditVideo from "../Editing/EditVideo";
 import { createStore } from "solid-js/store";
 import { useManageURLContext } from "../../../context/ManageUrl";
+import Spinner from "../../extents/Spinner";
 
 interface VideoProps {
   media: MediaType;
@@ -70,7 +71,7 @@ const Video: Component<VideoProps> = (props) => {
           setVidStatus("isPlaying", false);
         }}
         onTimeUpdate={(e) => setVidStatus("currentTime", e.currentTarget.currentTime)}
-        preload={isVisible() && currentChild() ? "metadata" : "none"}
+        preload="none"
         controls={false}
         controlslist="nodownload"
         playsinline
@@ -82,11 +83,21 @@ const Video: Component<VideoProps> = (props) => {
 
       {/* ////////////// All addon element must start here /////////////////////////////// */}
 
-      <Show when={vidStatus.isLoading}>
+      <Show when={vidStatus.isLoading && vidStatus.isPlaying}>
+        <div style={{ position: "absolute" }}>
+          <Spinner />
+        </div>
+      </Show>
+
+      <Show when={!vidStatus.isPlaying && vidStatus.isLoading}>
         <button
           style={{ position: "absolute" }}
           class={styles.playPauseBtn}
-          onClick={() => toggleVideo(currentChild())}>
+          onClick={async () => {
+            setVidStatus("isPlaying", true);
+            if (vidStatus.isLoading) currentChild().load();
+            toggleVideo(currentChild());
+          }}>
           {PlayButtonIcon()}
         </button>
       </Show>
@@ -108,7 +119,7 @@ const Video: Component<VideoProps> = (props) => {
             <button onClick={() => seekBackward(currentChild())}>{BackwardButtonIcon()}</button>
             <button onClick={() => seekForward(currentChild())}>{ForwardButtonIcon()}</button>
 
-            <button onClick={() => toggleVideo(currentChild())}>
+            <button onClick={async () => toggleVideo(currentChild())}>
               {vidStatus.isPlaying ? PauseButtonIcon() : PlayButtonIcon()}
             </button>
 
@@ -160,7 +171,7 @@ export default Video;
  */
 const toggleVideo = (videoRef: HTMLVideoElement) => {
   if (!videoRef) return;
-  if (videoRef.paused) return videoRef.play().catch((e) => console.error("Autoplay blocked", e));
+  if (videoRef.paused) return videoRef.play().catch((e) => console.warn("Autoplay blocked", e));
 
   return videoRef.pause();
 };

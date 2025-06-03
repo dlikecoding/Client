@@ -2,18 +2,7 @@ header {
   height: auto;
 }
 
-.container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  overscroll-behavior: "smooth";
-}
-
-.container > .virtualContainer {
+.virtualContainer {
   position: relative;
   width: 100dvw;
 }

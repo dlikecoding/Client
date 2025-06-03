@@ -67,14 +67,15 @@
 }
 
 .videoSlider:hover::-webkit-slider-thumb {
-  box-shadow: 0 0 0 10px rgba(26, 120, 157, 0.519);
+  pointer-events: auto;
+  box-shadow: 0 0 0 5px rgba(26, 120, 157, 0.519);
 
   border: 1px black;
   border-radius: 4em;
-  height: 7px;
-  width: 7px;
+  height: 17px;
+  width: 17px;
   border: none;
-  margin-top: calc((2px - 7px) / 2);
+  margin-top: calc((2px - 17px) / 2);
 }
 
 .videoSlider:hover::-webkit-slider-runnable-track {

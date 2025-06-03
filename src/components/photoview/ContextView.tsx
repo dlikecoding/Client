@@ -97,7 +97,7 @@ const ContextView = () => {
   let containerRef!: HTMLDivElement;
 
   const { width, height } = useWindowSize();
-  const [scrollTop, setScrollTop] = createSignal(0);
+  const [scrollTop, setScrollTop] = createSignal<number>(0);
 
   const itemDimention = createMemo(() => width() / view.nColumn);
 
@@ -128,7 +128,7 @@ const ContextView = () => {
   });
 
   return (
-    <main class="mainHomePage" style={{ overflow: "hidden" }}>
+    <>
       <header style={{ "z-index": 1 }}>
         <div inert>
           <h1>{viewPageTitles.get(paramsUrl.pages)}</h1>
@@ -147,9 +147,9 @@ const ContextView = () => {
         </div>
       </header>
 
-      <div
+      <main
         ref={containerRef}
-        class={style.container}
+        classList={{ mainHomePage: true, [style.container]: true }}
         onScroll={(event: Event) => {
           event.preventDefault();
           setScrollTop(containerRef.scrollTop);
@@ -190,7 +190,7 @@ const ContextView = () => {
             {displayMedias.length} Photos and Videos
           </div>
         </div>
-      </div>
+      </main>
 
       <Show when={isSelected()}>
         <ActionNav />
@@ -204,7 +204,7 @@ const ContextView = () => {
           endIdxView={endIndex}
         />
       </Show>
-    </main>
+    </>
   );
 };
 

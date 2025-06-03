@@ -17,7 +17,7 @@ export type MediaInfo = {
   gps_longitude: string;
 
   make?: string;
-  media: number;
+  media_id: number;
 
   mime_type: string;
   model?: string;
@@ -77,7 +77,7 @@ export const Info = () => {
     if (!mediaId) return alert("No valid photo/video to get info");
 
     // If request the same infor for same photo, return
-    if (mediaInfo()?.media === mediaId) return;
+    if (mediaInfo()?.media_id === mediaId) return;
     const result = await fetchPhotoInfo(mediaId);
     if (!result) return console.log("Missing info");
     setMediaInfo(result);

@@ -60,7 +60,7 @@ const EditLive: Component<LiveProps> = (props) => {
 
   return (
     <LayoutEditing onCancel={() => setIsEditing(false)} onDone={onDone}>
-      <div class={styles.modalThumbs} style={{ bottom: "38px" }}>
+      <div class={styles.modalThumbs} style={{ bottom: "38px", "align-items": "start" }}>
         <div class={styles.thumbSlider}>
           <div class={styles.thumbsLive}>
             <Index each={thumbnails()}>{(thumbs) => <img inert src={thumbs().imageBase} />}</Index>
