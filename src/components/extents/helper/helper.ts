@@ -1,5 +1,7 @@
-import { Accessor } from "solid-js";
 import { MediaType } from "../../../context/ViewContext";
+
+const _BINARY_UNIT = 1024;
+const DECIMAL_UNIT = 1000;
 
 /**
  * Returns the first element that is a descendant of node that matches selectors.
@@ -38,9 +40,9 @@ export const formatTime = (timestamp: string): { weekday: string; date: string; 
 export const convertFileSize = (bytes: number | undefined): string => {
   const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
   if (!bytes) return "0 Byte";
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  const i = Math.floor(Math.log(bytes) / Math.log(DECIMAL_UNIT));
 
-  return Math.round(100 * (bytes / Math.pow(1024, i))) / 100 + " " + sizes[i];
+  return Math.round(100 * (bytes / Math.pow(DECIMAL_UNIT, i))) / 100 + " " + sizes[i];
 };
 
 export const safePlayVideo = async (video: HTMLVideoElement): Promise<void> => {
