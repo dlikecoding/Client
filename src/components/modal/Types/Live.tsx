@@ -46,7 +46,7 @@ const Live: Component<LiveProps> = (props) => {
         setShowImageOnly(true);
 
         return await safePlayVideo(currentChild());
-      }, 300);
+      }, 200);
     }
 
     if (!pressed()) {
@@ -61,12 +61,12 @@ const Live: Component<LiveProps> = (props) => {
         style={{ opacity: isLoading() ? 0 : 1 }}
         inert
         onLoad={() => setIsLoading(true)}
-        onLoadedData={(e) => (e.currentTarget.currentTime = media().selected_frame)}
-        onPlay={() => currentChild().fastSeek(0)}
-        onPause={() => currentChild().fastSeek(media().selected_frame)}
-        preload={isVisible() && currentChild() ? "metadata" : "none"}
+        onLoadedData={(e) => seekingTo(e, currentChild(), media().selected_frame)}
+        onPlay={(e) => seekingTo(e, currentChild(), 0)}
+        onPause={(e) => seekingTo(e, currentChild(), media().selected_frame)}
         controls={false}
         controlslist="nodownload"
+        preload="none"
         playsinline={true}
         crossorigin="use-credentials">
         <source src={`${VIDEO_API_URL}${media().source_file}`} type={media().mime_type} />
@@ -88,7 +88,7 @@ const Live: Component<LiveProps> = (props) => {
         inert
         loading="lazy"
         src={media().thumb_path}
-        alt={`Modal Image Overlay`}
+        alt={`Image not found`}
       />
 
       {/* ////////////// For editing /////////////////////////////// */}
@@ -100,3 +100,10 @@ const Live: Component<LiveProps> = (props) => {
 };
 
 export default Live;
+
+const seekingTo = (e: Event, video: HTMLVideoElement, time: number) => {
+  if (video) {
+    e.preventDefault();
+    video.currentTime = time;
+  }
+};

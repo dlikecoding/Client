@@ -20,6 +20,7 @@ type VideoStatus = {
   isPlaying: boolean;
   isLoading: boolean;
   currentTime: number;
+  muted: boolean;
 };
 
 const SEEK_AMOUNT = 10; //Amount seek video
@@ -45,6 +46,7 @@ const Video: Component<VideoProps> = (props) => {
     isLoading: true,
     isPlaying: false,
     currentTime: 0,
+    muted: false,
   });
 
   const { setShowImageOnly, showImageOnly, isEditing } = useViewMediaContext();
@@ -72,6 +74,7 @@ const Video: Component<VideoProps> = (props) => {
         }}
         onTimeUpdate={(e) => setVidStatus("currentTime", e.currentTarget.currentTime)}
         preload="none"
+        muted={vidStatus.muted}
         controls={false}
         controlslist="nodownload"
         playsinline
@@ -81,15 +84,24 @@ const Video: Component<VideoProps> = (props) => {
         <p>Your browser doesn't support the video tag.</p>
       </video>
 
-      {/* ////////////// All addon element must start here /////////////////////////////// */}
+      <img
+        inert
+        class={styles.overlayImg}
+        style={{ opacity: vidStatus.isLoading ? 1 : 0 }}
+        loading="lazy"
+        src={media().thumb_path}
+        alt={`Modal Image Overlay`}
+      />
+      {/* use image to display while video loading (Work but problems to adjust thumbnail width) */}
 
-      <Show when={vidStatus.isLoading && vidStatus.isPlaying}>
+      {/* ////////////// All addon element must start here /////////////////////////////// */}
+      <Show when={isVisible() && vidStatus.isLoading && vidStatus.isPlaying}>
         <div style={{ position: "absolute" }}>
           <Spinner />
         </div>
       </Show>
 
-      <Show when={!vidStatus.isPlaying && vidStatus.isLoading}>
+      <Show when={isVisible() && vidStatus.isLoading && !vidStatus.isPlaying}>
         <button
           style={{ position: "absolute" }}
           class={styles.playPauseBtn}
@@ -102,22 +114,12 @@ const Video: Component<VideoProps> = (props) => {
         </button>
       </Show>
 
-      {/* use image to display while video loading (Work but problems to adjust thumbnail width) */}
-      <img
-        inert
-        class={styles.overlayImg}
-        style={{ opacity: vidStatus.isLoading ? 1 : 0 }}
-        loading="lazy"
-        src={media().thumb_path}
-        alt={`Modal Image Overlay`}
-      />
-
       <Show when={isVisibleAndLoaded() && !view.showThumb}>
         {/* Design a videoPlayer control when video play, user able to control it */}
         <div classList={{ [modalS.modalThumbs]: true, [modalS.fadeOut]: showImageOnly() }}>
           <div class={styles.videoControler}>
-            <button onClick={() => seekBackward(currentChild())}>{BackwardButtonIcon()}</button>
-            <button onClick={() => seekForward(currentChild())}>{ForwardButtonIcon()}</button>
+            {/* <button onClick={() => seekBackward(currentChild())}>{BackwardButtonIcon()}</button>
+            <button onClick={() => seekForward(currentChild())}>{ForwardButtonIcon()}</button> */}
 
             <button onClick={async () => toggleVideo(currentChild())}>
               {vidStatus.isPlaying ? PauseButtonIcon() : PlayButtonIcon()}
@@ -138,18 +140,15 @@ const Video: Component<VideoProps> = (props) => {
             {/* NEED TO-DO Improve this funtion to prevent calculate time every second */}
             {media().video_duration}
 
-            {/* <button
-              onClick={() => {
-                if (currentChild().requestFullscreen) {
-                  currentChild().requestFullscreen();
-                } else if ((currentChild() as any).webkitRequestFullscreen) {
-                  (currentChild() as any).webkitRequestFullscreen();
-                }
-
-                // currentChild().requestFullscreen() || currentChild().webkitEnterFullscreen();
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                currentChild().requestFullscreen
+                  ? currentChild().requestFullscreen()
+                  : (currentChild() as any).webkitEnterFullscreen();
               }}>
               {FullScreenIcon()}
-            </button> */}
+            </button>
           </div>
         </div>
       </Show>
@@ -176,40 +175,40 @@ const toggleVideo = (videoRef: HTMLVideoElement) => {
   return videoRef.pause();
 };
 
-/**
- * Seeks the video by a specified number of seconds.
- * @param videoRef - The video element.
- * @param seekAmount - The seconds to seek forward or backward.
- *
- * - `seekVideo`: Updates playback time if seekable.
- * - `seekForward`: Moves forward by `SEEK_AMOUNT`.
- * - `seekBackward`: Moves backward by `SEEK_AMOUNT`.
- */
-const seekVideo = (videoRef: HTMLVideoElement, seekAmount: number) => {
-  // Video is not ready or seekable.
-  if (!videoRef || videoRef.readyState < 3 || videoRef.seekable.length === 0) return;
+// /**
+//  * Seeks the video by a specified number of seconds.
+//  * @param videoRef - The video element.
+//  * @param seekAmount - The seconds to seek forward or backward.
+//  *
+//  * - `seekVideo`: Updates playback time if seekable.
+//  * - `seekForward`: Moves forward by `SEEK_AMOUNT`.
+//  * - `seekBackward`: Moves backward by `SEEK_AMOUNT`.
+//  */
+// const seekVideo = (videoRef: HTMLVideoElement, seekAmount: number) => {
+//   // Video is not ready or seekable.
+//   if (!videoRef || videoRef.readyState < 3 || videoRef.seekable.length === 0) return;
 
-  const duration = videoRef.duration;
-  if (isNaN(duration) || duration <= 0) return console.error("Invalid video duration.");
+//   const duration = videoRef.duration;
+//   if (isNaN(duration) || duration <= 0) return console.error("Invalid video duration.");
 
-  const newTime = Math.min(Math.max(videoRef.currentTime + seekAmount, 0), duration);
+//   const newTime = Math.min(Math.max(videoRef.currentTime + seekAmount, 0), duration);
 
-  try {
-    if (videoRef.currentTime === newTime) return;
+//   try {
+//     if (videoRef.currentTime === newTime) return;
 
-    videoRef.currentTime = newTime; //console.log(`Seeked to ${newTime}s`);
-  } catch (err) {
-    console.error("Error seeking video:", err);
-  }
-};
+//     videoRef.currentTime = newTime; //console.log(`Seeked to ${newTime}s`);
+//   } catch (err) {
+//     console.error("Error seeking video:", err);
+//   }
+// };
 
-const seekForward = (videoRef: HTMLVideoElement) => {
-  if (videoRef) seekVideo(videoRef, SEEK_AMOUNT);
-};
+// const seekForward = (videoRef: HTMLVideoElement) => {
+//   if (videoRef) seekVideo(videoRef, SEEK_AMOUNT);
+// };
 
-const seekBackward = (videoRef: HTMLVideoElement) => {
-  if (videoRef) seekVideo(videoRef, -SEEK_AMOUNT);
-};
+// const seekBackward = (videoRef: HTMLVideoElement) => {
+//   if (videoRef) seekVideo(videoRef, -SEEK_AMOUNT);
+// };
 
 const PlayButtonIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
