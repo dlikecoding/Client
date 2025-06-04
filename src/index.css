@@ -78,9 +78,11 @@ svg {
   height: 100dvh;
   width: 100dvw;
 
+  overflow-x: hidden;
   overflow-y: auto;
+
   scroll-behavior: smooth;
-  overscroll-behavior: "smooth";
+  overscroll-behavior: smooth;
   /* z-index: 0; */
 }
 
@@ -203,6 +205,7 @@ header > button {
 /* ================== FOOTER CONTROL BAR ================== */
 footer {
   overflow: hidden;
+  scroll-behavior: none;
 
   position: fixed;
   bottom: 38px;

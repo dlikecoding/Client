@@ -15,7 +15,7 @@ header {
   transition: top 0.2s ease, left 0.2s ease;
 }
 
-.paddingInfo {
+.customBottomPadding {
   position: absolute;
   display: flex;
   justify-content: center;

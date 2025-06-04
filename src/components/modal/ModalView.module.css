@@ -79,7 +79,7 @@ header > .modalTitle {
   align-items: center;
 
   gap: 2px;
-  /* z-index: 1; */
+  z-index: 1;
 
   /* overflow-x: auto;
   overflow-y: hidden; */

@@ -91,7 +91,7 @@ const ActionNav = () => {
 
   return (
     <>
-      <footer inert={disableButtons()} style={{ "z-index": 1 }} class={`${disableButtons() ? "footerDisabled" : ""}`}>
+      <footer inert={disableButtons()} style={{ "z-index": 10 }} class={`${disableButtons() ? "footerDisabled" : ""}`}>
         <div class="actions__toolbar__column is_left">
           <Switch fallback={<Save />}>
             <Match when={currentPage.includes("unhide")}>

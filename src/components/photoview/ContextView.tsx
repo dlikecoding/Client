@@ -34,6 +34,8 @@ const viewPageTitles = new Map([
 const HIDE_SELECT_BUTTON = 5; // Hide select button when number of column > 5
 const BUFFER_ROWS = 3; // number of rows buffering
 
+export const PADDING_TOP = 80; // Create padding on the top for elements
+
 const ContextView = () => {
   const paramsUrl = useParams();
 
@@ -97,7 +99,7 @@ const ContextView = () => {
   let containerRef!: HTMLDivElement;
 
   const { width, height } = useWindowSize();
-  const [scrollTop, setScrollTop] = createSignal<number>(0);
+  const [scrollTop, setScrollTop] = createSignal<number>(PADDING_TOP);
 
   const itemDimention = createMemo(() => width() / view.nColumn);
 
@@ -122,9 +124,9 @@ const ContextView = () => {
   // Reset params on closed (This dose not reset year and month )
   onCleanup(() => resetLibrary());
 
-  const calculateTopPadding = createMemo(() => {
+  const addOnBottomPadding = createMemo(() => {
     const minPadding = paramsUrl.pages === "all" ? height() - 170 : height() - 130;
-    return Math.max(minPadding, Math.ceil(displayMedias.length / view.nColumn) * itemDimention());
+    return Math.max(minPadding, Math.ceil(displayMedias.length / view.nColumn) * itemDimention() + PADDING_TOP);
   });
 
   return (
@@ -149,7 +151,8 @@ const ContextView = () => {
 
       <main
         ref={containerRef}
-        classList={{ mainHomePage: true, [style.container]: true }}
+        class="mainHomePage"
+        // classList={{ mainHomePage: true, [style.container]: true }}
         onScroll={(event: Event) => {
           event.preventDefault();
           setScrollTop(containerRef.scrollTop);
@@ -182,10 +185,10 @@ const ContextView = () => {
           </For>
 
           <div
-            class={style.paddingInfo}
+            class={style.customBottomPadding}
             style={{
               height: `${paramsUrl.pages === "all" ? 140 : 100}px`,
-              top: `${calculateTopPadding()}px`,
+              top: `${addOnBottomPadding()}px`,
             }}>
             {displayMedias.length} Photos and Videos
           </div>

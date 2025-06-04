@@ -1,8 +1,9 @@
-import { createMemo, createSignal, Match, Show, Switch, type Component } from "solid-js";
+import { createMemo, Match, Show, Switch, type Component } from "solid-js";
 import styles from "./PhotoView.module.css";
 import { useMediaContext } from "../../context/Medias";
 import { useManageURLContext } from "../../context/ManageUrl";
 import { MediaType, useViewMediaContext } from "../../context/ViewContext";
+import { PADDING_TOP } from "./ContextView";
 // import placeholder from "../../assets/svgs/place-holder.svg";
 
 interface PhotoProps {
@@ -37,7 +38,7 @@ const PhotoCard: Component<PhotoProps> = (props) => {
 
   const mediaDim = createMemo(() => {
     return {
-      top: Math.floor(index() / view.nColumn) * itemDim(),
+      top: Math.floor(index() / view.nColumn) * itemDim() + PADDING_TOP,
       left: (index() % view.nColumn) * itemDim(),
       size: itemDim(),
     };
