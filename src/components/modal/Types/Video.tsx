@@ -1,12 +1,12 @@
 import styles from "./Types.module.css";
 import modalS from "./../ModalView.module.css";
 
-import { Component, createMemo, Show } from "solid-js";
+import { Component, createMemo, Match, Show, Switch } from "solid-js";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import { VIDEO_API_URL } from "../../../App";
 import EditVideo from "../Editing/EditVideo";
 import { createStore } from "solid-js/store";
-import { useManageURLContext } from "../../../context/ManageUrl";
+// import { useManageURLContext } from "../../../context/ManageUrl";
 import Spinner from "../../extents/Spinner";
 
 interface VideoProps {
@@ -24,7 +24,7 @@ type VideoStatus = {
   isFullScreen: boolean;
 };
 
-const SEEK_AMOUNT = 10; //Amount seek video
+// const SEEK_AMOUNT = 10; //Amount seek video
 
 const Video: Component<VideoProps> = (props) => {
   const media = () => props.media;
@@ -52,7 +52,7 @@ const Video: Component<VideoProps> = (props) => {
   });
 
   const { setShowImageOnly, showImageOnly, isEditing } = useViewMediaContext();
-  const { view, setView } = useManageURLContext();
+  // const { view, setView } = useManageURLContext();
 
   const isVisibleAndLoaded = createMemo(() => isVideoVisible() && currentChild() && !vidStatus.isLoading);
 
@@ -76,7 +76,7 @@ const Video: Component<VideoProps> = (props) => {
           setVidStatus("isPlaying", true);
 
           if (media().frame_rate > 200) e.currentTarget.playbackRate = 1 / slowMode();
-          if (view.showThumb) setView("showThumb", false);
+          // if (view.showThumb) setView("showThumb", false);
         }}
         onPause={() => {
           setShowImageOnly(false);
@@ -105,38 +105,42 @@ const Video: Component<VideoProps> = (props) => {
       {/* use image to display while video loading (Work but problems to adjust thumbnail width) */}
 
       {/* ////////////// All addon element must start here /////////////////////////////// */}
-      <Show when={isVisible() && vidStatus.isLoading && vidStatus.isPlaying}>
-        <div style={{ position: "absolute" }}>
-          <Spinner />
-        </div>
+      <Show when={isVisible() && vidStatus.isLoading}>
+        <Switch
+          fallback={
+            <div style={{ position: "absolute" }}>
+              <Spinner />
+            </div>
+          }>
+          <Match when={!vidStatus.isPlaying}>
+            <button
+              style={{ position: "absolute" }}
+              class={styles.playPauseBtn}
+              onClick={async () => {
+                if (vidStatus.isLoading) currentChild().load();
+                togglePlayVideo(currentChild());
+              }}>
+              {PlayButtonIcon()}
+            </button>
+          </Match>
+        </Switch>
       </Show>
 
-      <Show when={isVisible() && vidStatus.isLoading && !vidStatus.isPlaying}>
-        <button
-          style={{ position: "absolute" }}
-          class={styles.playPauseBtn}
-          onClick={async () => {
-            setVidStatus("isPlaying", true);
-            if (vidStatus.isLoading) currentChild().load();
-            toggleVideo(currentChild());
-          }}>
-          {PlayButtonIcon()}
-        </button>
-      </Show>
-
-      <Show when={isVisibleAndLoaded() && !view.showThumb}>
+      <Show when={isVisibleAndLoaded()}>
+        {/* && !view.showThumb */}
         {/* Design a videoPlayer control when video play, user able to control it */}
         <div
           classList={{ [modalS.modalThumbs]: true, [modalS.fadeOut]: showImageOnly() }}
           style={{ "margin-bottom": "10px" }}>
           <div class={styles.videoControler}>
             <button onClick={() => setVidStatus("muted", (prev) => !prev)}>{MuteIcon(vidStatus.muted)}</button>
+            <button onClick={(e) => fullScreenVideo(e, currentChild())}>{FullScreenIcon()}</button>
 
             {/* <button onClick={() => seekBackward(currentChild())}>{BackwardButtonIcon()}</button> */}
             {/* <button onClick={() => seekForward(currentChild())}>{ForwardButtonIcon()}</button> */}
 
             <div class={styles.playbar}>
-              <button onClick={async () => toggleVideo(currentChild())}>
+              <button onClick={async () => togglePlayVideo(currentChild())}>
                 {vidStatus.isPlaying ? PauseButtonIcon() : PlayButtonIcon()}
               </button>
 
@@ -154,17 +158,7 @@ const Video: Component<VideoProps> = (props) => {
                 }}
               />
               {/* NEED TO-DO Improve this funtion to prevent calculate time every second */}
-              {/* {media().video_duration} */}
-
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  currentChild().requestFullscreen
-                    ? currentChild().requestFullscreen()
-                    : (currentChild() as any).webkitEnterFullscreen();
-                }}>
-                {FullScreenIcon()}
-              </button>
+              {media().video_duration}
             </div>
           </div>
         </div>
@@ -185,11 +179,17 @@ export default Video;
  * @param videoRef - The video element.
  * @returns A promise if playing, otherwise undefined.
  */
-const toggleVideo = (videoRef: HTMLVideoElement) => {
+const togglePlayVideo = (videoRef: HTMLVideoElement) => {
   if (!videoRef) return;
   if (videoRef.paused) return videoRef.play().catch((e) => console.warn("Autoplay blocked", e));
 
   return videoRef.pause();
+};
+
+const fullScreenVideo = (e: Event, videoRef: HTMLVideoElement) => {
+  e.preventDefault();
+  if (!videoRef) return;
+  videoRef.requestFullscreen ? videoRef.requestFullscreen() : (videoRef as any).webkitEnterFullscreen();
 };
 
 // /**
