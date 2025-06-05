@@ -34,7 +34,7 @@ const viewPageTitles = new Map([
 const HIDE_SELECT_BUTTON = 5; // Hide select button when number of column > 5
 const BUFFER_ROWS = 3; // number of rows buffering
 
-export const PADDING_TOP = 80; // Create padding on the top for elements
+export const PADDING_TOP = 90; // Create padding on the top for elements
 
 const ContextView = () => {
   const paramsUrl = useParams();

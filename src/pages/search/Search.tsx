@@ -41,6 +41,7 @@ const Search = () => {
           <Index each={loadingSearch().suggestCount}>
             {(each) => (
               <button
+                class={styles.suggestionBtn}
                 onClick={() => {
                   setKeyword((prev) => {
                     const lastSpace = prev.trim().lastIndexOf(" ");
