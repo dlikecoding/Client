@@ -4,7 +4,7 @@ import { onMount } from "solid-js";
 
 const FooterLibrary = () => {
   const { resetParams } = useManageURLContext();
-  onMount(resetParams);
+  onMount(() => resetParams());
 
   return (
     <footer style={{ "z-index": 1, bottom: "90px" }} class="footer_nav">

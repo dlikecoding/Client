@@ -161,7 +161,7 @@ a {
   pointer-events: auto;
 }
 
-button:active,
+/* button:active,
 a:active,
 button:active svg,
 a:active svg {
@@ -169,7 +169,7 @@ a:active svg {
   box-shadow: 0 0 10px 5px rgba(147, 147, 147, 0.6);
   filter: drop-shadow(0 0 10px 5px rgba(182, 182, 182, 0.6));
   border-radius: 4em;
-}
+} */
 
 .buttonContainer {
   display: flex;

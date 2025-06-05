@@ -15,7 +15,11 @@ const DeviceFilter = () => {
     <Show when={!isSelected()}>
       <button popovertarget="devices-filter-popover">{CameraIcon()}</button>
 
-      <div popover="auto" id="devices-filter-popover" class="popover-container devices_filter_popover">
+      <div
+        popover="auto"
+        id="devices-filter-popover"
+        class="popover-container devices_filter_popover"
+        style={{ "transform-origin": "top center" }}>
         <span
           // style={{ position: "sticky", top: 0, "z-index": 1 }}
           class="clear_button"

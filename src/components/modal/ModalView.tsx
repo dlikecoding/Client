@@ -133,7 +133,7 @@ const Modal: Component<ModalProps> = (props) => {
   return (
     <Portal>
       <div class={styles.modalContainer} style={{ "z-index": 1 }}>
-        <header classList={{ [styles.fadeOut]: showImageOnly() }} style={{ "z-index": 1 }}>
+        <header classList={{ [styles.fadeOut]: showImageOnly() }} style={{ "z-index": 2 }}>
           <div class="buttonContainer">
             <button
               onClick={() => {
