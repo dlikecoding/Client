@@ -178,21 +178,15 @@ header > .modalTitle {
 
 .inputSlider::-webkit-slider-thumb {
   box-shadow: 0 0 10px white;
-  border: 0.7px solid black;
-
-  background: white;
 
   height: 55px;
-  width: 3px;
   border-radius: 5px;
 
   cursor: pointer;
   appearance: none;
-}
 
-.inputSlider:hover::-webkit-slider-thumb {
   pointer-events: auto;
-  border: 1px solid gold;
+  border: 1.5px solid gold;
   background: none;
   width: 38px;
 }

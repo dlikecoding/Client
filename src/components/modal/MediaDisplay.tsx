@@ -1,6 +1,6 @@
 import styles from "./ModalView.module.css";
 import { MediaType, useViewMediaContext } from "../../context/ViewContext";
-import { Accessor, Component, createMemo, createSignal, Match, onMount, Setter, Switch } from "solid-js";
+import { Component, createMemo, createSignal, Match, onMount, Setter, Switch } from "solid-js";
 import Video from "./Types/Video";
 import Photo from "./Types/Photo";
 import Live from "./Types/Live";

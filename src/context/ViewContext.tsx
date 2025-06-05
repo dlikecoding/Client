@@ -17,6 +17,7 @@ export interface MediaType {
 
   duration: number;
   selected_frame: number;
+  frame_rate: number;
 }
 
 interface ContextProps {

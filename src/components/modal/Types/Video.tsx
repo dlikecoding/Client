@@ -21,6 +21,7 @@ type VideoStatus = {
   isLoading: boolean;
   currentTime: number;
   muted: boolean;
+  isFullScreen: boolean;
 };
 
 const SEEK_AMOUNT = 10; //Amount seek video
@@ -47,6 +48,7 @@ const Video: Component<VideoProps> = (props) => {
     isPlaying: false,
     currentTime: 0,
     muted: false,
+    isFullScreen: false,
   });
 
   const { setShowImageOnly, showImageOnly, isEditing } = useViewMediaContext();
@@ -54,18 +56,26 @@ const Video: Component<VideoProps> = (props) => {
 
   const isVisibleAndLoaded = createMemo(() => isVideoVisible() && currentChild() && !vidStatus.isLoading);
 
+  const slowMode = createMemo(() => {
+    if (!isVisible()) return 1;
+    return !media().frame_rate || media().frame_rate < 200 ? 1 : 6;
+  });
+
   return (
     <>
       <video
-        inert
+        inert={!vidStatus.isFullScreen}
         ref={(el) => (videoRef = el)}
         // poster={media().thumb_path} // Use image to display instead of poster
+
+        onFullscreenChange={() => setVidStatus("isFullScreen", (prev) => !prev)}
         onLoad={() => setVidStatus("isLoading", true)}
         onLoadedData={() => setVidStatus("isLoading", false)}
         onPlay={(e) => {
           e.preventDefault();
-
           setVidStatus("isPlaying", true);
+
+          if (media().frame_rate > 200) e.currentTarget.playbackRate = 1 / slowMode();
           if (view.showThumb) setView("showThumb", false);
         }}
         onPause={() => {
@@ -116,39 +126,46 @@ const Video: Component<VideoProps> = (props) => {
 
       <Show when={isVisibleAndLoaded() && !view.showThumb}>
         {/* Design a videoPlayer control when video play, user able to control it */}
-        <div classList={{ [modalS.modalThumbs]: true, [modalS.fadeOut]: showImageOnly() }}>
+        <div
+          classList={{ [modalS.modalThumbs]: true, [modalS.fadeOut]: showImageOnly() }}
+          style={{ "margin-bottom": "10px" }}>
           <div class={styles.videoControler}>
-            {/* <button onClick={() => seekBackward(currentChild())}>{BackwardButtonIcon()}</button>
-            <button onClick={() => seekForward(currentChild())}>{ForwardButtonIcon()}</button> */}
+            <button onClick={() => setVidStatus("muted", (prev) => !prev)}>{MuteIcon(vidStatus.muted)}</button>
 
-            <button onClick={async () => toggleVideo(currentChild())}>
-              {vidStatus.isPlaying ? PauseButtonIcon() : PlayButtonIcon()}
-            </button>
+            {/* <button onClick={() => seekBackward(currentChild())}>{BackwardButtonIcon()}</button> */}
+            {/* <button onClick={() => seekForward(currentChild())}>{ForwardButtonIcon()}</button> */}
 
-            <input
-              class={styles.videoSlider}
-              style={{ "--currentProcess": `${(vidStatus.currentTime / media().duration) * 100}%` }}
-              type="range"
-              min="0"
-              max={media().duration}
-              value={vidStatus.currentTime}
-              onInput={(e) => {
-                e.preventDefault();
-                currentChild().currentTime = Number(e.target.value);
-              }}
-            />
-            {/* NEED TO-DO Improve this funtion to prevent calculate time every second */}
-            {media().video_duration}
+            <div class={styles.playbar}>
+              <button onClick={async () => toggleVideo(currentChild())}>
+                {vidStatus.isPlaying ? PauseButtonIcon() : PlayButtonIcon()}
+              </button>
 
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                currentChild().requestFullscreen
-                  ? currentChild().requestFullscreen()
-                  : (currentChild() as any).webkitEnterFullscreen();
-              }}>
-              {FullScreenIcon()}
-            </button>
+              <input
+                class={styles.videoSlider}
+                style={{ "--currentProcess": `${(vidStatus.currentTime / media().duration) * 100}%` }}
+                type="range"
+                min="0"
+                max={Math.round(media().duration)}
+                value={vidStatus.currentTime}
+                step={1 / slowMode()}
+                onInput={(e) => {
+                  e.preventDefault();
+                  currentChild().currentTime = Number(e.target.value);
+                }}
+              />
+              {/* NEED TO-DO Improve this funtion to prevent calculate time every second */}
+              {/* {media().video_duration} */}
+
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  currentChild().requestFullscreen
+                    ? currentChild().requestFullscreen()
+                    : (currentChild() as any).webkitEnterFullscreen();
+                }}>
+                {FullScreenIcon()}
+              </button>
+            </div>
           </div>
         </div>
       </Show>
@@ -249,5 +266,27 @@ export const FullScreenIcon = () => (
       stroke-width={1}
       d="M3 8.5a.5.5 0 0 1-1 0v-2A2.5 2.5 0 0 1 4.5 4h2a.5.5 0 0 1 0 1h-2A1.5 1.5 0 0 0 3 6.5v2ZM17.5 5a.5.5 0 1 1 0-1h2A2.5 2.5 0 0 1 22 6.5v2a.5.5 0 1 1-1 0v-2A1.5 1.5 0 0 0 19.5 5h-2ZM21 15.5a.5.5 0 1 1 1 0v2a2.5 2.5 0 0 1-2.5 2.5h-2a.5.5 0 1 1 0-1h2a1.5 1.5 0 0 0 1.5-1.5v-2ZM6.5 19a.5.5 0 1 1 0 1h-2A2.5 2.5 0 0 1 2 17.5v-2a.5.5 0 1 1 1 0v2A1.5 1.5 0 0 0 4.5 19h2Z"
     />
+  </svg>
+);
+
+const MuteIcon = (isMuted: boolean = false) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="5 5 61 61">
+    <g fill="none">
+      {isMuted ? (
+        <path stroke-width="4" stroke-linecap="round" stroke-miterlimit="10" d="m45 33 12 11m0-11L45 43" />
+      ) : (
+        <g fill="none">
+          <path stroke-width="4" stroke-linecap="round" stroke-miterlimit="10" d="M48 28c4 4 4 12 0 16" />
+          <path stroke-width="4" stroke-linecap="round" stroke-miterlimit="10" d="M54 23c6 6 6 20 0 26" />
+        </g>
+      )}
+      <path stroke-linejoin="round" stroke-miterlimit="10" stroke-width="4" d="M21 44h-7l-2-2V30l2-2h7" />
+      <path
+        stroke-linejoin="round"
+        stroke-miterlimit="10"
+        stroke-width="4"
+        d="m21 43-1-1V30l1-1 12-13c2-2 4-1 4 1v37c0 3-2 4-4 2L21 43z"
+      />
+    </g>
   </svg>
 );
