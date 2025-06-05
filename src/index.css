@@ -151,21 +151,25 @@ button {
   all: unset;
   cursor: pointer;
   pointer-events: visible;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-button,
-A {
+a {
   pointer-events: auto;
 }
 
-/* button:active,
-A:active {
-  text-shadow: 0 0 12px 12px rgba(63, 164, 241, 0.777);
-  color: 0 0 12px 12px rgba(63, 164, 241, 0.777);
-  /* border-radius: 30px; */
-/* filter: drop-shadow(0 0 12px 12px rgba(63, 164, 241, 0.777));
-  box-shadow: 0 0 12px 12px rgba(63, 164, 241, 0.777);
-} */
+button:active,
+a:active,
+button:active svg,
+a:active svg {
+  outline: none;
+  box-shadow: 0 0 10px 5px rgba(147, 147, 147, 0.6);
+  filter: drop-shadow(0 0 10px 5px rgba(182, 182, 182, 0.6));
+  border-radius: 4em;
+}
 
 .buttonContainer {
   display: flex;
@@ -188,10 +192,6 @@ header > button {
 
   border-radius: 4em;
   padding: 7px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   width: 25px;
   height: 25px;
