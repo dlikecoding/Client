@@ -126,6 +126,10 @@ header > div > * {
   margin-bottom: 5px;
 }
 
+header > div > h1 {
+  font-size: 1.7rem;
+}
+
 /* Reset button styles for consistent appearance */
 h3 {
   display: flex;
@@ -161,16 +165,6 @@ a {
   pointer-events: auto;
 }
 
-/* button:active,
-a:active,
-button:active svg,
-a:active svg {
-  outline: none;
-  box-shadow: 0 0 10px 5px rgba(147, 147, 147, 0.6);
-  filter: drop-shadow(0 0 10px 5px rgba(182, 182, 182, 0.6));
-  border-radius: 4em;
-} */
-
 .buttonContainer {
   display: flex;
   justify-content: space-between;
@@ -184,22 +178,32 @@ header > button {
   inset: unset;
   position: relative;
   font: var(--font-info);
-  border: none;
 
   background: var(--popup-bground);
   backdrop-filter: blur(20px) brightness(1);
   -webkit-backdrop-filter: blur(20px) brightness(1);
+
+  border: none;
 
   border-radius: 4em;
   padding: 7px;
 
   width: 25px;
   height: 25px;
+
+  transition: all 0.3s ease;
 }
 
 .buttonContainer > button > svg {
   width: 24px;
   height: 24px;
+}
+
+.buttonContainer > button:hover {
+  /* box-shadow: 0 0 10px 5px rgba(147, 147, 147, 0.6); */
+  background: rgba(79, 79, 79, 0.919);
+  /* backdrop-filter: blur(20px) brightness(1); */
+  /* -webkit-backdrop-filter: blur(20px) brightness(1); */
 }
 
 /* ================== FOOTER CONTROL BAR ================== */
@@ -384,7 +388,7 @@ button:disabled {
 .filter_timeline {
   position: absolute;
   transform-origin: top right;
-  top: 65px;
+  top: 70px;
   right: 15px;
   margin: 0 5px;
   min-width: 190px;
@@ -392,7 +396,7 @@ button:disabled {
 
 .devices_filter_popover {
   transform-origin: top right;
-  top: 65px;
+  top: 70px;
   right: 15px;
 }
 

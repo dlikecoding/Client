@@ -20,7 +20,7 @@ const OverView = () => {
     "Recently Deleted": { deleted: 1 },
   };
 
-  onMount(resetParams);
+  onMount(() => resetParams());
 
   return (
     <main class="mainHomePage">
