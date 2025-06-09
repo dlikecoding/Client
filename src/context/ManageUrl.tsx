@@ -30,6 +30,8 @@ export type ZoomAndAspect = {
 
   modalObjFit: boolean;
   showThumb: boolean;
+
+  zoomLevel: number;
 };
 
 type StoreLastVisit = { url: string; params: SearchQuery };
@@ -68,6 +70,8 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
 
       modalObjFit: false,
       showThumb: true,
+
+      zoomLevel: 1,
     }
   );
 

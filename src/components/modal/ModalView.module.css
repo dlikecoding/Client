@@ -54,6 +54,8 @@ header > .modalTitle {
   scroll-snap-align: start;
   scroll-snap-stop: always;
   z-index: 1;
+
+  /* overflow: auto; */
 }
 
 .mediaContainer > video,
@@ -62,6 +64,15 @@ header > .modalTitle {
   height: 100%;
   object-fit: var(--modal-object-fit);
   transition: opacity 0.5s ease-in-out;
+  /* 
+  max-width: 100%;
+  max-height: 100%;
+
+  position: absolute;
+  overflow: hidden;
+
+  transition: transform 0.3s ease;
+  transform-origin: center center; */
 }
 
 /* /////////////////// THUMBNAIL //////////////////////// */

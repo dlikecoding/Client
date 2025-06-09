@@ -1,6 +1,7 @@
-import { Accessor, Component, createMemo, createSignal, Show } from "solid-js";
+import { Component, createMemo, createSignal, Show } from "solid-js";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import EditPhoto from "../Editing/EditPhoto";
+// import { useManageURLContext } from "../../../context/ManageUrl";
 
 interface PhotoProps {
   media: MediaType;
@@ -20,9 +21,12 @@ const Photo: Component<PhotoProps> = (props) => {
   // Tracking image onload -> load thumbnail, when done -> load original
   const [imgLoading, setImgLoading] = createSignal<boolean>(true);
 
+  // const { view } = useManageURLContext();
+
   return (
     <>
       <img
+        // style={{ transform: isPhotoVisible() ? `scale(${view.zoomLevel})` : "none" }}
         inert
         onLoad={() => setImgLoading(false)}
         onError={() => setImgLoading(true)}

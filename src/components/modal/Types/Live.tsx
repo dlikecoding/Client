@@ -7,6 +7,7 @@ import EditLive from "../Editing/EditLive";
 import { useMousePressed } from "solidjs-use";
 import { safePlayVideo } from "../../extents/helper/helper";
 import { LivePhotoIcon } from "../../svgIcons";
+import { useManageURLContext } from "../../../context/ManageUrl";
 
 interface LiveProps {
   media: MediaType;
@@ -25,6 +26,8 @@ const Live: Component<LiveProps> = (props) => {
 
   const parentMediaRef = props.clickableArea;
   const [isLoading, setIsLoading] = createSignal<boolean>(true);
+
+  // const { view } = useManageURLContext();
 
   createMemo(async () => {
     if (!isLiveVisible()) return setIsLoading(true);
@@ -59,6 +62,7 @@ const Live: Component<LiveProps> = (props) => {
     <>
       <video
         style={{ opacity: isLoading() ? 0 : 1 }}
+        // transform: isLiveVisible() ? `scale(${view.zoomLevel})` : "none"
         inert
         onLoad={() => setIsLoading(true)}
         onLoadedData={(e) => seekingTo(e, currentChild(), media().selected_frame)}

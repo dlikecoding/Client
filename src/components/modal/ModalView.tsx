@@ -5,9 +5,9 @@ import { Accessor, Component, createMemo, createSignal, For, onMount, Setter, Sh
 import { createStore } from "solid-js/store";
 
 import { useManageURLContext } from "../../context/ManageUrl";
-import { MediaType, useViewMediaContext } from "../../context/ViewContext";
+import { useViewMediaContext } from "../../context/ViewContext";
 import { useMediaContext } from "../../context/Medias";
-import { CompressIcon, ExpandIcon, GoBackIcon } from "../svgIcons";
+import { CompressIcon, ExpandIcon, GoBackIcon, ZoomInIcon, ZoomOutIcon } from "../svgIcons";
 
 import { formatTime, scrollIntoViewFc } from "../extents/helper/helper";
 import MediaDisplay from "./MediaDisplay";
@@ -121,6 +121,11 @@ const Modal: Component<ModalProps> = (props) => {
     }
   };
 
+  // // Reset zoom when scroll to other elements
+  // createMemo(() => {
+  //   if (current.elId) setView("zoomLevel", 1);
+  // });
+
   /** Create sublist for thumbnails */
   // const modalMedias = () => getSublist(displayMedias, current.elIndex);
 
@@ -152,6 +157,14 @@ const Modal: Component<ModalProps> = (props) => {
             <button onClick={() => setView("modalObjFit", (prev) => !prev)}>
               {view.modalObjFit ? ExpandIcon() : CompressIcon()}
             </button>
+
+            {/* <button disabled={view.zoomLevel === 5} onClick={() => setView("zoomLevel", (prev) => prev + 0.5)}>
+              {ZoomInIcon()}
+            </button>
+            <button disabled={view.zoomLevel === 1} onClick={() => setView("zoomLevel", (prev) => prev - 0.5)}>
+              {ZoomOutIcon()}
+            </button> */}
+
             {/* <button popoverTarget="more-modal-popover">{CustomButtonIcon()}</button>
             <div popover="auto" id="more-modal-popover" class="popover-container devices_filter_popover">
               <div onClick={() => setView("showThumb", (prev) => !prev)}>

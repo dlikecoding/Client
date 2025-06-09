@@ -8,6 +8,7 @@ import EditVideo from "../Editing/EditVideo";
 import { createStore } from "solid-js/store";
 // import { useManageURLContext } from "../../../context/ManageUrl";
 import Spinner from "../../extents/Spinner";
+// import { useManageURLContext } from "../../../context/ManageUrl";
 
 interface VideoProps {
   media: MediaType;
@@ -52,7 +53,7 @@ const Video: Component<VideoProps> = (props) => {
   });
 
   const { setShowImageOnly, showImageOnly, isEditing } = useViewMediaContext();
-  // const { view, setView } = useManageURLContext();
+  // const { view } = useManageURLContext();
 
   const isVisibleAndLoaded = createMemo(() => isVideoVisible() && currentChild() && !vidStatus.isLoading);
 
@@ -64,6 +65,7 @@ const Video: Component<VideoProps> = (props) => {
   return (
     <>
       <video
+        // style={{ transform: isVisibleAndLoaded() ? `scale(${view.zoomLevel})` : "none" }}
         inert={!vidStatus.isFullScreen}
         ref={(el) => (videoRef = el)}
         // poster={media().thumb_path} // Use image to display instead of poster
@@ -130,36 +132,37 @@ const Video: Component<VideoProps> = (props) => {
         {/* && !view.showThumb */}
         {/* Design a videoPlayer control when video play, user able to control it */}
         <div
-          classList={{ [modalS.modalThumbs]: true, [modalS.fadeOut]: showImageOnly() }}
-          style={{ "margin-bottom": "10px" }}>
-          <div class={styles.videoControler}>
-            <button onClick={() => setVidStatus("muted", (prev) => !prev)}>{MuteIcon(vidStatus.muted)}</button>
-            <button onClick={(e) => fullScreenVideo(e, currentChild())}>{FullScreenIcon()}</button>
+          classList={{ [modalS.modalThumbs]: true, [modalS.fadeOut]: showImageOnly(), [styles.videoControler]: true }}>
+          <button class="buttonVideoPlayer" onClick={() => setVidStatus("muted", (prev) => !prev)}>
+            {MuteIcon(vidStatus.muted)}
+          </button>
+          <button class="buttonVideoPlayer" onClick={(e) => fullScreenVideo(e, currentChild())}>
+            {FullScreenIcon()}
+          </button>
 
-            {/* <button onClick={() => seekBackward(currentChild())}>{BackwardButtonIcon()}</button> */}
-            {/* <button onClick={() => seekForward(currentChild())}>{ForwardButtonIcon()}</button> */}
+          {/* <button onClick={() => seekBackward(currentChild())}>{BackwardButtonIcon()}</button> */}
+          {/* <button onClick={() => seekForward(currentChild())}>{ForwardButtonIcon()}</button> */}
 
-            <div class={styles.playbar}>
-              <button onClick={async () => togglePlayVideo(currentChild())}>
-                {vidStatus.isPlaying ? PauseButtonIcon() : PlayButtonIcon()}
-              </button>
+          <div class={styles.playbar}>
+            <button onClick={async () => togglePlayVideo(currentChild())}>
+              {vidStatus.isPlaying ? PauseButtonIcon() : PlayButtonIcon()}
+            </button>
 
-              <input
-                class={styles.videoSlider}
-                style={{ "--currentProcess": `${(vidStatus.currentTime / media().duration) * 100}%` }}
-                type="range"
-                min="0"
-                max={Math.round(media().duration)}
-                value={vidStatus.currentTime}
-                step={1 / slowMode()}
-                onInput={(e) => {
-                  e.preventDefault();
-                  currentChild().currentTime = Number(e.target.value);
-                }}
-              />
-              {/* NEED TO-DO Improve this funtion to prevent calculate time every second */}
-              {media().video_duration}
-            </div>
+            <input
+              class={styles.videoSlider}
+              style={{ "--currentProcess": `${(vidStatus.currentTime / media().duration) * 100}%` }}
+              type="range"
+              min="0"
+              max={Math.round(media().duration)}
+              value={vidStatus.currentTime}
+              step={1 / slowMode()}
+              onInput={(e) => {
+                e.preventDefault();
+                currentChild().currentTime = Number(e.target.value);
+              }}
+            />
+            {/* NEED TO-DO Improve this funtion to prevent calculate time every second */}
+            {media().video_duration}
           </div>
         </div>
       </Show>
