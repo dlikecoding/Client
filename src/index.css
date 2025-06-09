@@ -174,7 +174,8 @@ a {
 
 /* For all buttons -------------------- */
 .buttonContainer > button,
-header > button {
+header > button,
+.buttonVideoPlayer {
   inset: unset;
   position: relative;
   font: var(--font-info);
@@ -183,15 +184,16 @@ header > button {
   backdrop-filter: blur(20px) brightness(1);
   -webkit-backdrop-filter: blur(20px) brightness(1);
 
-  border: none;
+  border: 1.5px solid transparent;
 
   border-radius: 4em;
-  padding: 7px;
+  padding: 5.5px;
 
   width: 25px;
   height: 25px;
 
-  transition: all 0.3s ease;
+  transition: all 0.1s ease-in-out;
+  pointer-events: visible;
 }
 
 .buttonContainer > button > svg {
@@ -199,11 +201,11 @@ header > button {
   height: 24px;
 }
 
-.buttonContainer > button:hover {
+.buttonContainer > button:active,
+.buttonVideoPlayer:active {
+  background: rgba(127, 127, 127, 0.794);
+  border: 1.5px solid wheat;
   /* box-shadow: 0 0 10px 5px rgba(147, 147, 147, 0.6); */
-  background: rgba(79, 79, 79, 0.919);
-  /* backdrop-filter: blur(20px) brightness(1); */
-  /* -webkit-backdrop-filter: blur(20px) brightness(1); */
 }
 
 /* ================== FOOTER CONTROL BAR ================== */

@@ -1,7 +1,7 @@
 import { createMemo, lazy } from "solid-js";
 import { A, useLocation } from "@solidjs/router";
 
-import { SearchIcon, CollectionIcon, LibraryIcon, ServerIcon } from "../../components/svgIcons";
+import { SearchIcon, CollectionIcon, LibraryIcon } from "../../components/svgIcons";
 
 const Upload = lazy(() => import("../upload/Upload"));
 const Setting = lazy(() => import("../setting/Setting"));
@@ -18,10 +18,7 @@ const Footer = () => {
         {LinkTag("search", SearchIcon)}
       </div>
       <div class="actions__toolbar__column is_right">
-        <button popovertarget="setting-contents">{ServerIcon()}</button>
-        <div popover="auto" id="setting-contents" class="setting_contents">
-          <Setting />
-        </div>
+        <Setting />
       </div>
     </footer>
   );
