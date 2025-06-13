@@ -31,11 +31,8 @@ const Search = () => {
   const debouncedSetKeyword = debounce(setKeyword, 250);
 
   return (
-    <main class={styles.main}>
-      {/* <header class={styles.header}>
-        <h1>Search</h1>
-      </header> */}
-
+    <main class={`mainHomePage ${styles.searchMain}`}>
+      <h1 class={styles.header}>Search</h1>
       <Show when={photos().length}>
         <HeaderImage image={photos()[0].thumb_path} />
       </Show>
@@ -43,7 +40,7 @@ const Search = () => {
       <div class={styles.groupSearch}>
         <input
           type="text"
-          placeholder="Search photos using a sentence..."
+          placeholder="Find photos by input a sentence..."
           value={keyword()}
           onInput={(e) => debouncedSetKeyword(e.currentTarget.value)}
         />
@@ -76,19 +73,19 @@ const Search = () => {
         <div class={styles.error}>An error occurred: {searchResult.error.message}</div>
       </Show>
 
-      <Show
-        when={photos().length}
-        fallback={
-          <div class={styles.notfound}>
-            <h3>No Results Found</h3>
-            <p>No matches for "{keyword()}." Try another search.</p>
-          </div>
-        }>
-        <div class={styles.imageContainer}>
+      <div class={styles.imageContainer}>
+        <Show
+          when={photos().length}
+          fallback={
+            <div class={styles.notfound}>
+              <h3 style={{ border: "none" }}>No Results Found</h3>
+              <p>No matches for "{keyword()}." Try another search.</p>
+            </div>
+          }>
           <div class={styles.resultsHeader}>
             <h3>{totalCount()} Photos</h3>
             <A
-              href={keyword() ? "/search/all" : "#"}
+              href={keyword() ? `/search/${keyword()}` : "#"}
               classList={{ [styles.disableLink]: !keyword() || !totalCount() }}
               onClick={() => keyword() && updatePage({ searchKey: keyword() })}>
               See All
@@ -99,7 +96,7 @@ const Search = () => {
             <For each={photos()}>
               {(media) => (
                 <A
-                  href={`/search/${media.media_id}`}
+                  href={keyword() ? `/search/${keyword()}/${media.media_id}` : `/search/all/${media.media_id}`}
                   class={styles.imageLink}
                   onClick={() => keyword() && updatePage({ searchKey: keyword() })}>
                   <Show when={media.favorite}>
@@ -111,8 +108,8 @@ const Search = () => {
               )}
             </For>
           </div>
-        </div>
-      </Show>
+        </Show>
+      </div>
     </main>
   );
 };

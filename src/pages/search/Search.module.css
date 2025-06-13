@@ -1,16 +1,17 @@
 /* General Layout */
-.main {
-  padding: 20px;
+.searchMain {
+  scroll-behavior: smooth;
+  overscroll-behavior: smooth;
+
   position: relative;
-  /* max-width: 1200px; */
-  margin: auto;
 }
 
-/* .header {
-  text-align: center;
-  margin-bottom: 15px;
-  color: #fff;
-} */
+.header {
+  margin: 0;
+  padding: 15px 15px 0 15px;
+
+  font-size: 1.7rem;
+}
 
 /* Search Input */
 .groupSearch {
@@ -31,9 +32,9 @@
   outline: none;
 
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px) brightness(0.9);
+  background: rgba(255, 255, 255, 0.093);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px) brightness(0.9);
 
   transition: background 0.3s ease, box-shadow 0.2s ease;
 }
@@ -134,7 +135,10 @@
 
 /* Not Found */
 .notfound {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 
   color: #ccc;
   padding: 40px;
@@ -152,6 +156,10 @@
   margin: 0;
 
   text-shadow: 0 0 10px 15px rgb(67, 67, 67);
+}
+
+.imageContainer {
+  padding: 0 20px;
 }
 
 .libraryGrid {
@@ -189,7 +197,7 @@
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
   font-size: 13px;
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.3s;
 }
 
