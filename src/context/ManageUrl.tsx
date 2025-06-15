@@ -68,7 +68,7 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
       nColumn: 3,
       objectFit: true,
 
-      modalObjFit: false,
+      modalObjFit: true,
       showThumb: true,
 
       zoomLevel: 1,

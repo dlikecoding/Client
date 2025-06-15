@@ -25,6 +25,8 @@ const Photo: Component<PhotoProps> = (props) => {
 
   return (
     <>
+      {/* TODO ONLY load image when it visible */}
+
       <img
         // style={{ transform: isPhotoVisible() ? `scale(${view.zoomLevel})` : "none" }}
         inert

@@ -25,6 +25,7 @@ const App = () => {
 
   // View medias (Use for Library and Collection)
   const PhotoView = lazy(() => import("./components/photoview/PhotoView"));
+  // const ModalView = lazy(() => import("./components/modal/ModalView"));
 
   // Admin Dashboard
   const Profile = lazy(() => import("./pages/user/Profile"));
@@ -52,7 +53,7 @@ const App = () => {
     SEARCH: {
       pages: ["search"],
       mediaId: /^\d+$/,
-      // keywords: /^[a-zA-Z0-9 -]*$/,
+      keywords: /^[a-zA-Z0-9 -]*$/,
     },
   };
 
@@ -90,7 +91,8 @@ const App = () => {
 
             <Route path="/:pages" component={ContextSearch} matchFilters={filters.SEARCH}>
               <Route path="/" component={Search} />
-              <Route path="/:mediaId" component={PhotoView} />
+              <Route path="/:keywords/" component={PhotoView} />
+              <Route path="/:keywords/:mediaId" component={PhotoView} />
             </Route>
           </Route>
         </Route>

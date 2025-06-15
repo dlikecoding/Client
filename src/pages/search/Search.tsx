@@ -15,8 +15,6 @@ const Search = () => {
   const suggestions = createMemo(() => searchResult()?.suggestCount || []);
   const totalCount = createMemo(() => photos()[0]?.total_count || 0);
 
-  // const debouncedSetKeyword = debounce((value) => setKeyword(value), 300);
-
   onMount(async () => {
     resetParams();
     await fetchRefetch();
@@ -50,10 +48,6 @@ const Search = () => {
           </button>
         </Show>
       </div>
-
-      <Show when={searchResult.loading}>
-        <div class={styles.loader}>Loading...</div>
-      </Show>
 
       <div class={styles.searchResult}>
         <For each={suggestions()}>
