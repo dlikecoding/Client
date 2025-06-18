@@ -90,8 +90,9 @@ const Search = () => {
             <For each={photos()}>
               {(media) => (
                 <A
-                  href={keyword() ? `/search/${keyword()}/${media.media_id}` : `/search/all/${media.media_id}`}
-                  class={styles.imageLink}
+                  href={keyword() ? `/search/${keyword()}/${media.media_id}` : "#"}
+                  // `/search/all/${media.media_id}`
+                  classList={{ [styles.imageLink]: true, [styles.disableLink]: !keyword() }}
                   onClick={() => keyword() && updatePage({ searchKey: keyword() })}>
                   <Show when={media.favorite}>
                     <div class={styles.overlayFavorite}></div>
