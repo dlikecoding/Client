@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "dev": "bun x --bun vite",
+    "dev": "VITE_DEV_MODE=dev bun x --bun vite",
     "buildX": "rm -rf ../serverBunX/dist && bun x --bun vite build --emptyOutDir",
     "preview": "vite preview",
     "up": "bun upgrade && bun update"

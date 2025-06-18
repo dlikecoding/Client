@@ -96,7 +96,7 @@ const Search = () => {
                   <Show when={media.favorite}>
                     <div class={styles.overlayFavorite}></div>
                   </Show>
-                  <p class={styles.caption}>{media.caption}</p>
+                  {/* <p class={styles.caption}>{media.caption}</p> */}
                   <img src={media.thumb_path} alt={media.caption} loading="lazy" />
                 </A>
               )}
