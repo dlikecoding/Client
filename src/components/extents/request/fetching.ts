@@ -108,6 +108,13 @@ export const fetchNewFrameLivePhoto = async (mediaId: number, framePos: number) 
 export const fetchPhotoInfo = async (mediaId: number): Promise<MediaInfo | undefined> =>
   await fetchData<MediaInfo>(`/api/v1/media?id=${mediaId}`);
 
+// export const fetchVideoReduceFrame = async (mediaId: number, sourcePath: string) => {
+//   await reqMethodHelper("/api/v1/media", "PUT", {
+//     mediaId: mediaId,
+//     sourcePath: sourcePath,
+//   });
+// };
+
 ///////////////// For Uploading //////////////////////////////////////////
 const fetchStreamData = async (response: Response, setMessages: SetStoreFunction<ProcessMesg>) => {
   try {

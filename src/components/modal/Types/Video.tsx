@@ -52,7 +52,7 @@ const Video: Component<VideoProps> = (props) => {
     isFullScreen: false,
   });
 
-  const { setShowImageOnly, showImageOnly, isEditing } = useViewMediaContext();
+  const { showImageOnly, isEditing } = useViewMediaContext();
   // const { view } = useManageURLContext();
 
   const isVisibleAndLoaded = createMemo(() => isVideoVisible() && currentChild() && !vidStatus.isLoading);
@@ -81,7 +81,6 @@ const Video: Component<VideoProps> = (props) => {
           // if (view.showThumb) setView("showThumb", false);
         }}
         onPause={() => {
-          setShowImageOnly(false);
           setVidStatus("isPlaying", false);
         }}
         onTimeUpdate={(e) => setVidStatus("currentTime", e.currentTarget.currentTime)}
@@ -169,7 +168,7 @@ const Video: Component<VideoProps> = (props) => {
 
       {/* ////////////// For editing /////////////////////////////// */}
       <Show when={isEditing() && isVideoVisible()}>
-        <EditVideo video={currentChild()} />
+        <EditVideo video={currentChild()} media={media()} />
       </Show>
     </>
   );
