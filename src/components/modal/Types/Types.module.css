@@ -1,7 +1,7 @@
 /* Overlay image for videos tag */
 .overlayImg {
   position: absolute;
-  z-index: -1;
+  /* z-index: -1; */
 }
 
 /* /////////////////// VIDEO //////////////////////// */
@@ -43,6 +43,13 @@
 
 .videoControler > .playbar svg {
   filter: drop-shadow(var(--textSvgShadow));
+}
+
+.playPauseBtn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .playPauseBtn > svg {

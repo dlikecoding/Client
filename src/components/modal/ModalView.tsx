@@ -7,7 +7,7 @@ import { createStore } from "solid-js/store";
 import { useManageURLContext } from "../../context/ManageUrl";
 import { useViewMediaContext } from "../../context/ViewContext";
 import { useMediaContext } from "../../context/Medias";
-import { CompressIcon, ExpandIcon, GoBackIcon, ZoomInIcon, ZoomOutIcon } from "../svgIcons";
+import { CompressIcon, CustomButtonIcon, ExpandIcon, GoBackIcon, ZoomInIcon, ZoomOutIcon } from "../svgIcons";
 
 import { formatTime, scrollIntoViewFc } from "../extents/helper/helper";
 import MediaDisplay from "./MediaDisplay";
@@ -122,9 +122,9 @@ const Modal: Component<ModalProps> = (props) => {
   };
 
   // // Reset zoom when scroll to other elements
-  // createMemo(() => {
-  //   if (current.elId) setView("zoomLevel", 1);
-  // });
+  createMemo(() => {
+    if (current.elId) setView("zoomLevel", 1);
+  });
 
   /** Create sublist for thumbnails */
   // const modalMedias = () => getSublist(displayMedias, current.elIndex);
@@ -134,6 +134,10 @@ const Modal: Component<ModalProps> = (props) => {
     const objectFit = view.modalObjFit ? "contain" : "cover";
     document.documentElement.style.setProperty("--modal-object-fit", objectFit);
   });
+
+  const handleZoom = (input: number) => {
+    setView("zoomLevel", (prev) => prev + input);
+  };
 
   return (
     <Portal>
@@ -158,21 +162,23 @@ const Modal: Component<ModalProps> = (props) => {
               {view.modalObjFit ? ExpandIcon() : CompressIcon()}
             </button>
 
-            {/* <button disabled={view.zoomLevel === 5} onClick={() => setView("zoomLevel", (prev) => prev + 0.5)}>
-              {ZoomInIcon()}
-            </button>
-            <button disabled={view.zoomLevel === 1} onClick={() => setView("zoomLevel", (prev) => prev - 0.5)}>
-              {ZoomOutIcon()}
-            </button> */}
-
-            {/* <button popoverTarget="more-modal-popover">{CustomButtonIcon()}</button>
+            <button popoverTarget="more-modal-popover">{CustomButtonIcon()}</button>
             <div popover="auto" id="more-modal-popover" class="popover-container devices_filter_popover">
+              <div class="media_type_contents">
+                <button onClick={() => handleZoom(1)} disabled={view.zoomLevel === 5}>
+                  {ZoomInIcon()}
+                </button>
+                <span>Zoom</span>
+                <button onClick={() => handleZoom(-1)} disabled={view.zoomLevel === 1}>
+                  {ZoomOutIcon()}
+                </button>
+              </div>
+
               <div onClick={() => setView("showThumb", (prev) => !prev)}>
                 Thumbnails {view.showThumb ? "OFF" : "ON"}
               </div>
-              <div>Auto Play (ON) </div>
-              <div>Placehodler</div>
-            </div> */}
+              <div>Auto Scrolling ON </div>
+            </div>
           </div>
         </header>
 

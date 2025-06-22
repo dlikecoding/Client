@@ -6,9 +6,8 @@ import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import { VIDEO_API_URL } from "../../../App";
 import EditVideo from "../Editing/EditVideo";
 import { createStore } from "solid-js/store";
-// import { useManageURLContext } from "../../../context/ManageUrl";
+import { useManageURLContext } from "../../../context/ManageUrl";
 import Spinner from "../../extents/Spinner";
-// import { useManageURLContext } from "../../../context/ManageUrl";
 
 interface VideoProps {
   media: MediaType;
@@ -53,7 +52,7 @@ const Video: Component<VideoProps> = (props) => {
   });
 
   const { showImageOnly, isEditing } = useViewMediaContext();
-  // const { view } = useManageURLContext();
+  const { view } = useManageURLContext();
 
   const isVisibleAndLoaded = createMemo(() => isVideoVisible() && currentChild() && !vidStatus.isLoading);
 
@@ -65,7 +64,10 @@ const Video: Component<VideoProps> = (props) => {
   return (
     <>
       <video
-        // style={{ transform: isVisibleAndLoaded() ? `scale(${view.zoomLevel})` : "none" }}
+        style={{
+          width: isVideoVisible() && view.zoomLevel > 1 ? `${currentChild().videoWidth * view.zoomLevel}px` : "100%",
+          height: isVideoVisible() && view.zoomLevel > 1 ? `${currentChild().videoHeight * view.zoomLevel}px` : "100%",
+        }}
         inert={!vidStatus.isFullScreen}
         ref={(el) => (videoRef = el)}
         // poster={media().thumb_path} // Use image to display instead of poster
@@ -109,13 +111,12 @@ const Video: Component<VideoProps> = (props) => {
       <Show when={isVisible() && vidStatus.isLoading}>
         <Switch
           fallback={
-            <div style={{ position: "absolute" }}>
+            <div class={styles.playPauseBtn}>
               <Spinner />
             </div>
           }>
           <Match when={!vidStatus.isPlaying}>
             <button
-              style={{ position: "absolute" }}
               class={styles.playPauseBtn}
               onClick={async () => {
                 if (vidStatus.isLoading) currentChild().load();
@@ -128,7 +129,6 @@ const Video: Component<VideoProps> = (props) => {
       </Show>
 
       <Show when={isVisibleAndLoaded()}>
-        {/* && !view.showThumb */}
         {/* Design a videoPlayer control when video play, user able to control it */}
         <div
           classList={{ [modalS.modalThumbs]: true, [modalS.fadeOut]: showImageOnly(), [styles.videoControler]: true }}>

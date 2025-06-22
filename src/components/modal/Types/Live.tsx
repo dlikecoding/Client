@@ -27,7 +27,7 @@ const Live: Component<LiveProps> = (props) => {
   const parentMediaRef = props.clickableArea;
   const [isLoading, setIsLoading] = createSignal<boolean>(true);
 
-  // const { view } = useManageURLContext();
+  const { view } = useManageURLContext();
 
   createMemo(async () => {
     if (!isLiveVisible()) return setIsLoading(true);
@@ -58,16 +58,22 @@ const Live: Component<LiveProps> = (props) => {
     }
   });
 
+  const seekToSelectedFrame = (e: Event) => {
+    seekingTo(e, currentChild(), media().selected_frame);
+  };
+
   return (
     <>
       <video
-        style={{ opacity: isLoading() ? 0 : 1 }}
-        // transform: isLiveVisible() ? `scale(${view.zoomLevel})` : "none"
+        style={{
+          width: isLiveVisible() && view.zoomLevel > 1 ? `${currentChild().videoWidth * view.zoomLevel}px` : "100%",
+          height: isLiveVisible() && view.zoomLevel > 1 ? `${currentChild().videoHeight * view.zoomLevel}px` : "100%",
+        }}
         inert
         onLoad={() => setIsLoading(true)}
-        onLoadedData={(e) => seekingTo(e, currentChild(), media().selected_frame)}
+        onLoadedData={(e) => seekToSelectedFrame(e)}
         onPlay={(e) => seekingTo(e, currentChild(), 0)}
-        onPause={(e) => seekingTo(e, currentChild(), media().selected_frame)}
+        onPause={(e) => seekToSelectedFrame(e)}
         controls={false}
         controlslist="nodownload"
         preload="none"
@@ -88,7 +94,7 @@ const Live: Component<LiveProps> = (props) => {
       {/* /////////////////////////////////////// */}
       <img
         class={styles.overlayImg}
-        style={{ opacity: isLoading() ? 1 : 0 }}
+        style={{ "z-index": isLoading() ? 1 : -1 }}
         inert
         loading="lazy"
         src={media().thumb_path}

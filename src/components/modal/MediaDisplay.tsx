@@ -1,10 +1,12 @@
 import styles from "./ModalView.module.css";
 import { MediaType, useViewMediaContext } from "../../context/ViewContext";
-import { Component, createMemo, createSignal, Match, onMount, Setter, Switch } from "solid-js";
+import { Component, createMemo, createSignal, Match, onCleanup, onMount, Setter, Switch } from "solid-js";
 import Video from "./Types/Video";
 import Photo from "./Types/Photo";
 import Live from "./Types/Live";
 import { useIntersectionObserver } from "solidjs-use";
+import { useManageURLContext, ZoomAndAspect } from "../../context/ManageUrl";
+import { SetStoreFunction } from "solid-js/store";
 
 interface MediaTypeProps {
   media: MediaType;
@@ -15,17 +17,21 @@ interface MediaTypeProps {
   setLastEl?: Setter<HTMLElement | null | undefined>;
 }
 
+const DOUBLE_CLICK_DELAY = 240; // ms, comment for future maintainers
+
 const MediaDisplay: Component<MediaTypeProps> = (props) => {
   let mediaRef: HTMLDivElement | undefined;
   const media = () => props.media;
   const viewIndex = () => props.viewIndex;
 
+  const { view, setView } = useManageURLContext();
+
   const [currentChild, setCurrentChild] = createSignal<HTMLVideoElement | HTMLImageElement>();
   const [isVisible, setIsVisible] = createSignal<boolean>(false);
   const { isEditing, setShowImageOnly } = useViewMediaContext();
 
-  // Tracking if element is visible, then set the current index to this
   onMount(() => {
+    // Tracking if element is visible, then set the current index to this
     useIntersectionObserver(
       mediaRef,
       ([{ isIntersecting }]) => {
@@ -48,22 +54,17 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
     );
   });
 
+  const handleClick = useZoomAndClickHandler(setView, isVisible, isEditing, setShowImageOnly);
+
   createMemo(() => setShowImageOnly(isEditing()));
 
   return (
     <div
       ref={mediaRef}
       class={styles.mediaContainer}
-      style={{ top: `${props.topPos}px` }}
+      style={{ top: `${props.topPos}px`, overflow: isVisible() ? "auto" : "hidden" }}
       data-modalid={media().media_id} // This media_id is needed to scrollIntoView
-      onClick={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-
-        if (e.target !== e.currentTarget) return;
-        if (isEditing()) return;
-        setShowImageOnly((prev) => !prev);
-      }}>
+      onClick={(e) => handleClick(e)}>
       <Switch fallback={<div>Unknown type</div>}>
         <Match when={media().file_type === "Photo"}>
           <Photo media={media()} isVisible={isVisible()} currentChild={currentChild() as HTMLImageElement} />
@@ -84,3 +85,38 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
   );
 };
 export default MediaDisplay;
+
+const useZoomAndClickHandler = (
+  setView: SetStoreFunction<ZoomAndAspect>,
+  isVisible: () => boolean,
+  isEditing: () => boolean,
+  setShowImageOnly: Setter<boolean>
+) => {
+  let clickTimer: ReturnType<typeof setTimeout> | null = null;
+
+  const handleClick = (e: MouseEvent) => {
+    if (e.target !== e.currentTarget || isEditing()) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (clickTimer) {
+      clearTimeout(clickTimer);
+      clickTimer = null;
+
+      if (!isVisible()) return;
+
+      setView("zoomLevel", (prev) => (prev > 1 ? 1 : 4));
+    } else {
+      clickTimer = setTimeout(() => {
+        setShowImageOnly((prev) => !prev);
+        clickTimer = null;
+      }, DOUBLE_CLICK_DELAY);
+    }
+  };
+
+  onCleanup(() => {
+    if (clickTimer) clearTimeout(clickTimer);
+  });
+
+  return handleClick;
+};
