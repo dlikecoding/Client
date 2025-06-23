@@ -42,7 +42,7 @@ const fetchData = async <T>(url: string): Promise<T | undefined> => {
 };
 
 export const reqMethodHelper = async (url: string, method: string, body: Object) =>
-  await fetch(`${url}`, {
+  await fetch(url, {
     method: method,
     headers: { "Content-Type": "application/json" },
     credentials: "same-origin",
@@ -108,13 +108,6 @@ export const fetchNewFrameLivePhoto = async (mediaId: number, framePos: number) 
 export const fetchPhotoInfo = async (mediaId: number): Promise<MediaInfo | undefined> =>
   await fetchData<MediaInfo>(`/api/v1/media?id=${mediaId}`);
 
-// export const fetchVideoReduceFrame = async (mediaId: number, sourcePath: string) => {
-//   await reqMethodHelper("/api/v1/media", "PUT", {
-//     mediaId: mediaId,
-//     sourcePath: sourcePath,
-//   });
-// };
-
 ///////////////// For Uploading //////////////////////////////////////////
 const fetchStreamData = async (response: Response, setMessages: SetStoreFunction<ProcessMesg>) => {
   try {
@@ -171,6 +164,15 @@ export const adminUpdateUserStatus = async (userEmail: string) =>
 
 export const adminBackup = async () => await fetchData<any>(`/api/v1/admin/backup`);
 export const adminRestore = async () => await fetchData<any>(`/api/v1/admin/restore`);
+
+export const adminOptimizeStorage = async (setMessages: SetStoreFunction<ProcessMesg>) => {
+  const res = await fetch(`/api/v1/admin/storageOptimize`, {
+    method: "GET",
+    credentials: "same-origin",
+  });
+  await fetchStreamData(res, setMessages);
+};
+
 export const adminReindex = async (setMessages: SetStoreFunction<ProcessMesg>) => {
   const res = await fetch(`/api/v1/admin/reindex`, {
     method: "GET",

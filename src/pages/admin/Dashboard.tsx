@@ -3,6 +3,7 @@ import {
   adminBackup,
   adminFetchAdminDashboard,
   adminIntegrateData,
+  adminOptimizeStorage,
   adminReindex,
   adminRestore,
   adminUpdateUserStatus,
@@ -93,6 +94,12 @@ const Dashboard = () => {
     refetch();
   };
 
+  const optimizaStorage = async () => {
+    setStreamMesg({ mesg: `Start optimizing videos in local server`, isRunning: true });
+    await adminOptimizeStorage(setStreamMesg);
+    refetch();
+  };
+
   const shouldReindex = () => {
     const data = dashboardData();
     if (!data || !data.missedData) return false;
@@ -165,7 +172,7 @@ const Dashboard = () => {
 
         <Show when={dashboardData()?.lastBackup}>
           <div class={styles.restore}>
-            <div>Last restore: {dashboardData()?.lastRestore || "N/A"}</div>
+            <div>Last restored: {dashboardData()?.lastRestore || "N/A"}</div>
             <button popoverTarget="restore-database">Restore</button>
             <SlideUp
               idElement="restore-database"
@@ -175,6 +182,13 @@ const Dashboard = () => {
             />
           </div>
         </Show>
+
+        <div class={styles.backup}>
+          <div>Storage Optimize:</div>
+          <button style={{ background: "purple" }} onClick={optimizaStorage}>
+            Optimize
+          </button>
+        </div>
 
         <Show when={shouldReindex()}>
           <div class={`${styles.backup} ${styles.reindex}`}>
