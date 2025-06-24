@@ -14,7 +14,6 @@ import ImportLoading from "../../components/extents/ImportLoading";
 import Loading from "../../components/extents/Loading";
 import NotFound from "../../components/extents/NotFound";
 import { SlideUp } from "../../components/photoview/actionNav/popover/SlideUp";
-import { Portal } from "solid-js/web";
 import Logged from "./Logged";
 
 export interface loadedDashboard {

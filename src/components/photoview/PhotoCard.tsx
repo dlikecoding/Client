@@ -56,7 +56,7 @@ const PhotoCard: Component<PhotoProps> = (props) => {
         height: `${mediaDim().size}px`,
       }}
       data-id={media().media_id}
-      data-src={media().source_file}
+      // data-src={media().source_file}
       data-idx={index()}
       onClick={() => handleImageClick(index(), media().media_id)}>
       <div inert class={styles.imageContainer}>

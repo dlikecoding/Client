@@ -87,7 +87,12 @@ export const forUpdating = async (mediaIds: number[], updateKey: string, updateV
 
 export const forDeleting = async (mediaIds: number[]) =>
   await reqMethodHelper("/api/v1/medias", "DELETE", {
-    mediasToDel: mediaIds,
+    mediaIds: mediaIds,
+  });
+
+export const forDownloading = async (mediaIds: number[]) =>
+  await reqMethodHelper("/api/v1/medias/download", "POST", {
+    mediaIds: mediaIds,
   });
 
 export const forDeleteAllInRecently = async () => await fetchData(`/api/v1/medias/recently`);
