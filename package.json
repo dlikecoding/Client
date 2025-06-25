@@ -13,13 +13,15 @@
   "devDependencies": {
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
-    "vite-plugin-solid": "^2.11.6"
+    "vite-plugin-solid": "^2.11.7"
   },
   "dependencies": {
     "@simplewebauthn/browser": "^13.1.0",
-    "@solid-primitives/list": "^0.1.1",
+    "@solid-primitives/list": "^0.1.2",
     "@solidjs/router": "^0.15.3",
-    "solid-js": "^1.9.6",
-    "solidjs-use": "^2.3.0"
+    "@types/streamsaver": "^2.0.5",
+    "solid-js": "^1.9.7",
+    "solidjs-use": "^2.3.0",
+    "streamsaver": "^2.0.6"
   }
 }

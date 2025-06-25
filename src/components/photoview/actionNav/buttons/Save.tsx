@@ -15,7 +15,10 @@ export const Save = () => {
 
   const [isLoading, setIsLoading] = createSignal(false);
 
-  const saveButtonClick = async () => {
+  const saveButtonClick = async (e: Event) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (!items() || !items().size) return;
 
     const validMedias = validateSelection(items(), displayMedias);
@@ -31,15 +34,9 @@ export const Save = () => {
     } else {
       // download as a zip file.
       setIsLoading(true);
-      const listOfIds = new Set(items().values());
-      const response = await forDownloading([...listOfIds]);
 
-      if (!response.ok) {
-        throw new Error("Failed to download zip.");
-      }
-
-      const blob = await response.blob();
-      downloadBlob(blob, "PhotoX.zip");
+      await downloadBlob(items());
+      // await streamAndDownloadZip(items());
 
       setIsLoading(false);
     }
@@ -51,7 +48,7 @@ export const Save = () => {
 
   return (
     <>
-      <button onClick={saveButtonClick}>{SaveButtonIcon()}</button>
+      <button onClick={(e) => saveButtonClick(e)}>{SaveButtonIcon()}</button>
       <Show when={isLoading()}>
         <Loading />
       </Show>
@@ -93,7 +90,7 @@ const startSharingFiles = async (medias: MediaType[], setIsLoading: Setter<boole
 
   setIsLoading(true);
   for (const eachMedia of medias) {
-    const file = await fetchBlobFromSource(eachMedia.source_file);
+    const file = await fetchFiles(eachMedia.source_file);
     if (file) files.push(file);
   }
 
@@ -109,24 +106,20 @@ const startSharingFiles = async (medias: MediaType[], setIsLoading: Setter<boole
   }
 };
 
-const fetchBlobFromSource = async (sourcePath: string) => {
+const fetchFiles = async (url: string): Promise<File | null> => {
   try {
-    const res = await fetch(sourcePath);
-    if (!res.ok) {
-      alert(`Failed to fetch file from source: ${sourcePath}`);
-      return null;
-    }
-    const blob = await res.blob();
-    const fileName = sourcePath.split("/").pop();
-    if (!fileName) {
-      alert("Invalid file name extracted.");
-      return null;
-    }
+    const response = await fetch(url, {
+      method: "GET",
+      credentials: "same-origin",
+    });
 
+    if (!response.ok) throw new Error(`Failed fetch: ${url}`);
+
+    const blob = await response.blob();
+    const fileName = url.split("/").pop() || "file";
     return new File([blob], fileName);
   } catch (error) {
-    console.error("Network or processing error:", error);
-    alert(`An unexpected error occurred while processing files.`);
+    console.error("Fetch file error:", error);
     return null;
   }
 };
@@ -135,22 +128,60 @@ const fetchBlobFromSource = async (sourcePath: string) => {
  * Utility to trigger a download of a Blob as a file.
  * Automatically cleans up after use.
  */
-const downloadBlob = (blob: Blob, filename: string) => {
-  const url = URL.createObjectURL(blob);
-  try {
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = filename;
-    anchor.style.display = "none";
+const downloadBlob = async (items: Map<number, number>) => {
+  const listOfIds = new Set(items.values());
+  const response = await forDownloading([...listOfIds]);
 
-    document.body.appendChild(anchor);
-    anchor.click();
-  } finally {
-    // Clean up DOM and revoke blob URL after short delay
-    setTimeout(() => {
-      URL.revokeObjectURL(url);
-      const existingAnchor = document.querySelector(`a[href="${url}"]`);
-      if (existingAnchor) existingAnchor.remove();
-    }, 1000);
-  }
+  if (!response.ok) return alert("Failed to download photos/video.");
+
+  const blob = await response.blob();
+
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "PhotoX.zip";
+  a.rel = "noopener";
+  a.target = "_blank";
+  a.style.display = "none"; // Optional: extra safety
+  document.body.appendChild(a); // Append to body for Firefox support
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
+
+// import streamSaver from "streamsaver";
+
+// const streamAndDownloadZip = async (items: Map<number, number>) => {
+//   try {
+//     const listOfIds = new Set(items.values());
+//     const response = await forDownloading([...listOfIds]);
+
+//     if (!response.ok || !response.body) throw new Error("Zip download failed.");
+
+//     if ("serviceWorker" in navigator) {
+//       navigator.serviceWorker.register("./src/assets/js/sw.js");
+//     }
+
+//     const fileStream = streamSaver.createWriteStream("PhotoX.zip");
+//     const readableStream = response.body;
+
+//     if (window.WritableStream && readableStream.pipeTo) {
+//       await readableStream.pipeTo(fileStream);
+//     } else {
+//       // Fallback for browsers without native pipeTo support
+//       const writer = fileStream.getWriter();
+//       const reader = readableStream.getReader();
+//       const pump = async () => {
+//         const { value, done } = await reader.read();
+//         if (done) return writer.close();
+//         await writer.write(value);
+//         await pump();
+//       };
+//       await pump();
+//     }
+//   } catch (error) {
+//     alert("An error occurred during download.");
+//     console.error("Streaming error:", error);
+//   }
+// };

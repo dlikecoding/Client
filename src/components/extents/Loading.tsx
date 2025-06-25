@@ -2,7 +2,7 @@ import { Portal } from "solid-js/web";
 import styles from "./Loading.module.css";
 const Loading = () => (
   <Portal>
-    <div inert class={styles.loading_container}>
+    <div class={styles.loading_container}>
       <div class={styles.loader}>
         <svg viewBox="0 0 80 80">
           <circle r="32" cy="40" cx="40" id="test"></circle>
