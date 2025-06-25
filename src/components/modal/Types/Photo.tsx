@@ -2,6 +2,7 @@ import { Component, createMemo, createSignal, JSX, Show } from "solid-js";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import EditPhoto from "../Editing/EditPhoto";
 import { useManageURLContext } from "../../../context/ManageUrl";
+import { zoomPhoto } from "../../extents/helper/zoom";
 
 interface PhotoProps {
   media: MediaType;
@@ -23,15 +24,19 @@ const Photo: Component<PhotoProps> = (props) => {
 
   const { view } = useManageURLContext();
 
+  const zoomSize = createMemo(() => {
+    if (!isPhotoVisible() || view.zoomLevel <= 1) return { width: "100%", height: "100%" };
+    return zoomPhoto(currentChild(), view.zoomLevel);
+  });
+
   return (
     <>
       {/* TODO ONLY load image when it visible */}
 
       <img
         style={{
-          width: isPhotoVisible() && view.zoomLevel > 1 ? `${currentChild().naturalWidth * view.zoomLevel}px` : "100%",
-          height:
-            isPhotoVisible() && view.zoomLevel > 1 ? `${currentChild().naturalHeight * view.zoomLevel}px` : "100%",
+          width: zoomSize().width,
+          height: zoomSize().height,
         }}
         inert
         onLoad={() => setImgLoading(false)}

@@ -8,6 +8,7 @@ import { useMousePressed } from "solidjs-use";
 import { safePlayVideo } from "../../extents/helper/helper";
 import { LivePhotoIcon } from "../../svgIcons";
 import { useManageURLContext } from "../../../context/ManageUrl";
+import { zoomPhoto } from "../../extents/helper/zoom";
 
 interface LiveProps {
   media: MediaType;
@@ -62,12 +63,17 @@ const Live: Component<LiveProps> = (props) => {
     seekingTo(e, currentChild(), media().selected_frame);
   };
 
+  const zoomSize = createMemo(() => {
+    if (!isLiveVisible() || view.zoomLevel <= 1) return { width: "100%", height: "100%" };
+    return zoomPhoto(currentChild(), view.zoomLevel);
+  });
+
   return (
     <>
       <video
         style={{
-          width: isLiveVisible() && view.zoomLevel > 1 ? `${currentChild().videoWidth * view.zoomLevel}px` : "100%",
-          height: isLiveVisible() && view.zoomLevel > 1 ? `${currentChild().videoHeight * view.zoomLevel}px` : "100%",
+          width: zoomSize().width,
+          height: zoomSize().height,
         }}
         inert
         onLoad={() => setIsLoading(true)}

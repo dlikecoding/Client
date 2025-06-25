@@ -24,7 +24,7 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
   const media = () => props.media;
   const viewIndex = () => props.viewIndex;
 
-  const { view, setView } = useManageURLContext();
+  const { setView } = useManageURLContext();
 
   const [currentChild, setCurrentChild] = createSignal<HTMLVideoElement | HTMLImageElement>();
   const [isVisible, setIsVisible] = createSignal<boolean>(false);
@@ -64,7 +64,7 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
       class={styles.mediaContainer}
       style={{ top: `${props.topPos}px`, overflow: isVisible() ? "auto" : "hidden" }}
       data-modalid={media().media_id} // This media_id is needed to scrollIntoView
-      onClick={(e) => handleClick(e)}>
+      onClick={handleClick}>
       <Switch fallback={<div>Unknown type</div>}>
         <Match when={media().file_type === "Photo"}>
           <Photo media={media()} isVisible={isVisible()} currentChild={currentChild() as HTMLImageElement} />
@@ -105,7 +105,7 @@ const useZoomAndClickHandler = (
 
       if (!isVisible()) return;
 
-      setView("zoomLevel", (prev) => (prev > 1 ? 1 : 4));
+      setView("zoomLevel", (prev) => (prev > 1 ? 1 : 3));
     } else {
       clickTimer = setTimeout(() => {
         setShowImageOnly((prev) => !prev);
