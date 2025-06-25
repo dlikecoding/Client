@@ -1,13 +1,13 @@
 import styles from "./Types.module.css";
 import modalS from "./../ModalView.module.css";
 
-import { Component, createMemo, Match, Show, Switch } from "solid-js";
+import { Component, createMemo, Show } from "solid-js";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import { VIDEO_API_URL } from "../../../App";
 import EditVideo from "../Editing/EditVideo";
 import { createStore } from "solid-js/store";
 import { useManageURLContext } from "../../../context/ManageUrl";
-import Spinner from "../../extents/Spinner";
+import { zoomPhoto } from "../../extents/helper/zoom";
 
 interface VideoProps {
   media: MediaType;
@@ -36,19 +36,22 @@ const Video: Component<VideoProps> = (props) => {
   // Determine if video outside the view port, stop the video
   let videoRef: HTMLVideoElement | undefined;
 
-  /** Auto stop video playing when scroll to other element (videos) */
-  createMemo(async () => {
-    if (!isVisible()) {
-      if (videoRef && !videoRef.paused) return videoRef.pause(); //Video is not visible, pausing...
-    }
-  });
-
   const [vidStatus, setVidStatus] = createStore<VideoStatus>({
     isLoading: true,
     isPlaying: false,
     currentTime: 0,
     muted: false,
     isFullScreen: false,
+  });
+
+  /** Auto stop video playing when scroll to other element (videos) */
+  createMemo(async () => {
+    if (!isVideoVisible()) {
+      if (videoRef && !videoRef.paused) return videoRef.pause(); //Video is not visible, pausing...
+      return;
+    }
+    if (currentChild().readyState < 3) currentChild().load();
+    if (currentChild().paused) currentChild().play();
   });
 
   const { showImageOnly, isEditing } = useViewMediaContext();
@@ -61,12 +64,16 @@ const Video: Component<VideoProps> = (props) => {
     return !media().frame_rate || media().frame_rate < 200 ? 1 : 6;
   });
 
+  const zoomSize = createMemo(() => {
+    if (!isVideoVisible() || view.zoomLevel <= 1) return { width: "100%", height: "100%" };
+    return zoomPhoto(currentChild(), view.zoomLevel);
+  });
   return (
     <>
       <video
         style={{
-          width: isVideoVisible() && view.zoomLevel > 1 ? `${currentChild().videoWidth * view.zoomLevel}px` : "100%",
-          height: isVideoVisible() && view.zoomLevel > 1 ? `${currentChild().videoHeight * view.zoomLevel}px` : "100%",
+          width: zoomSize().width,
+          height: zoomSize().height,
         }}
         inert={!vidStatus.isFullScreen}
         ref={(el) => (videoRef = el)}
@@ -97,18 +104,18 @@ const Video: Component<VideoProps> = (props) => {
         <p>Your browser doesn't support the video tag.</p>
       </video>
 
-      <img
+      {/* <img
         inert
         class={styles.overlayImg}
         style={{ opacity: vidStatus.isLoading ? 1 : 0 }}
         loading="lazy"
         src={media().thumb_path}
         alt={`Modal Image Overlay`}
-      />
+      /> */}
       {/* use image to display while video loading (Work but problems to adjust thumbnail width) */}
 
       {/* ////////////// All addon element must start here /////////////////////////////// */}
-      <Show when={isVisible() && vidStatus.isLoading}>
+      {/* <Show when={isVisible() && vidStatus.isLoading}>
         <Switch
           fallback={
             <div class={styles.playPauseBtn}>
@@ -126,7 +133,7 @@ const Video: Component<VideoProps> = (props) => {
             </button>
           </Match>
         </Switch>
-      </Show>
+      </Show> */}
 
       <Show when={isVisibleAndLoaded()}>
         {/* Design a videoPlayer control when video play, user able to control it */}
