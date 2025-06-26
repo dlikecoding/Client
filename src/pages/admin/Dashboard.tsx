@@ -82,8 +82,8 @@ const Dashboard = () => {
   };
 
   const backupData = async () => {
-    const data = await adminBackup();
-    alert(data.message);
+    setStreamMesg({ mesg: `Start backing up PhotoX System to external drive`, isRunning: true });
+    await adminBackup(setStreamMesg);
     refetch();
   };
 
@@ -166,7 +166,17 @@ const Dashboard = () => {
       <div class={styles.maintainSys}>
         <div class={styles.backup}>
           <div>Last backup: {dashboardData()?.lastBackup || "N/A"}</div>
-          <button onClick={backupData}>Backup</button>
+          {/* <button onClick={backupData}>Backup</button> */}
+
+          <button popoverTarget="backup-database">Backup</button>
+          <SlideUp
+            idElement="backup-database"
+            noticeText={
+              "WARNING! All existing data on your external drive will be deleted and replace with current data in PhotoX system. This action can not be undone."
+            }
+            confirmBtn={backupData}
+            infoText={() => "Backup PhotoX"}
+          />
         </div>
 
         <Show when={dashboardData()?.lastBackup}>
@@ -183,10 +193,16 @@ const Dashboard = () => {
         </Show>
 
         <div class={styles.backup}>
-          <div>Storage Optimize:</div>
-          <button style={{ background: "purple" }} onClick={optimizaStorage}>
+          <div>Storage Optimize</div>
+          <button style={{ background: "purple" }} popoverTarget="optimal-storage">
             Optimize
           </button>
+          <SlideUp
+            idElement="optimal-storage"
+            noticeText={"Start reducing frames per second for slow motion videos. This action can not be undone."}
+            confirmBtn={optimizaStorage}
+            infoText={() => "Optimize Storage"}
+          />
         </div>
 
         <Show when={shouldReindex()}>

@@ -167,7 +167,14 @@ export const adminIntegrateData = async (
 export const adminUpdateUserStatus = async (userEmail: string) =>
   await reqMethodHelper("/api/v1/admin/changeStatus", "PUT", { userEmail: userEmail });
 
-export const adminBackup = async () => await fetchData<any>(`/api/v1/admin/backup`);
+export const adminBackup = async (setMessages: SetStoreFunction<ProcessMesg>) => {
+  const res = await fetch(`/api/v1/admin/backup`, {
+    method: "GET",
+    credentials: "same-origin",
+  });
+  await fetchStreamData(res, setMessages);
+};
+
 export const adminRestore = async () => await fetchData<any>(`/api/v1/admin/restore`);
 
 export const adminOptimizeStorage = async (setMessages: SetStoreFunction<ProcessMesg>) => {
