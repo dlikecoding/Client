@@ -5,6 +5,7 @@ import { CloseIcon, ServerIcon } from "../../components/svgIcons";
 import { fetchCapacity } from "../../components/extents/request/fetching";
 import { createStore } from "solid-js/store";
 import { convertFileSize } from "../../components/extents/helper/helper";
+// import StorageBreakdown from "./storage/StorageBreakdown";
 
 type SpaceInfo = {
   total: number;
@@ -102,6 +103,8 @@ const Setting = () => {
           }}>
           {CloseIcon()}
         </button>
+
+        {/* <StorageBreakdown /> */}
       </div>
     </>
   );

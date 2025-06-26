@@ -4,6 +4,8 @@ import EditPhoto from "../Editing/EditPhoto";
 import { useManageURLContext } from "../../../context/ManageUrl";
 import { zoomPhoto } from "../../extents/helper/zoom";
 
+import styles from "./Types.module.css";
+
 interface PhotoProps {
   media: MediaType;
   currentChild: HTMLImageElement;
@@ -29,21 +31,32 @@ const Photo: Component<PhotoProps> = (props) => {
     return zoomPhoto(currentChild(), view.zoomLevel);
   });
 
+  createMemo(() => {
+    if (!isPhotoVisible()) return;
+    setImgLoading(false);
+  });
+
   return (
     <>
-      {/* TODO ONLY load image when it visible */}
-
       <img
         style={{
           width: zoomSize().width,
           height: zoomSize().height,
         }}
         inert
-        onLoad={() => setImgLoading(false)}
         onError={() => setImgLoading(true)}
         loading="lazy"
-        src={imgLoading() ? media().thumb_path : media().source_file}
+        src={media().source_file}
         alt={`Modal Image`}
+      />
+
+      <img
+        inert
+        class={styles.overlayImg}
+        style={{ opacity: !isPhotoVisible() || imgLoading() ? 1 : 0, transition: "opacity 2s linear" }}
+        loading="lazy"
+        src={media().thumb_path}
+        alt={`Modal Image Overlay`}
       />
 
       {/* ////////////// All addon element must start here /////////////////////////////// */}

@@ -32,6 +32,7 @@ export type ZoomAndAspect = {
   showThumb: boolean;
 
   zoomLevel: number;
+  autoplay: boolean;
 };
 
 type StoreLastVisit = { url: string; params: SearchQuery };
@@ -72,6 +73,8 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
       showThumb: true,
 
       zoomLevel: 1,
+
+      autoplay: true,
     }
   );
 

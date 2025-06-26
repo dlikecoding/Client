@@ -175,9 +175,12 @@ const Modal: Component<ModalProps> = (props) => {
               </div>
 
               <div onClick={() => setView("showThumb", (prev) => !prev)}>
-                Thumbnails {view.showThumb ? "OFF" : "ON"}
+                Thumbnails {view.showThumb ? "ON" : "OFF"}
               </div>
-              <div>Auto Scrolling ON </div>
+              <div onClick={() => setView("autoplay", (prev) => !prev)}>
+                Video Autoplay {view.autoplay ? "ON" : "OFF"}
+              </div>
+              {/* <div>Show ON </div> */}
             </div>
           </div>
         </header>
