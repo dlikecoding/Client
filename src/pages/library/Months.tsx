@@ -1,8 +1,10 @@
 import styles from "./Group.module.css";
 import { A } from "@solidjs/router";
+import { onMount } from "solid-js";
+
 import { GroupMedia } from "./GroupView";
 import { useManageURLContext } from "../../context/ManageUrl";
-import { onMount } from "solid-js";
+import { numberToMonth } from "../../components/extents/helper/helper";
 
 type TypeMonths = {
   photo: GroupMedia;
@@ -21,7 +23,6 @@ const Months = (props: TypeMonths) => {
     });
   });
 
-  const formatDate = formatDateParts(photo().create_date);
   return (
     <A
       ref={(el) => {
@@ -31,28 +32,15 @@ const Months = (props: TypeMonths) => {
       onClick={() => updatePage({ year: photo().create_year, month: photo().create_month })}
       href="/library/all">
       <h3 inert class={styles.titleMonthView}>
-        {formatDate.month} {photo().create_year}
+        {numberToMonth(photo().create_month)} {photo().create_year}
       </h3>
 
-      <div inert class={styles.overlayDay}>
-        {formatDate.date}
-      </div>
+      {/* <div inert class={`${styles.overlayTime} ${styles.months}`}>
+        {photo().create_date}
+      </div> */}
       <img inert loading="lazy" alt="Month Photos" src={photo().thumb_path} />
     </A>
   );
 };
 
 export default Months;
-
-const formatDateParts = (input: string): { month: string; date: number } => {
-  const date = new Date(input);
-
-  if (isNaN(date.getTime())) {
-    throw new Error("Invalid date string");
-  }
-
-  return {
-    month: date.toLocaleString("en-US", { month: "long" }), // e.g. "April"
-    date: date.getDate(),
-  };
-};

@@ -1,5 +1,5 @@
 :root {
-  --font-days: 520 1.2em sans-serif;
+  --font-days: 500 1em sans-serif;
   --font-titles: 510 1.6em sans-serif;
 }
 
@@ -31,13 +31,13 @@
   aspect-ratio: 1;
 }
 
-.overlayText {
+.overlayTitle {
   position: absolute;
   margin: 5px 20px;
   padding: 0;
 }
 
-.overlayText > h3 {
+.overlayTitle > h3 {
   margin: 0;
   font: var(--font-titles);
   text-shadow: 1px 1px 12px rgb(0, 0, 0);
@@ -60,11 +60,20 @@
   font: var(--font-titles);
 }
 
-.overlayDay {
+.overlayTime {
   position: absolute;
   font: var(--font-days);
+  color: rgb(169, 169, 169);
+  text-shadow: 0 0 12px rgb(0, 0, 0);
+}
+
+.years {
+  margin: 55px 20px;
+}
+
+.months {
   margin: 15px;
-  text-shadow: 1px 1px 12px rgb(0, 0, 0);
+  font-size: 1.2em;
 }
 
 @media (orientation: landscape) {

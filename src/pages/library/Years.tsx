@@ -1,8 +1,10 @@
 import styles from "./Group.module.css";
 import { A } from "@solidjs/router";
+import { onMount } from "solid-js";
+
 import { GroupMedia } from "./GroupView";
 import { useManageURLContext } from "../../context/ManageUrl";
-import { onMount } from "solid-js";
+import { numberToMonth } from "../../components/extents/helper/helper";
 
 type TypeYears = {
   photo: GroupMedia;
@@ -29,8 +31,11 @@ const Years = (props: TypeYears) => {
       class={styles.mediaContainer}
       onClick={() => updatePage({ year: photo().create_year, month: photo().create_month })}
       href="/library/month">
-      <div inert class={styles.overlayText}>
+      <div inert class={styles.overlayTitle}>
         <h3>{photo().create_year}</h3>
+      </div>
+      <div inert class={`${styles.overlayTime} ${styles.years}`}>
+        {numberToMonth(photo().create_month)}
       </div>
       <img inert loading="lazy" alt="Year Photos" src={photo().thumb_path} />
     </A>

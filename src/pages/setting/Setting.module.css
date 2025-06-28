@@ -71,6 +71,12 @@
   height: 20px;
 }
 
+.storageChart > .spaces > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .storageChart > .legendStorage {
   font-size: small;
   margin-top: 12px;

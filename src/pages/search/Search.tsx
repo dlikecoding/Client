@@ -4,7 +4,8 @@ import { createMemo, createResource, createSignal, onMount, Show, For } from "so
 import { fetchRefetch, fetchSearch } from "../../components/extents/request/fetching";
 import { useManageURLContext } from "../../context/ManageUrl";
 import { CloseIcon, SearchIcon } from "../../components/svgIcons";
-// import debounce from "lodash/debounce";
+
+const DELAY_ON_INPUT = 250; //ms
 
 const Search = () => {
   const { resetParams, updatePage } = useManageURLContext();
@@ -26,8 +27,9 @@ const Search = () => {
     setKeyword(prevWords.join(" ") + " ");
   };
 
-  const debouncedSetKeyword = debounce(setKeyword, 250);
+  const debouncedSetKeyword = debounce(setKeyword, DELAY_ON_INPUT);
 
+  const setClick = () => keyword() && updatePage({ searchKey: keyword() });
   return (
     <main class={`mainHomePage ${styles.searchMain}`}>
       <h1 class={styles.header}>Search</h1>
@@ -81,7 +83,7 @@ const Search = () => {
             <A
               href={keyword() ? `/search/${keyword()}` : "#"}
               classList={{ [styles.disableLink]: !keyword() || !totalCount() }}
-              onClick={() => keyword() && updatePage({ searchKey: keyword() })}>
+              onClick={setClick}>
               See All
             </A>
           </div>
@@ -93,7 +95,7 @@ const Search = () => {
                   href={keyword() ? `/search/${keyword()}/${media.media_id}` : "#"}
                   // `/search/all/${media.media_id}`
                   classList={{ [styles.imageLink]: true, [styles.disableLink]: !keyword() }}
-                  onClick={() => keyword() && updatePage({ searchKey: keyword() })}>
+                  onClick={setClick}>
                   <Show when={media.favorite}>
                     <div class={styles.overlayFavorite}></div>
                   </Show>

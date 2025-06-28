@@ -53,3 +53,21 @@ export const safePlayVideo = async (video: HTMLVideoElement): Promise<void> => {
     console.log(error);
   }
 };
+
+export const numberToMonth = (n: number) => {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  return n >= 1 && n <= 12 ? months[n - 1] : "Invalid month number";
+};
