@@ -27,7 +27,7 @@ const viewPageTitles = new Map([
   ["duplicate", "Duplicate"],
   ["all", "Library"],
   ["album", "Album"],
-  ["dataset", "Dataset"],
+  ["places", "Places"],
   ["search", "Search"],
 ]);
 
@@ -59,7 +59,8 @@ const ContextView = () => {
     deleted: params.deleted,
     duplicate: params.duplicate,
 
-    albumId: paramsUrl.id ? parseInt(paramsUrl.id) : undefined,
+    albumId: paramsUrl.pages === "album" && paramsUrl.id ? parseInt(paramsUrl.id) : undefined,
+    locationId: paramsUrl.pages === "places" && paramsUrl.id ? parseInt(paramsUrl.id) : undefined,
   });
 
   const [pageNumber, setPageNumber] = createSignal(0);

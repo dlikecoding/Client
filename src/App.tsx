@@ -41,7 +41,7 @@ const App = () => {
 
   const filters = {
     COLLECTION: {
-      pages: ["album", "dataset"],
+      pages: ["album", "places"],
       id: /^\d+$/,
     },
     UTILITIES: {

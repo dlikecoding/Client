@@ -1,17 +1,53 @@
-import { createResource, For, onMount, Show } from "solid-js";
-import style from "./OverView.module.css";
 import { A } from "@solidjs/router";
-import { fetchAlbum, fetchStatistic } from "../../components/extents/request/fetching";
-import { useManageURLContext } from "../../context/ManageUrl";
+import { createStore } from "solid-js/store";
+import style from "./OverView.module.css";
 import placeholder from "../../assets/svgs/place-holder.svg";
+import { createResource, For, onMount, Show } from "solid-js";
+import { fetchCollection, fetchStatistic } from "../../components/extents/request/fetching";
+import { useManageURLContext } from "../../context/ManageUrl";
 
 type UpdateKey = "Favorite" | "Hidden" | "Duplicate" | "Recently Deleted";
+
+type ViewAlbum = {
+  album_id: number;
+  title: string;
+  media_count: string;
+  thumb_path: string;
+};
+type ViewLocation = {
+  location_id: number;
+  city: string;
+  country: string;
+  media_count: string;
+  thumb_path: string;
+};
+
+type Collection = {
+  albums: ViewAlbum[];
+  locations: ViewLocation[];
+};
 
 const OverView = () => {
   const { resetParams, updatePage } = useManageURLContext();
 
   const [loadedStatistics] = createResource<string, string>(fetchStatistic);
-  const [loadedAlbums] = createResource(fetchAlbum);
+
+  const [collection, setCollection] = createStore<Collection>({
+    albums: [],
+    locations: [],
+  });
+
+  const [_loadedAlbums] = createResource(async () => {
+    try {
+      const dataCollection: any = await fetchCollection();
+      if (!dataCollection) return [];
+
+      setCollection(dataCollection);
+      return dataCollection;
+    } catch (error) {
+      console.error("Error fetching server capacity:", error);
+    }
+  });
 
   const gotoPage: Record<UpdateKey, { [key: string]: number }> = {
     Favorite: { favorite: 1 },
@@ -38,56 +74,60 @@ const OverView = () => {
       </h3>
       <div class={style.cards_section}>
         <div class={style.cards}>
-          <For
-            each={loadedAlbums()}
+          <Show
+            when={collection.albums.length > 0}
             fallback={
               <A href="#" class={style.albumCard}>
                 <img loading="lazy" src={placeholder} alt="Focus Playlist" />
                 <div>Create Album</div>
-                {/* <p> {album.media_count}</p> */}
               </A>
             }>
-            {(album, _) => (
-              <A href={`/collection/album/${album.album_id}`} class={style.albumCard}>
-                <img loading="lazy" src={album.thumb_path} alt="Focus Playlist" />
-                <div>{album.title}</div>
-                <p>{album.media_count}</p>
-              </A>
-            )}
-          </For>
+            <For each={collection.albums}>
+              {(album, _) => (
+                <A href={`/collection/album/${album.album_id}`} class={style.albumCard}>
+                  <img loading="lazy" src={album.thumb_path} alt="Focus Playlist" />
+                  <div>{album.title}</div>
+                  <p>{album.media_count}</p>
+                </A>
+              )}
+            </For>
+          </Show>
         </div>
       </div>
 
       {/* //////////////////////////// */}
       <h3>
-        Dataset (Comming soon)
+        Places
         <button class={style.atag_group_views} on:click={() => console.log("Dataset clicked")}>
           Edit
         </button>
       </h3>
       <div class={style.cards_section}>
         <div class={style.cards}>
-          <A href="#" class={style.card}>
-            <img loading="lazy" src={placeholder} alt="Focus Playlist" />
-
-            <div class={style.cardFooter}>
-              <div>Placeholder</div>
-              <p>999</p>
-            </div>
-          </A>
-
-          {/* <For each={loadedAlbums()}>
-            {(album, _) => (
-              <A href={`/collection/dataset/${album.album_id}`} class={style.card}>
-                <img loading="lazy" src={album.thumb_path} alt="Focus Playlist" />
+          <Show
+            when={collection.locations.length > 0}
+            fallback={
+              <A href="#" class={style.card}>
+                <img loading="lazy" src={placeholder} alt="Focus Playlist" />
 
                 <div class={style.cardFooter}>
-                  <div>{album.title}</div>
-                  <p>{album.media_count}</p>
+                  <div>Places, Visited</div>
+                  {/* <p>999</p> */}
                 </div>
               </A>
-            )}
-          </For> */}
+            }>
+            <For each={collection.locations}>
+              {(location, _) => (
+                <A href={`/collection/places/${location.location_id}`} class={style.card}>
+                  <img loading="lazy" src={location.thumb_path} alt="Focus Playlist" />
+                  <div class={style.cardFooter}>
+                    <div>{`${location.city}, ${location.country}`}</div>
+                    <p>{location.media_count}</p>
+                  </div>
+                </A>
+              )}
+            </For>
+          </Show>
         </div>
       </div>
       {/* //////////////////////////// */}

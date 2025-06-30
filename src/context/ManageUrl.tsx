@@ -19,6 +19,7 @@ export type SearchQuery = {
   duplicate?: number;
 
   albumId?: number;
+  locationId?: number;
 
   sortKey: "file_size" | "create_date" | "upload_at";
   sortOrder: 0 | 1;

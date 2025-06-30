@@ -64,6 +64,7 @@ export const fetchStatistic = async () => {
 };
 
 export const fetchAlbum = async () => await fetchData<any[]>(`/api/v1/album`);
+export const fetchCollection = async () => await fetchData<any[]>(`/api/v1/album/collection`);
 
 export const fetchAddAlbum = async (mediaIds: number[], albumId?: number, albumTitle?: string) =>
   await reqMethodHelper("/api/v1/album/add", "PUT", {
