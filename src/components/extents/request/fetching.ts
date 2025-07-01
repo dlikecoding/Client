@@ -194,6 +194,14 @@ export const adminReindex = async (setMessages: SetStoreFunction<ProcessMesg>) =
   await fetchStreamData(res, setMessages);
 };
 
+export const adminScanThumbs = async (setMessages: SetStoreFunction<ProcessMesg>) => {
+  const res = await fetch(`/api/v1/admin/rescan-thumb`, {
+    method: "GET",
+    credentials: "same-origin",
+  });
+  await fetchStreamData(res, setMessages);
+};
+
 ///////////////////////// System logs ////////////////////////////////////////////////////////////
 export const fetchAllLogs = async () => await fetchData<LoadLogs>(`/api/v1/admin/all-logs`);
 export const fetchDeleteLogs = async (ids: number[], logType: "system" | "user" = "system") =>

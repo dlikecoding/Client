@@ -6,6 +6,7 @@ import {
   adminOptimizeStorage,
   adminReindex,
   adminRestore,
+  adminScanThumbs,
   adminUpdateUserStatus,
 } from "../../components/extents/request/fetching";
 import { createResource, Index, Show } from "solid-js";
@@ -114,8 +115,15 @@ const Dashboard = () => {
 
     refetch();
   };
+
+  const scanMissingThumbs = async () => {
+    setStreamMesg({ mesg: "Start scanning for missing thumbnails", isRunning: true });
+    await adminScanThumbs(setStreamMesg);
+    refetch();
+  };
+
   return (
-    <main class={"mainHomePage"}>
+    <main class="mainHomePage" style={{ "overflow-y": "scroll" }}>
       {dashboardData.loading && <Loading />}
       {dashboardData.error && <NotFound />}
 
@@ -203,6 +211,13 @@ const Dashboard = () => {
             confirmBtn={optimizaStorage}
             infoText={() => "Optimize Storage"}
           />
+        </div>
+
+        <div class={styles.backup}>
+          <div>Scan for Missing Thumbnails</div>
+          <button style={{ background: "rgb(242, 88, 253)" }} onClick={scanMissingThumbs}>
+            Scan
+          </button>
         </div>
 
         <Show when={shouldReindex()}>
