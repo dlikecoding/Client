@@ -97,6 +97,7 @@ export const forDownloading = async (mediaIds: number[]) =>
   });
 
 export const forDeleteAllInRecently = async () => await fetchData(`/api/v1/medias/recently`);
+export const forMergeAllInDuplicate = async () => await fetchData(`/api/v1/medias/merge-all`);
 
 ///////////////// For /api/v1/media //////////////////////////////////////////
 export const forUpdateCaption = async (mediaId: number, caption: string) =>

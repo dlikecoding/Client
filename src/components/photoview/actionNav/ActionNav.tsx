@@ -11,10 +11,11 @@ import { Save } from "./buttons/Save";
 import { Recover } from "./buttons/Recover";
 import { Unhide } from "./buttons/Unhide";
 import { Delete } from "./buttons/Delete";
-import { Merge } from "./buttons/Merge";
+
 import { EditButtonIcon } from "../../svgIcons";
 import { Info } from "./buttons/Info";
 import { DeleteAll } from "./buttons/DeleteAll";
+import { MergeAll } from "./buttons/MergeAll";
 
 export type ButtonProps = {
   action: () => void;
@@ -45,8 +46,6 @@ const ActionNav = () => {
   const { openModal, setIsEditing, displayMedias, setDisplayMedia } = useViewMediaContext();
 
   const actions = {
-    mergeAll: () => console.log("Merge all"),
-
     delete: () => updateMediaStatus("deleted", true),
     recovery: () => updateMediaStatus("deleted", false),
     favorite: () => updateMediaStatus("favorite"),
@@ -100,9 +99,6 @@ const ActionNav = () => {
             <Match when={currentPage.includes("recover")}>
               <Recover action={actions.recovery} />
             </Match>
-            <Match when={currentPage.includes("mergeAll")}>
-              <Merge action={actions.mergeAll} />
-            </Match>
           </Switch>
         </div>
 
@@ -125,6 +121,10 @@ const ActionNav = () => {
           <Switch>
             <Match when={currentPage.includes("permanentDeleteAll") && items().size === 1}>
               <DeleteAll />
+            </Match>
+
+            <Match when={currentPage.includes("mergeAll") && items().size === 1}>
+              <MergeAll />
             </Match>
             <Match when={currentPage.includes("count")}>
               <button inert style={{ "pointer-events": "none" }}>

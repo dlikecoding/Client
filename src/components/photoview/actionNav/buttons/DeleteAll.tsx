@@ -11,11 +11,11 @@ export const DeleteAll = () => {
     "This will permanently delete all photo(s) & video(s) in Recently Deleted. This action can't be undone";
 
   const handleDelete = async () => {
+    await forDeleteAllInRecently();
+
     setDisplayMedia([]);
     setIsSelected(false);
     setItems(new Map());
-
-    await forDeleteAllInRecently();
 
     // Redirect to previous page when the list is empty
     if (displayMedias.length > 0) return;
