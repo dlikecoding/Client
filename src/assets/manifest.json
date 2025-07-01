@@ -1,10 +1,10 @@
 {
-  "short_name": "Photos",
+  "short_name": "PhotoX",
   "name": "Coresai Images",
   "icons": [
     {
-      "src": "./favicon.ico",
-      "sizes": "48x48",
+      "src": "./family.png",
+      "sizes": "57x48",
       "type": "image/x-icon"
     }
   ],
@@ -13,7 +13,7 @@
       "name": "Photo",
       "short_name": "pt",
       "url": "/library",
-      "icons": [{ "src": "./favicon.ico", "sizes": "48x48", "type": "image/x-icon" }]
+      "icons": [{ "src": "./family.png", "sizes": "57x57", "type": "image/x-icon" }]
     }
   ],
   "start_url": "/",

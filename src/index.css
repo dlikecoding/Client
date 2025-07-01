@@ -355,9 +355,10 @@ button:disabled {
   right: 5px;
   border: none;
 
-  pointer-events: auto;
+  pointer-events: visible;
+
   animation: zoomIn 0.3s ease;
-  scroll-behavior: smooth;
+  scroll-behavior: none;
 }
 
 .popover-container > div,

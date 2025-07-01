@@ -107,7 +107,7 @@ export const Info = () => {
         popover="auto"
         id="information-popover"
         class={styles.slideupContents}
-        style={{ "max-width": "600px", width: "100%", "border-radius": 0, "pointer-events": "auto" }}>
+        style={{ "max-width": "600px", width: "100%", "border-radius": 0 }}>
         <Show when={mediaInfo}>
           <div class={styles.mediaInfo}>
             <div class={styles.caption}>
