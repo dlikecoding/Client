@@ -49,6 +49,7 @@ export const Info = () => {
   let captionInputEl: HTMLInputElement | null = null;
 
   const [editCaption, setEditCaption] = createSignal<boolean>(true); // Disable edit on default
+  const [mediaInfo, setMediaInfo] = createStore<MediaInfo>(defaultInfo);
 
   const updateCaptionByInput = async () => {
     if (editCaption()) {
@@ -67,12 +68,11 @@ export const Info = () => {
       if (caption === mediaInfo.caption) return;
 
       const res = await forUpdateCaption(mediaId, captionInputEl.value);
-      if (res.ok) return;
-      console.log(await res.json());
+      if (!res.ok) return console.log(await res.json());
+
+      setMediaInfo("caption", captionInputEl.value);
     }
   };
-
-  const [mediaInfo, setMediaInfo] = createStore<MediaInfo>(defaultInfo);
 
   const requestInfo = async () => {
     const mediaId = items().values().next().value;
@@ -80,6 +80,7 @@ export const Info = () => {
 
     // If request the same infor for same photo, return
     if (mediaInfo.media_id === mediaId) return;
+
     const result = await fetchPhotoInfo(mediaId);
     if (!result) return console.log("Missing info");
     setMediaInfo(result);
@@ -115,6 +116,7 @@ export const Info = () => {
                 ref={(el) => (captionInputEl = el)}
                 type="text"
                 value={mediaInfo.caption || "Add a Caption"}
+                style={{ "pointer-events": "auto" }}
                 disabled={editCaption()}
               />
 

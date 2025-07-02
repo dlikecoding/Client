@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "VITE_DEV_MODE=dev bun x --bun vite",
-    "buildX": "rm -rf ../serverBunX/dist && bun x --bun vite build --emptyOutDir && cp ./src/assets/manifest.json ./src/assets/family.png ../serverBunX/dist/assets",
+    "buildX": "rm -rf ../serverBunX/dist && bun x --bun vite build --emptyOutDir && cp ./assets/manifest.json ./assets/family.png ../serverBunX/dist/assets",
     "preview": "vite preview",
     "up": "bun upgrade && bun update"
   },
