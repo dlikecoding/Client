@@ -23,21 +23,21 @@ header > .modalTitle {
   height: 100%;
 
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 
   align-items: center;
   justify-content: center;
+  overflow-x: scroll;
+  overflow-y: hidden;
 
-  overflow-x: hidden;
-  overflow-y: scroll;
-  overscroll-behavior-y: smooth;
+  overscroll-behavior-x: smooth;
 
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: x mandatory;
   /* -webkit-overflow-scrolling: touch; */
 }
 
 .visualList {
-  width: 100%;
+  height: 100%;
   position: relative;
 }
 
@@ -56,6 +56,8 @@ header > .modalTitle {
   /* touch-action: none; */
   user-select: none;
   pointer-events: auto;
+
+  left: 0; /* will be dynamically adjusted */
 }
 
 /* Default image */

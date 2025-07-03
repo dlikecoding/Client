@@ -32,10 +32,10 @@ interface ModalProps {
 const BUFFER_ITEM = 3;
 
 const PADDING = 200;
-const ITEM_HEIGHT = window.innerHeight + PADDING; // Full innerHeight + 100px for gap
+const ITEM_WIDTH = window.innerWidth + PADDING;
 
-const VIEWPORT_HEIGHT = ITEM_HEIGHT * BUFFER_ITEM;
-const VISIBLE_ITEM = Math.ceil(VIEWPORT_HEIGHT / ITEM_HEIGHT) + 2;
+const VIEWPORT_WIDTH = ITEM_WIDTH * BUFFER_ITEM;
+const VISIBLE_ITEM = Math.ceil(VIEWPORT_WIDTH / ITEM_WIDTH) + 2;
 
 const Modal: Component<ModalProps> = (props) => {
   const { showImageOnly, setOpenModal, displayMedias } = useViewMediaContext();
@@ -60,9 +60,9 @@ const Modal: Component<ModalProps> = (props) => {
   ///////////////// Virtualization Modal /////////////////////////////////////////////////
   let containerRef: HTMLDivElement;
 
-  const [scrollTop, setScrollTop] = createSignal(current.elIndex * ITEM_HEIGHT);
+  const [scrollLeft, setScrollLeft] = createSignal(current.elIndex * ITEM_WIDTH);
 
-  const startIndex = createMemo(() => Math.max(0, Math.floor(scrollTop() / ITEM_HEIGHT) - 1));
+  const startIndex = createMemo(() => Math.max(0, Math.floor(scrollLeft() / ITEM_WIDTH) - 1));
   const endIndex = createMemo(() => Math.min(displayMedias.length - 1, startIndex() + VISIBLE_ITEM));
 
   const visualModal = createMemo(() => {
@@ -76,9 +76,8 @@ const Modal: Component<ModalProps> = (props) => {
   /** If the last item is removed, and we are scrolled past the new end of the list,
    * we should adjust the scroll: */
   createMemo(() => {
-    if (startIndex() >= displayMedias.length - 1) setScrollTop((displayMedias.length - 1) * ITEM_HEIGHT);
+    if (startIndex() >= displayMedias.length - 1) setScrollLeft((displayMedias.length - 1) * ITEM_WIDTH);
   });
-
   onMount(() => {
     // Scroll to selected element in Modal
     scrollToModalElement(current.elId);
@@ -91,7 +90,9 @@ const Modal: Component<ModalProps> = (props) => {
     };
 
     // Observer window.innerHeight on change to prevent photo overlapping
-    useResizeObserver(containerRef, (_entries) => {});
+    useResizeObserver(containerRef, (_entries) => {
+      // setScrollLeft(current.elIndex * ITEM_WIDTH);
+    });
   });
 
   const setSelectCurrentItem = (index: number, mediaId: number) => {
@@ -113,9 +114,8 @@ const Modal: Component<ModalProps> = (props) => {
    * ContextView, if so, scroll to it */
   const onScrollModal = (e: Event) => {
     e.preventDefault();
-    setScrollTop(containerRef.scrollTop);
+    setScrollLeft(containerRef.scrollLeft);
 
-    // In the case user loading passed the range of ContextView, scroll to that element in context view
     if (current.elIndex === endIdxView() || current.elIndex === startIdxView()) {
       scrollToViewElement(current.elId);
     }
@@ -186,14 +186,14 @@ const Modal: Component<ModalProps> = (props) => {
         </header>
 
         <div class={styles.modalImages} ref={(el) => (containerRef = el)} id="modalImages" onScroll={onScrollModal}>
-          <div class={styles.visualList} style={{ height: `${displayMedias.length * ITEM_HEIGHT}px` }}>
+          <div class={styles.visualList} style={{ width: `${displayMedias.length * ITEM_WIDTH}px` }}>
             <For each={visualModal()}>
               {(media, index) => (
                 <MediaDisplay
                   /** Loadmore base on the last element of Modal:
                    * lastEl target is set to equal element in ModalView in MediaDisplay */
                   setLastEl={displayMedias.length - 1 === startIndex() + index() ? props.setLastEl : undefined}
-                  topPos={(startIndex() + index()) * ITEM_HEIGHT}
+                  leftPos={(startIndex() + index()) * ITEM_WIDTH}
                   viewIndex={startIndex() + index()}
                   media={media}
                   setSelectCurrentItem={setSelectCurrentItem}

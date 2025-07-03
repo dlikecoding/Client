@@ -10,7 +10,7 @@ import { SetStoreFunction } from "solid-js/store";
 
 interface MediaTypeProps {
   media: MediaType;
-  topPos: number;
+  leftPos: number;
   viewIndex: number;
 
   setSelectCurrentItem: (index: number, mediaId: number) => void;
@@ -62,7 +62,7 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
     <div
       ref={mediaRef}
       class={styles.mediaContainer}
-      style={{ top: `${props.topPos}px`, overflow: isVisible() ? "auto" : "hidden" }}
+      style={{ left: `${props.leftPos}px`, overflow: isVisible() ? "auto" : "hidden" }}
       data-modalid={media().media_id} // This media_id is needed to scrollIntoView
       onClick={handleClick}>
       <Switch fallback={<div>Unknown type</div>}>
