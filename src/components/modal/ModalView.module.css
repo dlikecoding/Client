@@ -55,6 +55,7 @@ header > .modalTitle {
 
   /* touch-action: none; */
   user-select: none;
+  pointer-events: auto;
 }
 
 /* Default image */
@@ -66,6 +67,10 @@ header > .modalTitle {
   height: 100%;
   object-fit: var(--modal-object-fit);
   transition: width 250ms ease, height 250ms ease;
+
+  /* Does not work */
+  /* touch-action: none;
+  pointer-events: none; */
 }
 
 /* /////////////////// THUMBNAIL //////////////////////// */

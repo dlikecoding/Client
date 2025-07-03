@@ -1,7 +1,7 @@
 import styles from "./Types.module.css";
 import modalS from "./../ModalView.module.css";
 
-import { Component, createMemo, Match, Show, Switch } from "solid-js";
+import { Component, createMemo, Show } from "solid-js";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import { VIDEO_API_URL } from "../../../App";
 import { createStore } from "solid-js/store";
@@ -10,6 +10,8 @@ import { zoomPhoto } from "../../extents/helper/zoom";
 
 import Spinner from "../../extents/Spinner";
 import EditVideo from "../Editing/EditVideo";
+// import { useMediaContext } from "../../../context/Medias";
+// import { getKeyByItem, scrollToModalElement } from "../../extents/helper/helper";
 
 interface VideoProps {
   media: MediaType;
@@ -46,7 +48,8 @@ const Video: Component<VideoProps> = (props) => {
     isFullScreen: false,
   });
 
-  const { showImageOnly, isEditing } = useViewMediaContext();
+  const { showImageOnly, isEditing } = useViewMediaContext(); //displayMedias
+  // const { items } = useMediaContext();
   const { view } = useManageURLContext();
 
   /** Auto stop video playing when scroll to other element (videos) */
@@ -72,6 +75,14 @@ const Video: Component<VideoProps> = (props) => {
     if (!isVideoVisible() || view.zoomLevel <= 1) return { width: "100%", height: "100%" };
     return zoomPhoto(currentChild(), view.zoomLevel);
   });
+
+  // const goToNextElement = () => {
+  //   const current = getKeyByItem(items());
+  //   if (!current || current.idx >= displayMedias.length - 1) return;
+
+  //   const nextMedia = displayMedias[current.idx + 1];
+  //   scrollToModalElement(nextMedia.media_id, "smooth");
+  // };
   return (
     <>
       <video
@@ -95,6 +106,7 @@ const Video: Component<VideoProps> = (props) => {
           setVidStatus("isPlaying", false);
         }}
         onTimeUpdate={(e) => setVidStatus("currentTime", e.currentTarget.currentTime)}
+        // onEnded={goToNextElement}
         preload="none"
         muted={vidStatus.muted}
         controls={false}

@@ -54,6 +54,11 @@ body {
 
   color: white;
   font-family: sans-serif;
+
+  /* when hit scroll limits inside .mainHomePage, 
+  don’t pass the scroll to parent (body). */
+  overscroll-behavior: none;
+  height: 100%;
 }
 
 /* body > #root {
@@ -84,6 +89,8 @@ svg {
   scroll-behavior: smooth;
   overscroll-behavior: smooth;
   /* z-index: 0; */
+
+  /* pointer-events: auto; */
 }
 
 /* Headings */
@@ -154,7 +161,7 @@ h3 > a {
 button {
   all: unset;
   cursor: pointer;
-  pointer-events: visible;
+  pointer-events: auto;
 
   display: flex;
   align-items: center;
@@ -194,7 +201,7 @@ header > button,
   min-height: 21px;
 
   transition: all 0.1s ease-in-out;
-  pointer-events: visible;
+  pointer-events: auto;
 }
 
 .buttonContainer > button > svg {
@@ -228,7 +235,7 @@ footer {
 
 footer > div > a,
 footer > div > button {
-  pointer-events: visible;
+  pointer-events: auto;
 }
 
 .actions__toolbar__column {
@@ -355,7 +362,7 @@ button:disabled {
   right: 5px;
   border: none;
 
-  pointer-events: visible;
+  pointer-events: auto;
 
   animation: zoomIn 0.3s ease;
   scroll-behavior: none;

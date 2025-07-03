@@ -9,7 +9,7 @@ import { useViewMediaContext } from "../../context/ViewContext";
 import { useMediaContext } from "../../context/Medias";
 import { CompressIcon, CustomButtonIcon, ExpandIcon, GoBackIcon, ZoomInIcon, ZoomOutIcon } from "../svgIcons";
 
-import { formatTime, scrollIntoViewFc } from "../extents/helper/helper";
+import { formatTime, scrollToModalElement, scrollToViewElement } from "../extents/helper/helper";
 import MediaDisplay from "./MediaDisplay";
 import ActionNav from "../photoview/actionNav/ActionNav";
 import { useResizeObserver } from "solidjs-use";
@@ -231,22 +231,6 @@ const Modal: Component<ModalProps> = (props) => {
 };
 
 export default Modal;
-
-/**
- * Scrolls to the specified element using its data-modalid attribute.
- * @param modalid - Modal id unique identifier of the target element.
- */
-const scrollToModalElement = (modalid: number): void => {
-  scrollIntoViewFc("modalid", modalid);
-};
-
-/**
- * Scrolls to the specified element using its data-modalid attribute.
- * @param id - ContextView id unique identifier of the target element.
- */
-const scrollToViewElement = (mediaId: number, block: ScrollLogicalPosition = "center"): void => {
-  scrollIntoViewFc("id", mediaId, block);
-};
 
 // // There is an issue when change displaySize to 10 or diffrent number, When clicked on specific item, it does not return the correct element.
 // const DISPLAY_THUMBS_SIZE = 7; // We want to show at least 7 elements

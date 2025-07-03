@@ -4,7 +4,10 @@ header {
 
 .virtualContainer {
   position: relative;
-  width: 100dvw;
+  width: 100%;
+  min-width: 100dvw;
+
+  pointer-events: auto;
 }
 
 .mediaContainer {
@@ -13,6 +16,8 @@ header {
   border: 1.5px solid var(--bg-primary);
   /* transition: all 0.3s ease-in-out; */
   transition: top 0.2s ease, left 0.2s ease;
+
+  pointer-events: auto;
 }
 
 .customBottomPadding {
