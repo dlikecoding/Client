@@ -154,14 +154,15 @@ const ContextView = () => {
         ref={containerRef}
         class="mainHomePage"
         // classList={{ mainHomePage: true, [style.container]: true }}
+        // onMouseDown={() => alert("CLICK main")}
         onScroll={(event: Event) => {
           event.preventDefault();
           setScrollTop(containerRef.scrollTop);
 
-          const popovers = document.querySelectorAll<HTMLElement>("div[popover]");
-          popovers.forEach((eachPopover: HTMLElement) => {
-            if (eachPopover.checkVisibility()) eachPopover.hidePopover();
-          });
+          // const popovers = document.querySelectorAll<HTMLElement>("div[popover]");
+          // popovers.forEach((eachPopover: HTMLElement) => {
+          //   if (eachPopover.checkVisibility()) eachPopover.hidePopover();
+          // });
         }}>
         <Show when={loadedMedias.loading || loadedMoreMedias.loading}>
           <Loading />
@@ -204,8 +205,8 @@ const ContextView = () => {
         <ModalView
           // visibleRows={visibleRows}
           setLastEl={setLastEl}
-          startIdxView={startIndex}
-          endIdxView={endIndex}
+          // startIdxView={startIndex}
+          // endIdxView={endIndex}
         />
       </Show>
     </>

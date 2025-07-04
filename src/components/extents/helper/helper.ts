@@ -39,9 +39,9 @@ export const scrollIntoViewFc = (
   if (targetEl) targetEl.scrollIntoView({ behavior: behavior, block: block });
 };
 
-// export const sleepFunc = (ms: number): Promise<void> => {
-//   return new Promise((resolve) => setTimeout(resolve, ms));
-// };
+export const sleepFunc = (ms: number): Promise<void> => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
 
 export const getKeyByItem = (items: Map<number, number>) => {
   const kv = items.entries().next().value;

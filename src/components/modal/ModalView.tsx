@@ -1,18 +1,18 @@
 import styles from "./ModalView.module.css";
 
 import { Portal } from "solid-js/web";
-import { Accessor, Component, createMemo, createSignal, For, onMount, Setter, Show } from "solid-js";
-import { createStore } from "solid-js/store";
+import { Component, createMemo, createSignal, For, onMount, Setter } from "solid-js";
 
 import { useManageURLContext } from "../../context/ManageUrl";
 import { useViewMediaContext } from "../../context/ViewContext";
 import { useMediaContext } from "../../context/Medias";
 import { CompressIcon, CustomButtonIcon, ExpandIcon, GoBackIcon, ZoomInIcon, ZoomOutIcon } from "../svgIcons";
 
-import { formatTime, scrollToModalElement, scrollToViewElement } from "../extents/helper/helper";
+import { formatTime, getKeyByItem, scrollToModalElement, scrollToViewElement } from "../extents/helper/helper";
 import MediaDisplay from "./MediaDisplay";
 import ActionNav from "../photoview/actionNav/ActionNav";
-import { useResizeObserver } from "solidjs-use";
+import { useMousePressed } from "solidjs-use";
+
 // import NotFound from "../extents/NotFound";
 // import { List } from "@solid-primitives/list";
 
@@ -25,8 +25,8 @@ interface ModalProps {
   // visibleRows: Accessor<MediaType[]>;
 
   setLastEl: Setter<HTMLElement | null | undefined>;
-  endIdxView: Accessor<number>;
-  startIdxView: Accessor<number>;
+  // endIdxView: Accessor<number>;
+  // startIdxView: Accessor<number>;
 }
 
 const BUFFER_ITEM = 3;
@@ -39,7 +39,7 @@ const VISIBLE_ITEM = Math.ceil(VIEWPORT_WIDTH / ITEM_WIDTH) + 2;
 
 const Modal: Component<ModalProps> = (props) => {
   const { showImageOnly, setOpenModal, displayMedias } = useViewMediaContext();
-  const { items, setItems, setOneItem } = useMediaContext();
+  const { items, setItems } = useMediaContext();
 
   const { view, setView } = useManageURLContext();
 
@@ -52,15 +52,20 @@ const Modal: Component<ModalProps> = (props) => {
   };
 
   /** Tracking current index display on the screen */
-  const [current, setCurrent] = createStore<ElementModal>({
-    elIndex: items().keys().next().value!, // Current selected index
-    elId: items().values().next().value!, // Current Id of selected el
+  // const [current, setCurrent] = createStore<ElementModal>({
+  //   elIndex: items().keys().next().value!, // Current selected index
+  //   elId: items().values().next().value!, // Current Id of selected el
+  // });
+
+  const currentEl = createMemo(() => {
+    const item = getKeyByItem(items());
+    return item ? item : { idx: -1, eId: -1 };
   });
 
   ///////////////// Virtualization Modal /////////////////////////////////////////////////
   let containerRef: HTMLDivElement;
 
-  const [scrollLeft, setScrollLeft] = createSignal(current.elIndex * ITEM_WIDTH);
+  const [scrollLeft, setScrollLeft] = createSignal(currentEl().idx * ITEM_WIDTH);
 
   const startIndex = createMemo(() => Math.max(0, Math.floor(scrollLeft() / ITEM_WIDTH) - 1));
   const endIndex = createMemo(() => Math.min(displayMedias.length - 1, startIndex() + VISIBLE_ITEM));
@@ -80,54 +85,55 @@ const Modal: Component<ModalProps> = (props) => {
   });
   onMount(() => {
     // Scroll to selected element in Modal
-    scrollToModalElement(current.elId);
+    scrollToModalElement(currentEl().eId);
 
     // On close or clicked back button, remove the top state on the stack
     window.onpopstate = (event) => {
       if (!event.state) return;
       handleCloseModal();
-      scrollToViewElement(current.elId, "nearest"); // scroll to view to the current id in PhotoView
+      scrollToViewElement(currentEl().eId, "nearest"); // scroll to view to the current id in PhotoView
     };
 
     // Observer window.innerHeight on change to prevent photo overlapping
-    useResizeObserver(containerRef, (_entries) => {
-      // setScrollLeft(current.elIndex * ITEM_WIDTH);
-    });
+    // useResizeObserver(containerRef, (_entries) => {
+    //   // setScrollLeft(currentEl().idx * ITEM_WIDTH);
+    // });
   });
 
-  const setSelectCurrentItem = (index: number, mediaId: number) => {
-    setCurrent({ elId: mediaId, elIndex: index });
-    setOneItem(current.elIndex, current.elId);
-  };
+  // const setSelectCurrentItem = (index: number, mediaId: number) => {
+  //   setCurrent({ elId: mediaId, elIndex: index });
+  //   setOneItem(current.elIndex, currentEl().eId);
+  // };
 
   // Display time in header
   const displayTime = createMemo(() => {
-    const curEl = displayMedias[current.elIndex];
+    const curEl = displayMedias[currentEl().idx];
     if (!curEl) return { date: "", time: "" };
     return formatTime(curEl.create_date);
   });
 
-  const endIdxView = () => props.endIdxView();
-  const startIdxView = () => props.startIdxView();
+  // const endIdxView = () => props.endIdxView();
+  // const startIdxView = () => props.startIdxView();
 
-  /** On Scroll, set scroll top. Check if current position is equal to the START/END INDEX in
+  /** On Scroll, set scroll top.
+   * Check if current position is equal to the START/END INDEX in
    * ContextView, if so, scroll to it */
   const onScrollModal = (e: Event) => {
     e.preventDefault();
     setScrollLeft(containerRef.scrollLeft);
 
-    if (current.elIndex === endIdxView() || current.elIndex === startIdxView()) {
-      scrollToViewElement(current.elId);
-    }
+    // if (currentEl().idx === endIdxView() || currentEl().idx === startIdxView()) {
+    //   scrollToViewElement(currentEl().eId);
+    // }
   };
 
   // // Reset zoom when scroll to other elements
   createMemo(() => {
-    if (current.elId) setView("zoomLevel", 1);
+    if (currentEl().eId && view.zoomLevel > 1) setView("zoomLevel", 1);
   });
 
   /** Create sublist for thumbnails */
-  // const modalMedias = () => getSublist(displayMedias, current.elIndex);
+  // const modalMedias = () => getSublist(displayMedias, currentEl().idx);
 
   // Create auto change object fit for images and videos in modal:
   createMemo(() => {
@@ -135,9 +141,9 @@ const Modal: Component<ModalProps> = (props) => {
     document.documentElement.style.setProperty("--modal-object-fit", objectFit);
   });
 
-  const handleZoom = (input: number) => {
-    setView("zoomLevel", (prev) => prev + input);
-  };
+  // const handleZoom = (input: number) => {
+  //   setView("zoomLevel", (prev) => prev + input);
+  // };
 
   return (
     <Portal>
@@ -164,7 +170,7 @@ const Modal: Component<ModalProps> = (props) => {
 
             <button popoverTarget="more-modal-popover">{CustomButtonIcon()}</button>
             <div popover="auto" id="more-modal-popover" class="popover-container devices_filter_popover">
-              <div class="media_type_contents">
+              {/* <div class="media_type_contents">
                 <button onClick={() => handleZoom(1)} disabled={view.zoomLevel === 5}>
                   {ZoomInIcon()}
                 </button>
@@ -172,7 +178,7 @@ const Modal: Component<ModalProps> = (props) => {
                 <button onClick={() => handleZoom(-1)} disabled={view.zoomLevel === 1}>
                   {ZoomOutIcon()}
                 </button>
-              </div>
+              </div> */}
 
               <div onClick={() => setView("showThumb", (prev) => !prev)}>
                 Thumbnails {view.showThumb ? "ON" : "OFF"}
@@ -196,7 +202,7 @@ const Modal: Component<ModalProps> = (props) => {
                   leftPos={(startIndex() + index()) * ITEM_WIDTH}
                   viewIndex={startIndex() + index()}
                   media={media}
-                  setSelectCurrentItem={setSelectCurrentItem}
+                  // setSelectCurrentItem={setSelectCurrentItem}
                 />
               )}
             </For>
@@ -209,7 +215,7 @@ const Modal: Component<ModalProps> = (props) => {
             <List each={visibleRows()} fallback={<NotFound />}>
               {(media, index) => (
                 <div
-                  style={media().media_id === current.elId ? { width: "50px", margin: "0 5px" } : {}}
+                  style={media().media_id === currentEl().eId ? { width: "50px", margin: "0 5px" } : {}}
                   // data-thumbId={media().media_id}
                   onClick={() => {
                     console.log(media().media_id, index(), startIndex(), endIdxView());
@@ -298,7 +304,7 @@ export default Modal;
 //   if (newIndex < 0 || newIndex >= displayMedias.length) return; // Prevent out-of-bounds access
 //   setSelectCurrentItem(newIndex, displayMedias[newIndex].media_id);
 //   setScrollTop(newIndex * ITEM_HEIGHT);
-//   scrollToModalElement(current.elId);
+//   scrollToModalElement(currentEl().eId);
 // };
 
 // const startIndex = createMemo(() => {

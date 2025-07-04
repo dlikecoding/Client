@@ -5,10 +5,10 @@ import { VIDEO_API_URL } from "../../../App";
 import EditLive from "../Editing/EditLive";
 
 import { useMousePressed } from "solidjs-use";
-import { safePlayVideo } from "../../extents/helper/helper";
+import { safePlayVideo, sleepFunc } from "../../extents/helper/helper";
 import { LivePhotoIcon } from "../../svgIcons";
 import { useManageURLContext } from "../../../context/ManageUrl";
-import { zoomPhoto } from "../../extents/helper/zoom";
+// import { zoomPhoto } from "../../extents/helper/zoom";
 
 interface LiveProps {
   media: MediaType;
@@ -32,6 +32,8 @@ const Live: Component<LiveProps> = (props) => {
 
   createMemo(async () => {
     if (!isLiveVisible()) return setIsLoading(true);
+
+    await sleepFunc(500);
     currentChild().load();
     setIsLoading(false);
   });
@@ -63,18 +65,18 @@ const Live: Component<LiveProps> = (props) => {
     seekingTo(e, currentChild(), media().selected_frame);
   };
 
-  const zoomSize = createMemo(() => {
-    if (!isLiveVisible() || view.zoomLevel <= 1) return { width: "100%", height: "100%" };
-    return zoomPhoto(currentChild(), view.zoomLevel);
-  });
+  // const zoomSize = createMemo(() => {
+  //   if (!isLiveVisible() || view.zoomLevel <= 1) return { width: "100%", height: "100%" };
+  //   return zoomPhoto(currentChild(), view.zoomLevel);
+  // });
 
   return (
     <>
       <video
-        style={{
-          width: zoomSize().width,
-          height: zoomSize().height,
-        }}
+        // style={{
+        //   width: zoomSize().width,
+        //   height: zoomSize().height,
+        // }}
         inert
         onLoad={() => setIsLoading(true)}
         onLoadedData={(e) => seekToSelectedFrame(e)}

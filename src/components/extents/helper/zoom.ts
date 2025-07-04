@@ -1,35 +1,35 @@
-export const zoomPhoto = (el: HTMLImageElement | HTMLVideoElement, zoomlv: number) => {
-  const elDim =
-    el instanceof HTMLImageElement
-      ? { w: el.naturalWidth, h: el.naturalHeight }
-      : { w: el.videoWidth, h: el.videoHeight };
+// export const zoomPhoto = (el: HTMLImageElement | HTMLVideoElement, zoomlv: number) => {
+//   const elDim =
+//     el instanceof HTMLImageElement
+//       ? { w: el.naturalWidth, h: el.naturalHeight }
+//       : { w: el.videoWidth, h: el.videoHeight };
 
-  const isElLandscape = elDim.w > elDim.h;
+//   const isElLandscape = elDim.w > elDim.h;
 
-  // const isDeviceLandscape = window.innerHeight > window.innerWidth;
+//   // const isDeviceLandscape = window.innerHeight > window.innerWidth;
 
-  if (isElLandscape) {
-    // Landscape: width matches device height
-    const newHeight = zoomlv === 3 ? window.innerHeight : (window.innerHeight / 3) * zoomlv;
-    const scale = newHeight / elDim.h;
-    const width = elDim.w * scale;
+//   if (isElLandscape) {
+//     // Landscape: width matches device height
+//     const newHeight = zoomlv === 3 ? window.innerHeight : (window.innerHeight / 3) * zoomlv;
+//     const scale = newHeight / elDim.h;
+//     const width = elDim.w * scale;
 
-    return {
-      height: `${newHeight}px`,
-      width: `${width}px`,
-    };
-  } else {
-    // Portrait: height = 3x image width
-    const newWidth = window.innerWidth * zoomlv;
-    const scale = newWidth / elDim.w; // = 3, explicitly
-    const height = elDim.h * scale;
+//     return {
+//       height: `${newHeight}px`,
+//       width: `${width}px`,
+//     };
+//   } else {
+//     // Portrait: height = 3x image width
+//     const newWidth = window.innerWidth * zoomlv;
+//     const scale = newWidth / elDim.w; // = 3, explicitly
+//     const height = elDim.h * scale;
 
-    return {
-      width: `${newWidth}px`,
-      height: `${height}px`,
-    };
-  }
-};
+//     return {
+//       width: `${newWidth}px`,
+//       height: `${height}px`,
+//     };
+//   }
+// };
 
 // export const zoomMedia = (
 //   el: HTMLImageElement | HTMLVideoElement,

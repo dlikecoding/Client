@@ -7,13 +7,16 @@ import Live from "./Types/Live";
 import { useIntersectionObserver } from "solidjs-use";
 import { useManageURLContext, ZoomAndAspect } from "../../context/ManageUrl";
 import { SetStoreFunction } from "solid-js/store";
+import { useMediaContext } from "../../context/Medias";
+import Panzoom, { PanzoomObject } from "@panzoom/panzoom";
+import { useMouseTask } from "../extents/helper/mouseEvent/MouseTaskHandler";
+import { mouseGesture } from "../extents/helper/mouseEvent/mouseStore";
 
 interface MediaTypeProps {
   media: MediaType;
   leftPos: number;
   viewIndex: number;
 
-  setSelectCurrentItem: (index: number, mediaId: number) => void;
   setLastEl?: Setter<HTMLElement | null | undefined>;
 }
 
@@ -23,13 +26,13 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
   let mediaRef: HTMLDivElement | undefined;
   const media = () => props.media;
   const viewIndex = () => props.viewIndex;
-
-  const { setView } = useManageURLContext();
+  const { setOneItem } = useMediaContext();
 
   const [currentChild, setCurrentChild] = createSignal<HTMLVideoElement | HTMLImageElement>();
   const [isVisible, setIsVisible] = createSignal<boolean>(false);
   const { isEditing, setShowImageOnly } = useViewMediaContext();
 
+  const [displayText, setDisplayText] = createSignal<string>("");
   onMount(() => {
     // Tracking if element is visible, then set the current index to this
     useIntersectionObserver(
@@ -37,7 +40,7 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
       ([{ isIntersecting }]) => {
         setIsVisible(isIntersecting); // pass intersection status to child components
 
-        if (!isIntersecting) return;
+        if (!isIntersecting) return setIsVisible(false);
 
         // get current display child element like img/video tags
         if (mediaRef && mediaRef.children.length > 0) {
@@ -45,26 +48,93 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
         }
 
         // Set the current index when the item is visible in Modal
-        props.setSelectCurrentItem(viewIndex(), media().media_id);
+        setOneItem(viewIndex(), media().media_id);
 
         // if the item is the last index in current array, set it as visible to load more item.
         if (props.setLastEl) props.setLastEl(mediaRef);
       },
       { threshold: 0.59 }
     );
+
+    // if (!isVisible()) return;
+    useMouseTask(mediaRef!, {
+      onClick: () => setDisplayText("Task Z: Click"),
+      onDragHorizontal: () => setDisplayText("Task A: Drag Left/Right"),
+      // onDragVerticalLarge: () => setDisplayText("Task B: Drag Down > 5%"),
+      onDragDownRelease: () => setDisplayText("Drag down mouse up"),
+      // onDragVerticalSmall: () => setDisplayText("Task C: Drag Down ≤ 5%"),
+      onLongPress: () => setDisplayText("Task D: Long Press"),
+    });
   });
 
-  const handleClick = useZoomAndClickHandler(setView, isVisible, isEditing, setShowImageOnly);
-
+  // const handleClick = useZoomAndClickHandler(setView, isVisible, isEditing, setShowImageOnly);
   createMemo(() => setShowImageOnly(isEditing()));
+
+  createMemo(() => {
+    if (!currentChild()) return;
+
+    if (mouseGesture) {
+      console.log(mouseGesture);
+    }
+  });
+
+  // let panzoomInstance: PanzoomObject | null = null;
+  // createMemo(() => {
+  //   if (currentChild()) panzoomInstance?.reset();
+  // });
+
+  // createMemo(() => {
+  //   const target = currentChild();
+  //   const parent = mediaRef;
+  //   if (!target || !parent) return;
+
+  //   panzoomInstance?.destroy();
+
+  //   panzoomInstance = Panzoom(target, {
+  //     maxScale: 4,
+  //     contain: "outside",
+  //     canvas: true,
+  //   });
+  // });
+
+  // onCleanup(() => {
+  //   panzoomInstance?.destroy();
+  //   panzoomInstance = null;
+  // });
 
   return (
     <div
       ref={mediaRef}
       class={styles.mediaContainer}
-      style={{ left: `${props.leftPos}px`, overflow: isVisible() ? "auto" : "hidden" }}
+      style={{
+        left: `${props.leftPos}px`,
+        // overflow: isVisible() ? "auto" : "hidden"
+      }}
       data-modalid={media().media_id} // This media_id is needed to scrollIntoView
-      onClick={handleClick}>
+      // onClick={handleClick}
+      // onDblClick={(event: MouseEvent) => {
+      //   event.preventDefault();
+
+      //   if (panzoomInstance) {
+      //     panzoomInstance.getScale() > 1
+      //       ? panzoomInstance.reset()
+      //       : panzoomInstance.zoomToPoint(2.5, { clientX: event.clientX, clientY: event.clientY }, { animate: true });
+      //   }
+      // }}
+    >
+      <div
+        style={{
+          position: "fixed",
+          top: "200px",
+          left: "0",
+          width: "200px",
+          height: "100px",
+          "z-index": "9999", // ensure it's on top
+          "background-color": "rgba(0, 0, 0, 0.5)", // semi-transparent overlay
+        }}>
+        <p style={{ color: "white" }}>{displayText()}</p>
+      </div>
+
       <Switch fallback={<div>Unknown type</div>}>
         <Match when={media().file_type === "Photo"}>
           <Photo media={media()} isVisible={isVisible()} currentChild={currentChild() as HTMLImageElement} />

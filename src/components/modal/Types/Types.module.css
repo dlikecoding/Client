@@ -1,6 +1,10 @@
 /* Overlay image for videos tag */
 .overlayImg {
   position: absolute;
+  transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  /* transition: opacity 0.35s linear; */
+  z-index: 2;
+  pointer-events: none;
   /* z-index: -1; */
 }
 
