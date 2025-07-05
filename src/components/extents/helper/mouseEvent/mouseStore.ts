@@ -6,7 +6,16 @@ export type Point = { x: number; y: number };
 type MouseGestureStore = {
   start: Point | null;
   end: Point | null;
-  lastAction: "click" | "dragDownRelease" | "dragging" | "longpress" | null;
+  lastAction:
+    | "click"
+    | "dragDownRelease"
+    | "dragging"
+    | "dragging horizontal"
+    | "dragging vertical"
+    | "pinchZoomOut"
+    | "pinchZoomIn"
+    | "longpress"
+    | null;
 };
 
 export const [mouseGesture, setMouseGesture] = createStore<MouseGestureStore>({

@@ -5,11 +5,9 @@ import Video from "./Types/Video";
 import Photo from "./Types/Photo";
 import Live from "./Types/Live";
 import { useIntersectionObserver } from "solidjs-use";
-import { useManageURLContext, ZoomAndAspect } from "../../context/ManageUrl";
+import { ZoomAndAspect } from "../../context/ManageUrl";
 import { SetStoreFunction } from "solid-js/store";
 import { useMediaContext } from "../../context/Medias";
-import Panzoom, { PanzoomObject } from "@panzoom/panzoom";
-import { useMouseTask } from "../extents/helper/mouseEvent/MouseTaskHandler";
 import { mouseGesture } from "../extents/helper/mouseEvent/mouseStore";
 
 interface MediaTypeProps {
@@ -55,16 +53,6 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
       },
       { threshold: 0.59 }
     );
-
-    // if (!isVisible()) return;
-    useMouseTask(mediaRef!, {
-      onClick: () => setDisplayText("Task Z: Click"),
-      onDragHorizontal: () => setDisplayText("Task A: Drag Left/Right"),
-      // onDragVerticalLarge: () => setDisplayText("Task B: Drag Down > 5%"),
-      onDragDownRelease: () => setDisplayText("Drag down mouse up"),
-      // onDragVerticalSmall: () => setDisplayText("Task C: Drag Down ≤ 5%"),
-      onLongPress: () => setDisplayText("Task D: Long Press"),
-    });
   });
 
   // const handleClick = useZoomAndClickHandler(setView, isVisible, isEditing, setShowImageOnly);

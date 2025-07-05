@@ -16,10 +16,10 @@
     "vite-plugin-solid": "^2.11.7"
   },
   "dependencies": {
-    "@panzoom/panzoom": "^4.6.0",
     "@simplewebauthn/browser": "^13.1.0",
     "@solid-primitives/list": "^0.1.2",
     "@solidjs/router": "^0.15.3",
+    "@use-gesture/vanilla": "^10.3.1",
     "solid-js": "^1.9.7",
     "solidjs-use": "^2.3.0"
   }
