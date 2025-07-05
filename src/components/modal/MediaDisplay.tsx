@@ -54,9 +54,40 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
     );
   });
 
-  const handleClick = useZoomAndClickHandler(setView, isVisible, isEditing, setShowImageOnly);
+  // const handleClick = useZoomAndClickHandler(setView, isVisible, isEditing, setShowImageOnly);
 
   createMemo(() => setShowImageOnly(isEditing()));
+
+  const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
+  let dragging = false;
+  let startX = 0;
+  let startY = 0;
+
+  const onMouseDown = (e: { clientX: number; clientY: number }) => {
+    dragging = true;
+    startX = e.clientX - translate().x;
+    startY = e.clientY - translate().y;
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+  };
+
+  const onMouseMove = (e: { clientX: number; clientY: number }) => {
+    if (!dragging) return;
+    const newX = e.clientX - startX;
+    const newY = e.clientY - startY;
+    setTranslate({ x: newX, y: newY });
+  };
+
+  const onMouseUp = () => {
+    dragging = false;
+    window.removeEventListener("mousemove", onMouseMove);
+    window.removeEventListener("mouseup", onMouseUp);
+  };
+
+  onCleanup(() => {
+    window.removeEventListener("mousemove", onMouseMove);
+    window.removeEventListener("mouseup", onMouseUp);
+  });
 
   return (
     <div
@@ -64,23 +95,31 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
       class={styles.mediaContainer}
       style={{ left: `${props.leftPos}px`, overflow: isVisible() ? "auto" : "hidden" }}
       data-modalid={media().media_id} // This media_id is needed to scrollIntoView
-      onClick={handleClick}>
-      <Switch fallback={<div>Unknown type</div>}>
-        <Match when={media().file_type === "Photo"}>
-          <Photo media={media()} isVisible={isVisible()} currentChild={currentChild() as HTMLImageElement} />
-        </Match>
-        <Match when={media().file_type === "Video"}>
-          <Video media={media()} isVisible={isVisible()} currentChild={currentChild() as HTMLVideoElement} />
-        </Match>
-        <Match when={media().file_type === "Live"}>
-          <Live
-            media={media()}
-            isVisible={isVisible()}
-            currentChild={currentChild() as HTMLVideoElement}
-            clickableArea={mediaRef!}
-          />
-        </Match>
-      </Switch>
+      // onClick={handleClick}
+      onMouseDown={onMouseDown}>
+      <div inert class={styles.wapperMedia}>
+        <Switch fallback={<div>Unknown type</div>}>
+          <Match when={media().file_type === "Photo"}>
+            <Photo
+              media={media()}
+              isVisible={isVisible()}
+              translate={translate()}
+              currentChild={currentChild() as HTMLImageElement}
+            />
+          </Match>
+          <Match when={media().file_type === "Video"}>
+            <Video media={media()} isVisible={isVisible()} currentChild={currentChild() as HTMLVideoElement} />
+          </Match>
+          <Match when={media().file_type === "Live"}>
+            <Live
+              media={media()}
+              isVisible={isVisible()}
+              currentChild={currentChild() as HTMLVideoElement}
+              clickableArea={mediaRef!}
+            />
+          </Match>
+        </Switch>
+      </div>
     </div>
   );
 };
