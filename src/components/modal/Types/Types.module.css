@@ -1,6 +1,7 @@
 /* Overlay image for videos tag */
 .overlayImg {
   position: absolute;
+  transition: opacity 0.5s linear;
   /* z-index: -1; */
 }
 

@@ -10,7 +10,7 @@ export const zoomPhoto = (el: HTMLImageElement | HTMLVideoElement, zoomlv: numbe
 
   if (isElLandscape) {
     // Landscape: width matches device height
-    const newHeight = zoomlv === 3 ? window.innerHeight : (window.innerHeight / 3) * zoomlv;
+    const newHeight = window.innerHeight * zoomlv;
     const scale = newHeight / elDim.h;
     const width = elDim.w * scale;
 

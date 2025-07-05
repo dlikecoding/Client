@@ -8,7 +8,7 @@ import { useMousePressed } from "solidjs-use";
 import { safePlayVideo } from "../../extents/helper/helper";
 import { LivePhotoIcon } from "../../svgIcons";
 import { useManageURLContext } from "../../../context/ManageUrl";
-import { zoomPhoto } from "../../extents/helper/zoom";
+import { zoomPhoto } from "../../hooks/zoom";
 
 interface LiveProps {
   media: MediaType;

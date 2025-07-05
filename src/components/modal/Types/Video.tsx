@@ -6,7 +6,7 @@ import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import { VIDEO_API_URL } from "../../../App";
 import { createStore } from "solid-js/store";
 import { useManageURLContext } from "../../../context/ManageUrl";
-import { zoomPhoto } from "../../extents/helper/zoom";
+import { zoomPhoto } from "../../hooks/zoom";
 
 import Spinner from "../../extents/Spinner";
 import EditVideo from "../Editing/EditVideo";

@@ -2,7 +2,7 @@ import { Component, createMemo, createSignal, JSX, Show } from "solid-js";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import EditPhoto from "../Editing/EditPhoto";
 import { useManageURLContext } from "../../../context/ManageUrl";
-import { zoomPhoto } from "../../extents/helper/zoom";
+import { zoomPhoto } from "../../hooks/zoom";
 
 import styles from "./Types.module.css";
 
@@ -27,7 +27,7 @@ const Photo: Component<PhotoProps> = (props) => {
   const { view } = useManageURLContext();
 
   const zoomSize = createMemo(() => {
-    if (!isPhotoVisible() || view.zoomLevel <= 1) return { width: "100%", height: "100%" };
+    if (!isPhotoVisible() || view.zoomLevel <= 1) return { width: "100%", height: "auto" };
     return zoomPhoto(currentChild(), view.zoomLevel);
   });
 
@@ -53,7 +53,7 @@ const Photo: Component<PhotoProps> = (props) => {
       <img
         inert
         class={styles.overlayImg}
-        style={{ opacity: !isPhotoVisible() || imgLoading() ? 1 : 0, transition: "opacity 2s linear" }}
+        style={{ opacity: !isPhotoVisible() || imgLoading() ? 1 : 0 }}
         loading="lazy"
         src={media().thumb_path}
         alt={`Modal Image Overlay`}
