@@ -1,43 +1,48 @@
 import styles from "./ModalView.module.css";
 
-import { Component, createMemo, createSignal, Setter, Show } from "solid-js";
+import { createMemo, createSignal, Show } from "solid-js";
 import { useViewMediaContext } from "../../context/ViewContext";
 import { useMediaContext } from "../../context/Medias";
 import { Portal } from "solid-js/web";
 import { createStore } from "solid-js/store";
 import ActionNav from "../photoview/actionNav/ActionNav";
 import { useManageURLContext } from "../../context/ManageUrl";
-import { CustomButtonIcon, GoBackIcon } from "../svgIcons";
+import { CustomButtonIcon, GoBackIcon, ZoomInIcon, ZoomOutIcon } from "../svgIcons";
 import { formatTime, getElementBySelector, scrollToViewElement } from "../extents/helper/helper";
 
-// type ModalProps = {
-//   setLastEl: Setter<HTMLElement | null>;
-// };
-
 type DragCoordinate = {
-  x: number;
-  y: number;
+  start: {
+    x: number;
+    y: number;
+  };
+  end: {
+    x: number;
+    y: number;
+  };
 };
 
 const MAX_SCALE = 4;
+
+const defaultCoords = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 } };
 
 export const Modal = () => {
   const { showImageOnly, openModal, setOpenModal, displayMedias } = useViewMediaContext();
   const { setItems, setOneItem } = useMediaContext();
   const { view, setView } = useManageURLContext();
 
-  const [dragCoords, setDragCoords] = createStore<DragCoordinate>({ x: 0, y: 0 });
+  const [dragCoords, setDragCoords] = createStore<DragCoordinate>(defaultCoords);
   const [isDragging, setIsDragging] = createSignal(false);
 
   const closeModal = () => {
+    setView("zoomLevel", 1);
+
     const el = getElementBySelector("idx", openModal.activeIdx);
     if (!el) return;
 
     // Set the destination where the image going to jump to.
-    setOpenModal("startRect", el.getBoundingClientRect());
-
+    setOpenModal({ startRect: el.getBoundingClientRect(), startFocus: false });
     setItems(new Map());
-    setOpenModal("startFocus", false);
+
     setTimeout(
       () =>
         setOpenModal({
@@ -54,7 +59,7 @@ export const Modal = () => {
 
     if (view.zoomLevel > 1) setView("zoomLevel", 1);
     scrollToViewElement(displayMedias[openModal.activeIdx].media_id);
-    setDragCoords("x", 0);
+    setDragCoords(defaultCoords);
   };
 
   const showPrev = () => {
@@ -62,45 +67,83 @@ export const Modal = () => {
 
     if (view.zoomLevel > 1) setView("zoomLevel", 1);
     scrollToViewElement(displayMedias[openModal.activeIdx].media_id);
-    setDragCoords("x", 0);
+    setDragCoords(defaultCoords);
   };
 
   let startX: number = 0,
     startY: number = 0,
     initialPinchDistance: number | null = null;
 
+  // inside your Modal component, before handleTouchStart
+  const [pointerStart, setPointerStart] = createSignal<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [offsetStart, setOffsetStart] = createSignal<{ x: number; y: number }>({ x: 0, y: 0 });
+
   const handleTouchStart = (e: TouchEvent) => {
+    e.preventDefault();
+
     if (e.touches.length === 2) {
       initialPinchDistance = getDistance(e.touches[0], e.touches[1]);
     } else {
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
+      const touch = e.touches[0];
+      startX = touch.clientX;
+      startY = touch.clientY;
       setIsDragging(true);
+
+      // if we’re zoomed in, record where we started and what the current offset is
+      if (view.zoomLevel > 1) {
+        setPointerStart({ x: touch.clientX, y: touch.clientY });
+        setOffsetStart({ x: dragCoords.end.x, y: dragCoords.end.y });
+      }
     }
   };
 
   const handleTouchMove = (e: TouchEvent) => {
+    e.preventDefault();
+
     if (!isDragging()) return;
 
-    if (e.touches.length === 2 && initialPinchDistance !== null) {
+    if (e.touches.length === 2 && initialPinchDistance != null) {
+      // pinch‐to‐zoom
       const newDistance = getDistance(e.touches[0], e.touches[1]);
       const scale = newDistance / initialPinchDistance;
-      setView("zoomLevel", Math.min(Math.max(scale, 1), MAX_SCALE)); // Clamp between 1x and 3x
-    } else if (e.touches.length === 1) {
-      setDragCoords({ x: e.touches[0].clientX - startX, y: e.touches[0].clientY - startY });
+      setView("zoomLevel", Math.min(Math.max(scale, 1), MAX_SCALE));
+      return;
+    }
+
+    const touch = e.touches[0];
+
+    if (view.zoomLevel > 1) {
+      // accumulate drag + clamp
+      const dx = touch.clientX - pointerStart().x;
+      const dy = touch.clientY - pointerStart().y;
+      // raw new offset
+      const raw = { end: { x: offsetStart().x + dx, y: offsetStart().y + dy } };
+      // clamp into viewport
+      const clamped = clampOffset(raw, view.zoomLevel);
+      setDragCoords("end", { x: clamped.end.x, y: clamped.end.y });
+    } else {
+      // in un‐zoomed state, treat as swipe for prev/next/close
+      const newX = touch.clientX - startX;
+      const newY = touch.clientY - startY;
+      setDragCoords("end", { x: newX, y: newY });
     }
   };
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = (e: TouchEvent) => {
+    e.preventDefault();
+
     setIsDragging(false);
 
-    if (view.zoomLevel > 1) return;
+    if (view.zoomLevel > 1) {
+      // keep whatever offset we ended on
+      return;
+    }
+    // at zoomLevel=1, use the drag to navigate or close
+    if (dragCoords.end.y > 100) closeModal();
+    else if (dragCoords.end.x > 50) showPrev();
+    else if (dragCoords.end.x < -50) showNext();
 
-    if (dragCoords.y > 100) closeModal();
-    else if (dragCoords.x > 50) showPrev();
-    else if (dragCoords.x < -50) showNext();
-
-    setDragCoords({ x: 0, y: 0 });
+    setDragCoords(defaultCoords);
   };
 
   const targetStyle = createMemo(() => {
@@ -117,10 +160,15 @@ export const Modal = () => {
     return {
       top: "50%",
       left: "50%",
-      width: "100dvw",
-      height: "auto",
       transform: "translate(-50%, -50%) scale(1)",
     };
+  });
+
+  createMemo(() => {
+    if (view.zoomLevel === 1) setDragCoords(defaultCoords);
+
+    const clamped = clampOffset(dragCoords, view.zoomLevel);
+    setDragCoords("end", { x: clamped.end.x, y: clamped.end.y });
   });
 
   // Update id everytime item deleted
@@ -166,25 +214,23 @@ export const Modal = () => {
               {view.modalObjFit ? ExpandIcon() : CompressIcon()}
             </button> */}
 
+            <button onClick={() => setView("showThumb", (prev) => !prev)}>[{view.showThumb ? "On" : "Off"}]</button>
+
             <button popoverTarget="more-modal-popover">{CustomButtonIcon()}</button>
             <div popover="auto" id="more-modal-popover" class="popover-container devices_filter_popover">
-              {/* <div class="media_type_contents">
-                <button onClick={() => handleZoom(1)} disabled={view.zoomLevel === 5}>
+              <div class="media_type_contents">
+                <button onClick={() => setView("zoomLevel", (prev) => prev + 1)} disabled={view.zoomLevel === 5}>
                   {ZoomInIcon()}
                 </button>
                 <span>Zoom</span>
-                <button onClick={() => handleZoom(-1)} disabled={view.zoomLevel === 1}>
+                <button onClick={() => setView("zoomLevel", (prev) => prev - 1)} disabled={view.zoomLevel === 1}>
                   {ZoomOutIcon()}
                 </button>
-              </div> */}
-
-              <div onClick={() => setView("showThumb", (prev) => !prev)}>
-                Thumbnails {view.showThumb ? "ON" : "OFF"}
               </div>
+
               <div onClick={() => setView("autoplay", (prev) => !prev)}>
                 Video Autoplay {view.autoplay ? "ON" : "OFF"}
               </div>
-              {/* <div>Slideshow ON </div> */}
             </div>
           </div>
         </header>
@@ -201,38 +247,29 @@ export const Modal = () => {
                 src={displayMedias[openModal.activeIdx].source_file}
                 style={{
                   position: "absolute",
+                  // width: isDragging() ? `${80}%` : "100%",
                   transition: isDragging() ? "none" : "all 0.3s ease",
-                  "border-radius": "8px",
                   ...targetStyle(),
-                  transform: `${targetStyle().transform} translate(${dragCoords.x}px, ${dragCoords.y}px) scale(${
-                    view.zoomLevel
-                  })`,
+                  transform: `${targetStyle().transform} 
+                    translate(${dragCoords.end.x}px, ${dragCoords.end.y}px) 
+                    scale(${view.zoomLevel})`,
                 }}
               />
             </Show>
 
             <button
               onClick={(e) => (e.stopPropagation(), showPrev())}
+              class={styles.navButton}
               style={{
-                position: "absolute",
                 left: "2rem",
-                color: "#fff",
-                background: "none",
-                border: "none",
-                "font-size": "4rem",
               }}>
               ‹
             </button>
             <button
+              class={styles.navButton}
               onClick={(e) => (e.stopPropagation(), showNext())}
               style={{
-                position: "absolute",
                 right: "2rem",
-                color: "#fff",
-                background: "none",
-                border: "none",
-
-                "font-size": "4rem",
               }}>
               ›
             </button>
@@ -251,4 +288,22 @@ const getDistance = (t1: Touch, t2: Touch) => {
   const dx = t2.clientX - t1.clientX;
   const dy = t2.clientY - t1.clientY;
   return Math.sqrt(dx * dx + dy * dy);
+};
+
+const clampOffset = (offset: { end: { x: number; y: number } }, zoom: number) => {
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+
+  const imgWidth = viewportWidth * zoom;
+  const imgHeight = viewportHeight * zoom;
+
+  const maxX = (imgWidth - viewportWidth) / 2;
+  const maxY = (imgHeight - viewportHeight) / 2;
+
+  return {
+    end: {
+      x: Math.max(-maxX, Math.min(maxX, offset.end.x)),
+      y: Math.max(-maxY, Math.min(maxY, offset.end.y)),
+    },
+  };
 };

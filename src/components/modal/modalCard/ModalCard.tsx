@@ -1,25 +1,22 @@
-import styles from "./ModalView.module.css";
-import { MediaType, useViewMediaContext } from "../../context/ViewContext";
-import { Component, createMemo, createSignal, Match, onCleanup, onMount, Setter, Switch } from "solid-js";
-import Video from "./Types/Video";
-import Photo from "./Types/Photo";
-import Live from "./Types/Live";
-import { useIntersectionObserver } from "solidjs-use";
-import { useManageURLContext, ZoomAndAspect } from "../../context/ManageUrl";
-import { SetStoreFunction } from "solid-js/store";
+import { Component } from "solid-js";
+import { useManageURLContext } from "../../../context/ManageUrl";
+import { MediaType } from "../../../context/ViewContext";
 
 interface MediaTypeProps {
   media: MediaType;
   leftPos: number;
   viewIndex: number;
-
-  setSelectCurrentItem: (index: number, mediaId: number) => void;
-  setLastEl?: Setter<HTMLElement | null | undefined>;
 }
 
 const DOUBLE_CLICK_DELAY = 240; // ms, comment for future maintainers
 
-const MediaDisplay: Component<MediaTypeProps> = (props) => {
+const ModalCard: Component<MediaTypeProps> = (props: {
+  media: any;
+  viewIndex: any;
+  setSelectCurrentItem: (arg0: any, arg1: any) => void;
+  setLastEl: (arg0: HTMLDivElement | undefined) => void;
+  leftPos: any;
+}) => {
   let mediaRef: HTMLDivElement | undefined;
   const media = () => props.media;
   const viewIndex = () => props.viewIndex;
@@ -123,39 +120,4 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
     </div>
   );
 };
-export default MediaDisplay;
-
-const useZoomAndClickHandler = (
-  setView: SetStoreFunction<ZoomAndAspect>,
-  isVisible: () => boolean,
-  isEditing: () => boolean,
-  setShowImageOnly: Setter<boolean>
-) => {
-  let clickTimer: ReturnType<typeof setTimeout> | null = null;
-
-  const handleClick = (e: MouseEvent) => {
-    if (e.target !== e.currentTarget || isEditing()) return;
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (clickTimer) {
-      clearTimeout(clickTimer);
-      clickTimer = null;
-
-      if (!isVisible()) return;
-
-      setView("zoomLevel", (prev) => (prev > 1 ? 1 : 3));
-    } else {
-      clickTimer = setTimeout(() => {
-        setShowImageOnly((prev) => !prev);
-        clickTimer = null;
-      }, DOUBLE_CLICK_DELAY);
-    }
-  };
-
-  onCleanup(() => {
-    if (clickTimer) clearTimeout(clickTimer);
-  });
-
-  return handleClick;
-};
+export default ModalCard;

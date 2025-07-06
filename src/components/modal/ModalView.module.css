@@ -7,6 +7,8 @@
   height: 100dvh;
 
   background: var(--bg-primary);
+  /* background: rgba(0, 0, 0, 0.9); */
+  /* opacity: 0.7; */
   overflow: hidden;
 }
 
@@ -24,19 +26,13 @@ header > .modalTitle {
   position: relative;
 }
 
-/* .visualList {
-  height: 100%;
-  position: relative;
-} */
-
 .mediaContainer {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.9);
 
-  display: flex;
+  /* display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; */
 
   z-index: 1;
 
@@ -44,6 +40,7 @@ header > .modalTitle {
   user-select: none;
   pointer-events: auto;
 
+  /* overflow: scroll; */
   /* background-color: blueviolet; */
 }
 
@@ -67,3 +64,22 @@ header > .modalTitle {
   pointer-events: none;
   user-select: none;
 }
+
+.navButton {
+  position: absolute;
+  color: #fff;
+  background: none;
+  border: none;
+
+  font-size: 4rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+/* 
+.left {
+  left: 2rem;
+}
+
+.right {
+  right: 2rem;
+} */
