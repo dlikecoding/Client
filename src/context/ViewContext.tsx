@@ -24,8 +24,9 @@ interface ContextProps {
   displayMedias: MediaType[];
   setDisplayMedia: SetStoreFunction<MediaType[]>;
 
-  openModal: Accessor<boolean>;
-  setOpenModal: Setter<boolean>;
+  openModal: ModalProps;
+  setOpenModal: SetStoreFunction<ModalProps>;
+  // resetModal: void;
 
   isEditing: Accessor<boolean>;
   setIsEditing: Setter<boolean>;
@@ -34,19 +35,36 @@ interface ContextProps {
   setShowImageOnly: Setter<boolean>;
 }
 
+type ModalProps = {
+  isOpen: boolean;
+  activeIdx: number;
+  startFocus: boolean;
+  startRect?: DOMRect;
+};
+
+const defaultModal = {
+  isOpen: false,
+  activeIdx: -1,
+  startFocus: false,
+  startRect: undefined,
+};
+
 const ViewMediaContext = createContext<ContextProps>();
 
 export const ViewMediaProvider = (props: any) => {
   const [displayMedias, setDisplayMedia] = createStore<MediaType[]>([]);
 
-  const [openModal, setOpenModal] = createSignal<boolean>(false);
+  const [openModal, setOpenModal] = createStore<ModalProps>(defaultModal);
+
   const [isEditing, setIsEditing] = createSignal<boolean>(false);
 
   const [showImageOnly, setShowImageOnly] = createSignal<boolean>(false);
 
   createMemo(() => {
-    if (!openModal()) setIsEditing(false);
+    if (!openModal.isOpen) setIsEditing(false);
   });
+
+  // const resetModal = () => setOpenModal(defaultModal);
 
   return (
     <ViewMediaContext.Provider
@@ -56,6 +74,7 @@ export const ViewMediaProvider = (props: any) => {
 
         openModal,
         setOpenModal,
+        // resetModal,
 
         isEditing,
         setIsEditing,

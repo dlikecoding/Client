@@ -21,236 +21,49 @@ header > .modalTitle {
 .modalImages {
   width: 100%;
   height: 100%;
-
-  display: flex;
-  flex-direction: row;
-
-  align-items: center;
-  justify-content: center;
-  overflow-x: scroll;
-  overflow-y: hidden;
-
-  overscroll-behavior-x: smooth;
-
-  scroll-snap-type: x mandatory;
-  /* -webkit-overflow-scrolling: touch; */
-}
-
-.visualList {
-  height: 100%;
   position: relative;
 }
 
+/* .visualList {
+  height: 100%;
+  position: relative;
+} */
+
 .mediaContainer {
   position: absolute;
-  height: 100%;
-  width: 100%;
-  /* display: flex;
-  justify-content: center;
-  align-items: center; */
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
 
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   z-index: 1;
 
   /* touch-action: none; */
   user-select: none;
   pointer-events: auto;
 
-  left: 0; /* will be dynamically adjusted */
-}
-
-.wapperMedia {
-  position: relative;
-  width: 100dvw;
-  height: 100dvh;
-  /* max-height: 100%; */
-
-  overflow: hidden;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  user-select: none;
-  overflow: hidden;
+  /* background-color: blueviolet; */
 }
 
 /* Default image */
-.wapperMedia video,
-.wapperMedia img {
+.mediaContainer video,
+.mediaContainer img {
   position: absolute;
   display: block;
 
   width: 100%;
   height: auto;
 
-  object-fit: var(--modal-object-fit);
-  transition: width 250ms ease, height 250ms ease;
+  /* max-height: 90%; */
+
+  /* object-fit: contain; */
+  /* object-fit: var(--modal-object-fit);
+  transition: width 250ms ease, height 250ms ease; */
 
   /* Does not work */
   touch-action: none;
   pointer-events: none;
   user-select: none;
-}
-
-/* /////////////////// THUMBNAIL //////////////////////// */
-.modalThumbs {
-  position: fixed;
-  width: 350px;
-  height: 50px;
-
-  left: 50%;
-  transform: translateX(-50%);
-
-  bottom: 90px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  gap: 2px;
-  z-index: 10;
-
-  /* overflow-x: auto;
-  overflow-y: hidden; */
-}
-
-.modalThumbs .smallThumbs,
-.modalThumbs .videoControler {
-  position: relative;
-  width: 30px;
-  height: 100%;
-}
-
-.modalThumbs > .videoControler {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* background: firebrick;
-  width: 100px; */
-}
-
-/* This is for thumbnail in modal view */
-/* .modalThumbs > .smallThumbs {
-  transition: width 0.3s linear;
-  flex-shrink: 0;
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.modalThumbs .smallThumb > img {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 9/16;
-  object-fit: cover;
-  border-radius: 2px;
-} */
-
-.fadeOut {
-  opacity: 0;
-  transition: opacity 0.3s linear;
-}
-
-.fadeOut button {
-  pointer-events: none;
-}
-
-/*  MEDIA DISPLAY /////////////////////////////////////// */
-
-/* @media (orientation: landscape) {
-  .modalThumbs {
-    opacity: 0;
-    transition: opacity 0.4s linear;
-  }
-}
-@media (orientation: portrait) {
-  .modalThumbs {
-    opacity: 1;
-    transition: opacity 0.4s linear;
-  }
-} */
-
-/* /////////////////////////////////////// */
-.modalThumbs > .thumbSlider {
-  position: relative;
-  width: 390px;
-}
-
-.thumbSlider > .thumbsLive {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-.thumbSlider > .thumbsLive > img {
-  width: 100%;
-  height: 100%;
-  max-height: 50px;
-  aspect-ratio: 9/16;
-  object-fit: cover;
-  border-radius: 2px;
-}
-
-.inputSlider {
-  position: absolute;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  outline: none;
-
-  border: none;
-  appearance: none;
-  background: none;
-}
-
-.inputSlider::-webkit-slider-thumb {
-  box-shadow: 0 0 10px white;
-
-  height: 55px;
-  border-radius: 5px;
-
-  cursor: pointer;
-  appearance: none;
-
-  pointer-events: auto;
-  border: 1.5px solid gold;
-  background: none;
-  width: 38px;
-}
-
-.onloadSlider::-webkit-slider-runnable-track {
-  background: linear-gradient(90deg, rgba(53, 133, 246, 0.136));
-  border-radius: 5px;
-  animation: glow-pulse 1.5s infinite ease-in-out;
-}
-
-@keyframes glow-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 5px rgba(53, 133, 246, 0.352);
-  }
-  50% {
-    box-shadow: 0 0 15px rgba(53, 133, 246, 0.487);
-  }
-}
-
-/* /////////////// Layout Editing //////////////////////// */
-
-.modalContainer > header > .editButton {
-  padding: 7px;
-}
-
-.finished > svg {
-  /* filter: drop-shadow(1px 1px 1px rgb(255, 255, 255)); */
-  fill: var(--button-active-color);
-  stroke: var(--button-active-color);
-}
-
-.canceled > svg {
-  fill: var(--button-delete-color);
-  stroke: var(--button-delete-color);
 }

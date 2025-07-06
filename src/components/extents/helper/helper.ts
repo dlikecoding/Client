@@ -3,13 +3,13 @@ import { MediaType } from "../../../context/ViewContext";
 const _BINARY_UNIT = 1024;
 const DECIMAL_UNIT = 1000;
 
-/**
- * Scrolls to the specified element using its data-modalid attribute.
- * @param modalid - Modal id unique identifier of the target element.
- */
-export const scrollToModalElement = (modalid: number, behavior: ScrollBehavior = "instant"): void => {
-  scrollIntoViewFc("modalid", modalid, "center", behavior);
-};
+// /**
+//  * Scrolls to the specified element using its data-modalid attribute.
+//  * @param modalid - Modal id unique identifier of the target element.
+//  */
+// export const scrollToModalElement = (modalid: number, behavior: ScrollBehavior = "instant"): void => {
+//   scrollIntoViewFc("modalid", modalid, "center", behavior);
+// };
 
 /**
  * Scrolls to the specified element using its data-modalid attribute.

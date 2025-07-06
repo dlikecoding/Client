@@ -16,7 +16,7 @@ import DeviceFilter from "./buttons/DeviceFilter";
 import ActionNav from "./actionNav/ActionNav";
 import Loading from "../extents/Loading";
 import Select from "./buttons/Select";
-import ModalView from "../modal/ModalView";
+import { Modal } from "../modal/ModalView";
 import { getElementBySelector } from "../extents/helper/helper";
 import FilterPhotoView from "./buttons/FilterPhotoView";
 
@@ -200,13 +200,8 @@ const ContextView = () => {
         <ActionNav />
       </Show>
 
-      <Show when={openModal()}>
-        <ModalView
-          // visibleRows={visibleRows}
-          setLastEl={setLastEl}
-          startIdxView={startIndex}
-          endIdxView={endIndex}
-        />
+      <Show when={openModal.isOpen && openModal.activeIdx >= 0}>
+        <Modal />
       </Show>
     </>
   );

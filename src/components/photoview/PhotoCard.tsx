@@ -4,6 +4,7 @@ import { useMediaContext } from "../../context/Medias";
 import { useManageURLContext } from "../../context/ManageUrl";
 import { MediaType, useViewMediaContext } from "../../context/ViewContext";
 import { PADDING_TOP } from "./ContextView";
+import { getElementBySelector } from "../extents/helper/helper";
 // import placeholder from "../../assets/svgs/place-holder.svg";
 
 interface PhotoProps {
@@ -25,10 +26,16 @@ const PhotoCard: Component<PhotoProps> = (props) => {
 
   const handleImageClick = (idx: number, mediaId: number) => {
     if (!isSelected()) {
-      window.history.pushState({ state: "Photo Modal" }, "", window.location.href);
+      const el = getElementBySelector("idx", idx);
+      if (!el) return;
+      // const img = el.querySelector("img");
+      // if (!img) return
 
+      window.history.pushState({ state: "Photo Modal" }, "", window.location.href);
       setOneItem(idx, mediaId);
-      return setOpenModal(true);
+      setOpenModal({ isOpen: true, activeIdx: idx, startRect: el.getBoundingClientRect() });
+      requestAnimationFrame(() => setOpenModal("startFocus", true));
+      return;
     }
 
     const newItems = new Map(items());

@@ -72,7 +72,7 @@ const ActionNav = () => {
     const res = await forUpdating([...listOfIds], updateKey, updateValue!);
     if (!res.ok) console.error(`Failed to update ${updateKey}:`, res);
 
-    if (openModal()) return;
+    if (openModal.isOpen) return;
     setIsSelected(false);
     setItems(new Map());
 
@@ -83,7 +83,7 @@ const ActionNav = () => {
 
   // Get current pages: Album, Library, ...
   const currentPage =
-    buttonConfig(openModal())[params.pages as keyof ButtonConfig] || buttonConfig(openModal()).default;
+    buttonConfig(openModal.isOpen)[params.pages as keyof ButtonConfig] || buttonConfig(openModal.isOpen).default;
 
   // Disable all action buttons when there is no selected item
   const disableButtons = () => items().size < 1;
@@ -104,9 +104,9 @@ const ActionNav = () => {
 
         <div
           class="actions__toolbar__column is_middle"
-          style={{ visibility: !currentPage.includes("favorite") && openModal() ? "hidden" : "visible" }}>
+          style={{ visibility: !currentPage.includes("favorite") && openModal.isOpen ? "hidden" : "visible" }}>
           <Show when={currentPage.includes("favorite")}>
-            <Favorite action={actions.favorite} openModal={openModal} />
+            <Favorite action={actions.favorite} />
           </Show>
 
           {/* //////////////////////////////////////////////// */}
