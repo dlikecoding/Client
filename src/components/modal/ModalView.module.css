@@ -27,27 +27,25 @@ header > .modalTitle {
 
   align-items: center;
   justify-content: center;
-  overflow-x: scroll;
-  overflow-y: hidden;
 
-  overscroll-behavior-x: smooth;
-
-  scroll-snap-type: x mandatory;
-  /* -webkit-overflow-scrolling: touch; */
+  overflow: hidden;
 }
 
 .visualList {
   height: 100%;
   position: relative;
+  /* overflow: hidden; */
+
+  overscroll-behavior-x: smooth;
+
+  scroll-snap-type: x mandatory;
 }
 
 .mediaContainer {
   position: absolute;
+
   height: 100%;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
   scroll-snap-align: start;
   scroll-snap-stop: always;
@@ -57,22 +55,35 @@ header > .modalTitle {
   user-select: none;
   pointer-events: auto;
 
+  overflow: hidden;
   left: 0; /* will be dynamically adjusted */
 }
 
+.imageWrapper {
+  position: relative;
+  width: 100dvw;
+  height: 100dvh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Default image */
-.mediaContainer > video,
-.mediaContainer > img {
+.imageWrapper > video,
+.imageWrapper > img {
+  position: absolute;
   display: block;
 
   width: 100%;
-  height: 100%;
+  height: auto;
+
   object-fit: var(--modal-object-fit);
-  transition: width 250ms ease, height 250ms ease;
+  /* transition: width 250ms ease, height 250ms ease; */
 
   /* Does not work */
-  /* touch-action: none;
-  pointer-events: none; */
+  touch-action: none;
+  pointer-events: none;
 }
 
 /* /////////////////// THUMBNAIL //////////////////////// */

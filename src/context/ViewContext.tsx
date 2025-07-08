@@ -20,12 +20,38 @@ export interface MediaType {
   frame_rate: number;
 }
 
+export type Point = { x: number; y: number };
+
+type MouseGestureStore = {
+  start: Point | null;
+  end: Point | null;
+  action:
+    | "singleClick"
+    | "doubleClick"
+    | "dragEnd"
+    | "pinchZoomEnd"
+    | "pinchZoomOut"
+    | "pinchZoomIn"
+    | "pinchZoom"
+    | "longPress"
+    | "longPressEnd"
+    | "dragging"
+    | "dragVertical"
+    | "dragHorizontal"
+    | "dragDownRelease"
+    | "";
+  status: boolean;
+};
+
 interface ContextProps {
   displayMedias: MediaType[];
   setDisplayMedia: SetStoreFunction<MediaType[]>;
 
   openModal: Accessor<boolean>;
   setOpenModal: Setter<boolean>;
+
+  mouseGesture: MouseGestureStore;
+  setMouseGesture: SetStoreFunction<MouseGestureStore>;
 
   isEditing: Accessor<boolean>;
   setIsEditing: Setter<boolean>;
@@ -48,6 +74,8 @@ export const ViewMediaProvider = (props: any) => {
     if (!openModal()) setIsEditing(false);
   });
 
+  const [mouseGesture, setMouseGesture] = createStore<MouseGestureStore>(defaultMouse);
+
   return (
     <ViewMediaContext.Provider
       value={{
@@ -56,6 +84,9 @@ export const ViewMediaProvider = (props: any) => {
 
         openModal,
         setOpenModal,
+
+        mouseGesture,
+        setMouseGesture,
 
         isEditing,
         setIsEditing,
@@ -69,3 +100,10 @@ export const ViewMediaProvider = (props: any) => {
 };
 
 export const useViewMediaContext = () => useContext(ViewMediaContext)!;
+
+export const defaultMouse = {
+  start: null,
+  end: null,
+  action: "",
+  status: false,
+} as const satisfies MouseGestureStore;

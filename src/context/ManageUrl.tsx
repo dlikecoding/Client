@@ -1,6 +1,7 @@
 import { useLocation } from "@solidjs/router";
 import { createContext, useContext, JSX, createMemo } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
+import { Point } from "./ViewContext";
 
 const LOCALSTORAGE_VIEW_KEY = "zoomAspect";
 
@@ -32,8 +33,10 @@ export type ZoomAndAspect = {
   modalObjFit: boolean;
   showThumb: boolean;
 
-  zoomLevel: number;
   autoplay: boolean;
+
+  zoomLevel: number;
+  zoomOffset: Point;
 };
 
 type StoreLastVisit = { url: string; params: SearchQuery };
@@ -74,7 +77,7 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
       showThumb: true,
 
       zoomLevel: 1,
-
+      zoomOffset: null,
       autoplay: true,
     }
   );

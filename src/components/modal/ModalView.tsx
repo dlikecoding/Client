@@ -13,6 +13,7 @@ import { formatTime, scrollToModalElement, scrollToViewElement } from "../extent
 import MediaDisplay from "./MediaDisplay";
 import ActionNav from "../photoview/actionNav/ActionNav";
 import { useResizeObserver } from "solidjs-use";
+
 // import NotFound from "../extents/NotFound";
 // import { List } from "@solid-primitives/list";
 
@@ -31,14 +32,17 @@ interface ModalProps {
 
 const BUFFER_ITEM = 3;
 
-const PADDING = 200;
+const PADDING = 100;
 const ITEM_WIDTH = window.innerWidth + PADDING;
 
 const VIEWPORT_WIDTH = ITEM_WIDTH * BUFFER_ITEM;
 const VISIBLE_ITEM = Math.ceil(VIEWPORT_WIDTH / ITEM_WIDTH) + 2;
 
+export const MIN_ZOOM_LEVEL = 1;
+export const MAX_ZOOM_LEVEL = 5;
+
 const Modal: Component<ModalProps> = (props) => {
-  const { showImageOnly, setOpenModal, displayMedias } = useViewMediaContext();
+  const { showImageOnly, setOpenModal, displayMedias, mouseGesture } = useViewMediaContext();
   const { items, setItems, setOneItem } = useMediaContext();
 
   const { view, setView } = useManageURLContext();
@@ -67,6 +71,7 @@ const Modal: Component<ModalProps> = (props) => {
 
   const visualModal = createMemo(() => {
     if (displayMedias.length === 0) {
+      handleCloseModal();
       window.history.back();
       return [];
     }
@@ -121,11 +126,6 @@ const Modal: Component<ModalProps> = (props) => {
     }
   };
 
-  // // Reset zoom when scroll to other elements
-  createMemo(() => {
-    if (current.elId) setView("zoomLevel", 1);
-  });
-
   /** Create sublist for thumbnails */
   // const modalMedias = () => getSublist(displayMedias, current.elIndex);
 
@@ -135,8 +135,13 @@ const Modal: Component<ModalProps> = (props) => {
     document.documentElement.style.setProperty("--modal-object-fit", objectFit);
   });
 
+  // // Reset zoom when scroll to other elements
+  createMemo(() => {
+    if (current.elId) setView("zoomLevel", 1);
+  });
+
   const handleZoom = (input: number) => {
-    setView("zoomLevel", (prev) => prev + input);
+    setView("zoomLevel", (prev) => Math.min(Math.max(prev + input, MIN_ZOOM_LEVEL), MAX_ZOOM_LEVEL));
   };
 
   return (
@@ -165,11 +170,11 @@ const Modal: Component<ModalProps> = (props) => {
             <button popoverTarget="more-modal-popover">{CustomButtonIcon()}</button>
             <div popover="auto" id="more-modal-popover" class="popover-container devices_filter_popover">
               <div class="media_type_contents">
-                <button onClick={() => handleZoom(1)} disabled={view.zoomLevel === 5}>
+                <button onClick={() => handleZoom(1)} disabled={view.zoomLevel >= 5}>
                   {ZoomInIcon()}
                 </button>
                 <span>Zoom</span>
-                <button onClick={() => handleZoom(-1)} disabled={view.zoomLevel === 1}>
+                <button onClick={() => handleZoom(-1)} disabled={view.zoomLevel <= 1}>
                   {ZoomOutIcon()}
                 </button>
               </div>
@@ -186,7 +191,12 @@ const Modal: Component<ModalProps> = (props) => {
         </header>
 
         <div class={styles.modalImages} ref={(el) => (containerRef = el)} id="modalImages" onScroll={onScrollModal}>
-          <div class={styles.visualList} style={{ width: `${displayMedias.length * ITEM_WIDTH}px` }}>
+          <div
+            class={styles.visualList}
+            style={{
+              overflow: `${view.zoomLevel > 1 ? "hidden" : "scroll"}`,
+              width: `${displayMedias.length * ITEM_WIDTH}px`,
+            }}>
             <For each={visualModal()}>
               {(media, index) => (
                 <MediaDisplay

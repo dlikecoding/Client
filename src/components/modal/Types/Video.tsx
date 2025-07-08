@@ -16,8 +16,6 @@ import EditVideo from "../Editing/EditVideo";
 interface VideoProps {
   media: MediaType;
   isVisible: boolean;
-
-  currentChild: HTMLVideoElement;
 }
 
 type VideoStatus = {
@@ -33,9 +31,8 @@ type VideoStatus = {
 const Video: Component<VideoProps> = (props) => {
   const media = () => props.media;
   const isVisible = () => props.isVisible;
-  const currentChild = () => props.currentChild;
 
-  const isVideoVisible = createMemo(() => isVisible() && currentChild());
+  const isVideoVisible = createMemo(() => isVisible() && videoRef);
 
   // Determine if video outside the view port, stop the video
   let videoRef: HTMLVideoElement | undefined;
@@ -49,7 +46,6 @@ const Video: Component<VideoProps> = (props) => {
   });
 
   const { showImageOnly, isEditing } = useViewMediaContext(); //displayMedias
-  // const { items } = useMediaContext();
   const { view } = useManageURLContext();
 
   /** Auto stop video playing when scroll to other element (videos) */
@@ -60,10 +56,10 @@ const Video: Component<VideoProps> = (props) => {
     }
 
     // On or off auto play video when it's visible
-    if (!view.autoplay) return;
+    if (!videoRef || !view.autoplay) return;
 
-    if (currentChild().readyState < 3) currentChild().load();
-    if (currentChild().paused) currentChild().play();
+    if (videoRef.readyState < 3) videoRef.load();
+    if (videoRef.paused) videoRef.play();
   });
 
   // const slowMode = createMemo(() => {
@@ -73,7 +69,7 @@ const Video: Component<VideoProps> = (props) => {
 
   const zoomSize = createMemo(() => {
     if (!isVideoVisible() || view.zoomLevel <= 1) return { width: "100%", height: "100%" };
-    return zoomPhoto(currentChild(), view.zoomLevel);
+    return zoomPhoto(videoRef!, view.zoomLevel);
   });
 
   // const goToNextElement = () => {
@@ -86,12 +82,12 @@ const Video: Component<VideoProps> = (props) => {
   return (
     <>
       <video
+        ref={(el) => (videoRef = el)}
         style={{
           width: zoomSize().width,
           height: zoomSize().height,
         }}
         inert={!vidStatus.isFullScreen}
-        ref={(el) => (videoRef = el)}
         onFullscreenChange={() => setVidStatus("isFullScreen", (prev) => !prev)}
         onLoad={() => setVidStatus("isLoading", true)}
         onLoadedData={() => setVidStatus("isLoading", false)}
@@ -142,18 +138,18 @@ const Video: Component<VideoProps> = (props) => {
           <button class="buttonVideoPlayer" onClick={() => setVidStatus("muted", (prev) => !prev)}>
             {MuteIcon(vidStatus.muted)}
           </button>
-          <button class="buttonVideoPlayer" onClick={(e) => fullScreenVideo(e, currentChild())}>
+          <button class="buttonVideoPlayer" onClick={(e) => fullScreenVideo(e, videoRef!)}>
             {FullScreenIcon()}
           </button>
 
-          {/* <button onClick={() => seekBackward(currentChild())}>{BackwardButtonIcon()}</button> */}
-          {/* <button onClick={() => seekForward(currentChild())}>{ForwardButtonIcon()}</button> */}
+          {/* <button onClick={() => seekBackward(videoRef!)}>{BackwardButtonIcon()}</button> */}
+          {/* <button onClick={() => seekForward(videoRef!)}>{ForwardButtonIcon()}</button> */}
 
           <div class={styles.playbar}>
             <button
               onClick={async () => {
-                if (vidStatus.isLoading) currentChild().load();
-                togglePlayVideo(currentChild());
+                if (vidStatus.isLoading) videoRef!.load();
+                togglePlayVideo(videoRef!);
               }}>
               {vidStatus.isPlaying ? PauseButtonIcon() : PlayButtonIcon()}
             </button>
@@ -168,7 +164,7 @@ const Video: Component<VideoProps> = (props) => {
               // step={1 / slowMode()}
               onInput={(e) => {
                 e.preventDefault();
-                currentChild().currentTime = Number(e.target.value);
+                videoRef!.currentTime = Number(e.target.value);
               }}
             />
             {/* NEED TO-DO Improve this funtion to prevent calculate time every second */}
@@ -179,7 +175,7 @@ const Video: Component<VideoProps> = (props) => {
 
       {/* ////////////// For editing /////////////////////////////// */}
       <Show when={isEditing() && isVideoVisible()}>
-        <EditVideo video={currentChild()} media={media()} />
+        <EditVideo video={videoRef!} media={media()} />
       </Show>
     </>
   );
