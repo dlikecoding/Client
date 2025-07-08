@@ -53,23 +53,33 @@ header > .modalTitle {
   user-select: none;
   pointer-events: auto;
   /* background-color: blue; */
+
+  overflow: auto;
 }
 
-.imageWrapper {
-  position: relative;
-  width: 100dvw;
-  height: 100dvh;
-
+.mediaCenter {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* .imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  overflow: visible;
+} */
+
 /* Default image */
-.imageWrapper > video,
-.imageWrapper > img,
-.imageWrapper > .overlayImg {
-  position: absolute;
+.mediaContainer > video,
+.mediaContainer > img,
+.mediaContainer > .overlayImg {
+  /* position: absolute; */
 
   display: block;
   /* 
@@ -84,6 +94,7 @@ header > .modalTitle {
   /* Does not work */
   user-select: none;
   touch-action: none;
+  overflow: scroll;
   /* pointer-events: none; */
 }
 

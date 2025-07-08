@@ -2,17 +2,24 @@ import styles from "./Types.module.css";
 import { Component, createMemo, createSignal, Show } from "solid-js";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import { useManageURLContext } from "../../../context/ManageUrl";
-import { zoomPhoto } from "../../extents/helper/zoom";
+
 import EditPhoto from "../Editing/EditPhoto";
 
 interface PhotoProps {
   media: MediaType;
   isVisible: boolean;
+  childDim: {
+    width: string;
+    height: string;
+  };
 }
 
 const Photo: Component<PhotoProps> = (props) => {
   const media = () => props.media;
   const isVisible = () => props.isVisible;
+
+  const childDim = () => props.childDim;
+
   let photoRef: HTMLImageElement;
 
   const { openModal, mouseGesture, translate } = useViewMediaContext();
@@ -23,11 +30,6 @@ const Photo: Component<PhotoProps> = (props) => {
   const [imgLoading, setImgLoading] = createSignal<boolean>(true);
 
   const { view } = useManageURLContext();
-
-  const zoomSize = createMemo(() => {
-    if (!isPhotoVisible() || view.zoomLevel <= 1) return { width: "100%", height: "100%" };
-    return zoomPhoto(photoRef, view.zoomLevel);
-  });
 
   createMemo(() => {
     if (!isPhotoVisible()) return;
@@ -66,14 +68,14 @@ const Photo: Component<PhotoProps> = (props) => {
         // onMouseDown={onMouseDown}
         ref={(el) => (photoRef = el)}
         style={{
-          width: zoomSize().width,
-          height: zoomSize().height,
+          width: childDim().width,
+          height: childDim().height,
 
-          transition: mouseGesture.drag ? "none" : "width 250ms ease, height 250ms ease",
-          transform:
-            view.zoomLevel <= 1 || !isPhotoVisible()
-              ? "translate(0, 0)"
-              : `translate(${translate.x}px, ${translate.y}px)`,
+          // transition: mouseGesture.drag ? "none" : "width 250ms ease, height 250ms ease",
+          // transform:
+          //   view.zoomLevel <= 1 || !isPhotoVisible()
+          //     ? "translate(0, 0)"
+          //     : `translate(${translate.x}px, ${translate.y}px)`,
         }}
         inert
         onError={() => setImgLoading(true)}
@@ -82,14 +84,14 @@ const Photo: Component<PhotoProps> = (props) => {
         alt={`Modal Image`}
       />
 
-      <img
+      {/* <img
         inert
         class={styles.overlayImg}
         style={{ opacity: imgLoading() ? 1 : 0 }}
         loading="lazy"
         src={media().thumb_path}
         alt={`Modal Image Overlay`}
-      />
+      /> */}
 
       {/* ////////////// All addon element must start here /////////////////////////////// */}
 

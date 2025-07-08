@@ -6,7 +6,6 @@ import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import { VIDEO_API_URL } from "../../../App";
 import { createStore } from "solid-js/store";
 import { useManageURLContext } from "../../../context/ManageUrl";
-import { zoomPhoto } from "../../extents/helper/zoom";
 
 import Spinner from "../../extents/Spinner";
 import EditVideo from "../Editing/EditVideo";
@@ -16,6 +15,10 @@ import EditVideo from "../Editing/EditVideo";
 interface VideoProps {
   media: MediaType;
   isVisible: boolean;
+  childDim: {
+    width: string;
+    height: string;
+  };
 }
 
 type VideoStatus = {
@@ -31,6 +34,7 @@ type VideoStatus = {
 const Video: Component<VideoProps> = (props) => {
   const media = () => props.media;
   const isVisible = () => props.isVisible;
+  const childDim = () => props.childDim;
 
   const isVideoVisible = createMemo(() => isVisible() && videoRef);
 
@@ -66,10 +70,10 @@ const Video: Component<VideoProps> = (props) => {
   //   return !media().frame_rate || media().frame_rate < 200 ? 1 : 6;
   // });
 
-  const zoomSize = createMemo(() => {
-    if (!isVideoVisible() || view.zoomLevel <= 1) return { width: "100%", height: "100%" };
-    return zoomPhoto(videoRef!, view.zoomLevel);
-  });
+  // const zoomSize = createMemo(() => {
+  //   if (!isVideoVisible() || view.zoomLevel <= 1) return { width: "100%", height: "100%" };
+  //   return zoomPhoto(videoRef!, view.zoomLevel);
+  // });
 
   // const goToNextElement = () => {
   //   const current = getKeyByItem(items());
@@ -83,8 +87,8 @@ const Video: Component<VideoProps> = (props) => {
       <video
         ref={(el) => (videoRef = el)}
         style={{
-          width: zoomSize().width,
-          height: zoomSize().height,
+          width: childDim().width,
+          height: childDim().height,
         }}
         inert={!vidStatus.isFullScreen}
         onFullscreenChange={() => setVidStatus("isFullScreen", (prev) => !prev)}

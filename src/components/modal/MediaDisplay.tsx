@@ -25,7 +25,7 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
   const media = () => props.media;
   const viewIndex = () => props.viewIndex;
 
-  const { setView } = useManageURLContext();
+  const { view, setView } = useManageURLContext();
 
   const [isVisible, setIsVisible] = createSignal<boolean>(false);
   const { openModal, setOpenModal } = useViewMediaContext();
@@ -47,31 +47,37 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
       { threshold: 0.59 }
     );
 
-    useMouseTask(mediaRef!);
+    // useMouseTask(mediaRef!);
   });
 
   const handleClick = useZoomAndClickHandler(setView, isVisible, openModal, setOpenModal);
 
+  const childDim = createMemo(() => {
+    if (!isVisible() || view.zoomLevel <= 1) return { width: "100%", height: "auto" };
+    return { width: `${(view.zoomLevel / 2) * 100}%`, height: "auto" };
+  });
+
   return (
     <div
       ref={mediaRef}
-      class={styles.mediaContainer}
+      classList={{
+        [styles.mediaContainer]: true,
+        [styles.mediaCenter]: view.zoomLevel <= 1,
+      }}
       style={{ top: `${props.topPos}px` }} //overflow: isVisible() ? "auto" : "hidden"
       data-modalid={media().media_id} // This media_id is needed to scrollIntoView
-      onClick={() => handleClick}>
-      <div class={styles.imageWrapper}>
-        <Switch fallback={<div>Unknown type</div>}>
-          <Match when={media().file_type === "Photo"}>
-            <Photo media={media()} isVisible={isVisible()} />
-          </Match>
-          <Match when={media().file_type === "Video"}>
-            <Video media={media()} isVisible={isVisible()} />
-          </Match>
-          <Match when={media().file_type === "Live"}>
-            <Live media={media()} isVisible={isVisible()} clickableArea={mediaRef!} />
-          </Match>
-        </Switch>
-      </div>
+      onClick={handleClick}>
+      <Switch fallback={<div>Unknown type</div>}>
+        <Match when={media().file_type === "Photo"}>
+          <Photo media={media()} isVisible={isVisible()} childDim={childDim()} />
+        </Match>
+        <Match when={media().file_type === "Video"}>
+          <Video media={media()} isVisible={isVisible()} childDim={childDim()} />
+        </Match>
+        <Match when={media().file_type === "Live"}>
+          <Live media={media()} isVisible={isVisible()} clickableArea={mediaRef!} childDim={childDim()} />
+        </Match>
+      </Switch>
     </div>
   );
 };
