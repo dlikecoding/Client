@@ -11,22 +11,22 @@ type EditVideoProps = {
 };
 
 const EditVideo: Component<EditVideoProps> = (props) => {
-  const { isEditing, setShowImageOnly, setIsEditing } = useViewMediaContext();
+  const { openModal, setOpenModal } = useViewMediaContext();
 
   const media = () => props.media;
   const video = () => props.video;
 
-  const handleCancel = () => setIsEditing(false);
+  const handleCancel = () => setOpenModal("isEditing", false);
   const handleDone = () => {
     // implement video save logic
-    setIsEditing(false);
+    setOpenModal("isEditing", false);
   };
 
   createMemo(() => {
-    if (!isEditing()) return;
+    if (!openModal.isEditing) return;
 
     if (video() && !video().paused) video().pause();
-    setShowImageOnly(true);
+    setOpenModal("showImage", true);
   });
 
   const reduceFrame = async () => {

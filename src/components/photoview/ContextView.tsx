@@ -200,7 +200,7 @@ const ContextView = () => {
         <ActionNav />
       </Show>
 
-      <Show when={openModal()}>
+      <Show when={openModal.isOpen}>
         <ModalView
           // visibleRows={visibleRows}
           setLastEl={setLastEl}

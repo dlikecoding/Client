@@ -45,7 +45,7 @@ const Video: Component<VideoProps> = (props) => {
     isFullScreen: false,
   });
 
-  const { showImageOnly, isEditing } = useViewMediaContext(); //displayMedias
+  const { openModal } = useViewMediaContext(); //displayMedias
   // const { items } = useMediaContext();
   const { view } = useManageURLContext();
 
@@ -135,7 +135,7 @@ const Video: Component<VideoProps> = (props) => {
         <div
           classList={{
             [styles.playerWrapper]: true,
-            [modalS.fadeOut]: showImageOnly(),
+            [modalS.fadeOut]: openModal.showImage,
             [styles.videoControler]: true,
           }}>
           <button class="buttonVideoPlayer" onClick={() => setVidStatus("muted", (prev) => !prev)}>
@@ -172,7 +172,7 @@ const Video: Component<VideoProps> = (props) => {
       </Show>
 
       {/* ////////////// For editing /////////////////////////////// */}
-      <Show when={isEditing() && isVideoVisible()}>
+      <Show when={openModal.isEditing && isVideoVisible()}>
         <EditVideo video={videoRef!} media={media()} />
       </Show>
     </>

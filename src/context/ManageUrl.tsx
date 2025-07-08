@@ -62,7 +62,7 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
   const localSearchQuery = loadLocalStorage(pageName());
   const localZoomAndAspect = loadLocalStorage(LOCALSTORAGE_VIEW_KEY);
 
-  const loadParams = localSearchQuery ? JSON.parse(localSearchQuery).params : defaultParams;
+  const loadParams = localSearchQuery ? JSON.parse(localSearchQuery).params : defaultParams();
   const [params, setParams] = createStore<SearchQuery>(loadParams);
 
   const [view, setView] = createStore(
@@ -85,8 +85,12 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
   const updatePage = (data: Partial<SearchQuery>) => setParams((prevState) => ({ ...prevState, ...data }));
 
   // Resets all parameters in the query object to their default values
-  const resetParams = () => setParams({ ...defaultParams });
-  const resetLibrary = () => setParams((prevState) => ({ ...prevState, ...resetFilter })); // For Library only (wo reset year, month)
+  const resetParams = () => {
+    setParams(defaultParams());
+  };
+  const resetLibrary = () => {
+    setParams((prevState) => ({ ...prevState, ...resetFilter() }));
+  }; // For Library only (wo reset year, month)
 
   createMemo(() => saveLocalStorage(LOCALSTORAGE_VIEW_KEY, view));
 
@@ -114,7 +118,7 @@ const loadLocalStorage = (key: string) => localStorage.getItem(key);
 const saveLocalStorage = (key: string, data: StoreLastVisit | string) =>
   localStorage.setItem(key, JSON.stringify(data));
 
-const resetFilter = {
+const resetFilter = () => ({
   filterType: undefined,
   filterDevice: undefined,
 
@@ -124,16 +128,16 @@ const resetFilter = {
   deleted: undefined,
   hidden: undefined,
   duplicate: undefined,
-};
+});
 
-export const defaultParams: SearchQuery = {
+const defaultParams = (): SearchQuery => ({
   year: undefined,
   month: undefined,
 
   sortKey: "create_date",
   sortOrder: 0, // Valid now
   ...resetFilter,
-};
+});
 
 // const defaultPage: StoreLastVisit = {
 //   url: "",

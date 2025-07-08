@@ -28,7 +28,7 @@ const PhotoCard: Component<PhotoProps> = (props) => {
       window.history.pushState({ state: "Photo Modal" }, "", window.location.href);
 
       setOneItem(idx, mediaId);
-      return setOpenModal(true);
+      return setOpenModal("isOpen", true);
     }
 
     const newItems = new Map(items());

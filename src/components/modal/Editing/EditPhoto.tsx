@@ -11,13 +11,13 @@ type EditPhotoProps = {
 };
 
 const EditPhoto: Component<EditPhotoProps> = (props) => {
-  const { setIsEditing } = useViewMediaContext();
+  const { setOpenModal } = useViewMediaContext();
 
-  const handleCancel = () => setIsEditing(false);
+  const handleCancel = () => setOpenModal("isEditing", false);
 
   const handleDone = () => {
     // photo save logic
-    setIsEditing(false);
+    setOpenModal("isEditing", false);
   };
 
   const { setView } = useManageURLContext();

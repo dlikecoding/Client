@@ -37,7 +37,7 @@ const Live: Component<LiveProps> = (props) => {
   });
 
   // ================== Handle longpress to play live photos ===============================================
-  const { isEditing, setShowImageOnly, showImageOnly } = useViewMediaContext();
+  const { openModal } = useViewMediaContext();
   const { pressed } = useMousePressed({ target: parentMediaRef });
 
   let timeId: number | undefined;
@@ -47,7 +47,7 @@ const Live: Component<LiveProps> = (props) => {
 
     if (pressed()) {
       timeId = setTimeout(async () => {
-        setShowImageOnly(true);
+        // setShowImageOnly(true);
 
         return await safePlayVideo(liveRef);
       }, 200);
@@ -91,7 +91,7 @@ const Live: Component<LiveProps> = (props) => {
       </video>
 
       {/* ////////////// All addon element must start here /////////////////////////////// */}
-      <Show when={!showImageOnly()}>
+      <Show when={!openModal.showImage}>
         <div class={styles.liveIcon}>
           {LivePhotoIcon()}
           <span>LIVE</span>
@@ -109,7 +109,7 @@ const Live: Component<LiveProps> = (props) => {
       />
 
       {/* ////////////// For editing /////////////////////////////// */}
-      <Show when={isEditing() && isLiveVisible()}>
+      <Show when={openModal.isEditing && isLiveVisible()}>
         <EditLive media={media()} currentChild={liveRef!} isLoading={isLoading()} setIsLoading={setIsLoading} />
       </Show>
     </>

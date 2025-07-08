@@ -1,11 +1,9 @@
-import { Component, createMemo, createSignal, JSX, onCleanup, Show } from "solid-js";
+import styles from "./Types.module.css";
+import { Component, createMemo, createSignal, Show } from "solid-js";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
-import EditPhoto from "../Editing/EditPhoto";
 import { useManageURLContext } from "../../../context/ManageUrl";
 import { zoomPhoto } from "../../extents/helper/zoom";
-
-import styles from "./Types.module.css";
-import { createStore } from "solid-js/store";
+import EditPhoto from "../Editing/EditPhoto";
 
 interface PhotoProps {
   media: MediaType;
@@ -17,7 +15,7 @@ const Photo: Component<PhotoProps> = (props) => {
   const isVisible = () => props.isVisible;
   let photoRef: HTMLImageElement;
 
-  const { isEditing } = useViewMediaContext();
+  const { openModal, mouseGesture, translate } = useViewMediaContext();
 
   const isPhotoVisible = createMemo(() => isVisible() && photoRef);
 
@@ -38,37 +36,32 @@ const Photo: Component<PhotoProps> = (props) => {
 
   // =========================================================
 
-  // const [translate, setTranslate] = createStore({ x: 0, y: 0 });
-
-  // const [dragging, setDragging] = createSignal(false);
-  // let startX = 0;
-  // let startY = 0;
-  // const onMouseDown = (e: MouseEvent) => {
-  //   setDragging(true);
-  //   startX = e.clientX - translate.x;
-  //   startY = e.clientY - translate.y;
-  //   document.body.style.cursor = "grabbing";
-  // };
-
-  // const onMouseMove = (e: MouseEvent) => {
-  //   if (!dragging()) return;
-  //   setTranslate({ x: e.clientX - startX, y: e.clientY - startY });
-  // };
-
-  // const onMouseUp = () => {
-  //   setDragging(false);
-  //   document.body.style.cursor = "default";
-  // };
-
-  // window.addEventListener("mousemove", onMouseMove);
-  // window.addEventListener("mouseup", onMouseUp);
-  // onCleanup(() => {
-  //   window.removeEventListener("mousemove", onMouseMove);
-  //   window.removeEventListener("mouseup", onMouseUp);
-  // });
-
   return (
     <>
+      {/* ================================================ */}
+      <header
+        style={{
+          background: "#000",
+          height: "100px",
+          width: "300px",
+          display: "flex",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%,-50%)",
+        }}>
+        <div>{mouseGesture.drag ? "dragging" : "No Drag"}</div>
+        <div>{mouseGesture.end?.x}</div>
+        <div>{mouseGesture.end?.y}</div>
+        <div>{mouseGesture.action}</div>
+        <br>---------------------------</br>
+        <br />
+        <div>{translate.x}</div>
+        <div>{translate.y}</div>
+
+        <div>{view.zoomLevel}</div>
+      </header>
+      {/* ================================================ */}
+
       <img
         // onMouseDown={onMouseDown}
         ref={(el) => (photoRef = el)}
@@ -76,7 +69,11 @@ const Photo: Component<PhotoProps> = (props) => {
           width: zoomSize().width,
           height: zoomSize().height,
 
-          // transform: view.zoomLevel <= 1 ? "translate(center)" : `translate(${translate.x}px, ${translate.y}px)`,
+          transition: mouseGesture.drag ? "none" : "width 250ms ease, height 250ms ease",
+          transform:
+            view.zoomLevel <= 1 || !isPhotoVisible()
+              ? "translate(0, 0)"
+              : `translate(${translate.x}px, ${translate.y}px)`,
         }}
         inert
         onError={() => setImgLoading(true)}
@@ -97,7 +94,7 @@ const Photo: Component<PhotoProps> = (props) => {
       {/* ////////////// All addon element must start here /////////////////////////////// */}
 
       {/* ////////////// For editing /////////////////////////////// */}
-      <Show when={isEditing() && isPhotoVisible()}>
+      <Show when={openModal.isEditing && isPhotoVisible()}>
         <EditPhoto photo={photoRef!} />
       </Show>
     </>

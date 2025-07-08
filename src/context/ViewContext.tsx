@@ -1,4 +1,4 @@
-import { Accessor, createContext, createMemo, createSignal, Setter, useContext } from "solid-js";
+import { createContext, createMemo, useContext } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
 
 export interface MediaType {
@@ -20,18 +20,41 @@ export interface MediaType {
   frame_rate: number;
 }
 
+export type Point = { x: number; y: number };
+
+type MouseGestureStore = {
+  start: Point;
+  end: Point;
+  drag: boolean;
+  action: "dragEnd" | "pinchZoom" | "dragging" | "";
+  status: boolean;
+};
+
+export type ModalProps = {
+  isOpen: boolean;
+  activeIdx: number;
+  startFocus: boolean;
+  startRect?: DOMRect;
+
+  isEditing: boolean;
+  showImage: boolean;
+};
+
 interface ContextProps {
   displayMedias: MediaType[];
   setDisplayMedia: SetStoreFunction<MediaType[]>;
 
-  openModal: Accessor<boolean>;
-  setOpenModal: Setter<boolean>;
+  openModal: ModalProps;
+  setOpenModal: SetStoreFunction<ModalProps>;
 
-  isEditing: Accessor<boolean>;
-  setIsEditing: Setter<boolean>;
+  mouseGesture: MouseGestureStore;
+  setMouseGesture: SetStoreFunction<MouseGestureStore>;
 
-  showImageOnly: Accessor<boolean>;
-  setShowImageOnly: Setter<boolean>;
+  translate: Point;
+  setTranslate: SetStoreFunction<Point>;
+
+  resetMouse: () => void;
+  resetModal: () => void;
 }
 
 const ViewMediaContext = createContext<ContextProps>();
@@ -39,14 +62,30 @@ const ViewMediaContext = createContext<ContextProps>();
 export const ViewMediaProvider = (props: any) => {
   const [displayMedias, setDisplayMedia] = createStore<MediaType[]>([]);
 
-  const [openModal, setOpenModal] = createSignal<boolean>(false);
-  const [isEditing, setIsEditing] = createSignal<boolean>(false);
+  const [openModal, setOpenModal] = createStore<ModalProps>(defaultModal());
 
-  const [showImageOnly, setShowImageOnly] = createSignal<boolean>(false);
+  const resetMouse = () => {
+    setMouseGesture(defaultMouse());
+  };
+  const resetModal = () => {
+    setOpenModal(defaultModal());
+  };
+
+  // const { view } = useManageURLContext();
+  // createMemo(() => {
+  //   if (view.zoomLevel === 1) setTranslate(defaultPoint());
+  // });
 
   createMemo(() => {
-    if (!openModal()) setIsEditing(false);
+    if (!openModal.isOpen) setOpenModal("isEditing", false);
   });
+
+  createMemo(() => {
+    if (openModal.isEditing) setOpenModal("showImage", true);
+  });
+
+  const [mouseGesture, setMouseGesture] = createStore<MouseGestureStore>(defaultMouse());
+  const [translate, setTranslate] = createStore<Point>(defaultPoint());
 
   return (
     <ViewMediaContext.Provider
@@ -57,11 +96,14 @@ export const ViewMediaProvider = (props: any) => {
         openModal,
         setOpenModal,
 
-        isEditing,
-        setIsEditing,
+        mouseGesture,
+        setMouseGesture,
 
-        showImageOnly,
-        setShowImageOnly,
+        translate,
+        setTranslate,
+
+        resetModal,
+        resetMouse,
       }}>
       {props.children}
     </ViewMediaContext.Provider>
@@ -69,3 +111,22 @@ export const ViewMediaProvider = (props: any) => {
 };
 
 export const useViewMediaContext = () => useContext(ViewMediaContext)!;
+
+const defaultPoint = (): Point => ({ x: 0, y: 0 });
+
+const defaultMouse = (): MouseGestureStore => ({
+  start: defaultPoint(),
+  end: defaultPoint(),
+  action: "",
+  drag: false,
+  status: false, // <-- Add this line
+});
+
+const defaultModal = (): ModalProps => ({
+  isOpen: false,
+  activeIdx: -1,
+  startFocus: false,
+  startRect: undefined,
+  isEditing: false,
+  showImage: false,
+});

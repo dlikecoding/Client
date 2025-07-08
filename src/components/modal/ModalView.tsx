@@ -38,7 +38,7 @@ const VIEWPORT_HEIGHT = ITEM_HEIGHT * BUFFER_ITEM;
 const VISIBLE_ITEM = Math.ceil(VIEWPORT_HEIGHT / ITEM_HEIGHT) + 2;
 
 const Modal: Component<ModalProps> = (props) => {
-  const { showImageOnly, setOpenModal, displayMedias } = useViewMediaContext();
+  const { openModal, setOpenModal, resetModal, displayMedias } = useViewMediaContext();
   const { items, setItems, setOneItem } = useMediaContext();
 
   const { view, setView } = useManageURLContext();
@@ -48,7 +48,7 @@ const Modal: Component<ModalProps> = (props) => {
   // when this modal close
   const handleCloseModal = () => {
     setItems(new Map());
-    setOpenModal(false);
+    resetModal();
   };
 
   /** Tracking current index display on the screen */
@@ -125,7 +125,7 @@ const Modal: Component<ModalProps> = (props) => {
   createMemo(() => {
     if (current.elId) setView("zoomLevel", 1);
   });
-
+  // createMemo(() => setShowImageOnly(isEditing()));
   /** Create sublist for thumbnails */
   // const modalMedias = () => getSublist(displayMedias, current.elIndex);
 
@@ -142,7 +142,7 @@ const Modal: Component<ModalProps> = (props) => {
   return (
     <Portal>
       <div class={styles.modalContainer} style={{ "z-index": 1 }}>
-        <header classList={{ [styles.fadeOut]: showImageOnly() }} style={{ "z-index": 2 }}>
+        <header classList={{ [styles.fadeOut]: openModal.showImage }} style={{ "z-index": 2 }}>
           <div class="buttonContainer">
             <button
               onClick={() => {
@@ -226,7 +226,7 @@ const Modal: Component<ModalProps> = (props) => {
           </div>
         </Show> */}
 
-        <div classList={{ [styles.fadeOut]: showImageOnly() }}>
+        <div classList={{ [styles.fadeOut]: openModal.showImage }}>
           <ActionNav />
         </div>
       </div>

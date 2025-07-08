@@ -1,5 +1,5 @@
 import styles from "./ModalView.module.css";
-import { MediaType, useViewMediaContext } from "../../context/ViewContext";
+import { MediaType, ModalProps, useViewMediaContext } from "../../context/ViewContext";
 import { Component, createMemo, createSignal, Match, onCleanup, onMount, Setter, Switch } from "solid-js";
 import Video from "./Types/Video";
 import Photo from "./Types/Photo";
@@ -7,6 +7,7 @@ import Live from "./Types/Live";
 import { useIntersectionObserver } from "solidjs-use";
 import { useManageURLContext, ZoomAndAspect } from "../../context/ManageUrl";
 import { SetStoreFunction } from "solid-js/store";
+import { useMouseTask } from "../hooks/MouseGesture";
 
 interface MediaTypeProps {
   media: MediaType;
@@ -27,7 +28,7 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
   const { setView } = useManageURLContext();
 
   const [isVisible, setIsVisible] = createSignal<boolean>(false);
-  const { isEditing, setShowImageOnly } = useViewMediaContext();
+  const { openModal, setOpenModal } = useViewMediaContext();
 
   onMount(() => {
     // Tracking if element is visible, then set the current index to this
@@ -45,11 +46,11 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
       },
       { threshold: 0.59 }
     );
+
+    useMouseTask(mediaRef!);
   });
 
-  const handleClick = useZoomAndClickHandler(setView, isVisible, isEditing, setShowImageOnly);
-
-  createMemo(() => setShowImageOnly(isEditing()));
+  const handleClick = useZoomAndClickHandler(setView, isVisible, openModal, setOpenModal);
 
   return (
     <div
@@ -57,7 +58,7 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
       class={styles.mediaContainer}
       style={{ top: `${props.topPos}px` }} //overflow: isVisible() ? "auto" : "hidden"
       data-modalid={media().media_id} // This media_id is needed to scrollIntoView
-      onClick={() => console.log("Clicked mediaContainer")}>
+      onClick={() => handleClick}>
       <div class={styles.imageWrapper}>
         <Switch fallback={<div>Unknown type</div>}>
           <Match when={media().file_type === "Photo"}>
@@ -79,13 +80,13 @@ export default MediaDisplay;
 const useZoomAndClickHandler = (
   setView: SetStoreFunction<ZoomAndAspect>,
   isVisible: () => boolean,
-  isEditing: () => boolean,
-  setShowImageOnly: Setter<boolean>
+  openModal: ModalProps,
+  setOpenModal: SetStoreFunction<ModalProps>
 ) => {
   let clickTimer: ReturnType<typeof setTimeout> | null = null;
 
   const handleClick = (e: MouseEvent) => {
-    if (e.target !== e.currentTarget || isEditing()) return;
+    if (e.target !== e.currentTarget || openModal.isEditing) return;
     e.preventDefault();
     e.stopPropagation();
 
@@ -98,7 +99,7 @@ const useZoomAndClickHandler = (
       setView("zoomLevel", (prev) => (prev > 1 ? 1 : 3));
     } else {
       clickTimer = setTimeout(() => {
-        setShowImageOnly((prev) => !prev);
+        setOpenModal("showImage", (prev) => !prev);
         clickTimer = null;
       }, DOUBLE_CLICK_DELAY);
     }

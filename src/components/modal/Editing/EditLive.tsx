@@ -28,7 +28,7 @@ const EditLive: Component<LiveProps> = (props) => {
   const [thumbnails, setThumbnails] = createSignal<FrameLive[]>([]);
   const [framePosition, setFramePosition] = createSignal<number>(media().selected_frame);
 
-  const { setIsEditing } = useViewMediaContext();
+  const { setOpenModal } = useViewMediaContext();
 
   onMount(async () => {
     props.setIsLoading(true);
@@ -55,11 +55,11 @@ const EditLive: Component<LiveProps> = (props) => {
     // Update UI with new pos
     setDisplayMedia([...items().keys()], "selected_frame", framePosition());
 
-    setIsEditing(false);
+    setOpenModal("isEditing", false);
   };
 
   return (
-    <LayoutEditing onCancel={() => setIsEditing(false)} onDone={onDone}>
+    <LayoutEditing onCancel={() => setOpenModal("isEditing", false)} onDone={onDone}>
       <div class={styles.modalThumbs} style={{ bottom: "38px", "align-items": "start" }}>
         <div class={styles.thumbSlider}>
           <div class={styles.thumbsLive}>
