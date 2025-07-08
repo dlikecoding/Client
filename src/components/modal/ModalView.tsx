@@ -162,6 +162,8 @@ const Modal: Component<ModalProps> = (props) => {
               {view.modalObjFit ? ExpandIcon() : CompressIcon()}
             </button>
 
+            <button onClick={() => setView("showThumb", (prev) => !prev)}>{view.showThumb ? "[ON]" : "[OFF]"}</button>
+
             <button popoverTarget="more-modal-popover">{CustomButtonIcon()}</button>
             <div popover="auto" id="more-modal-popover" class="popover-container devices_filter_popover">
               <div class="media_type_contents">
@@ -174,9 +176,6 @@ const Modal: Component<ModalProps> = (props) => {
                 </button>
               </div>
 
-              <div onClick={() => setView("showThumb", (prev) => !prev)}>
-                Thumbnails {view.showThumb ? "ON" : "OFF"}
-              </div>
               <div onClick={() => setView("autoplay", (prev) => !prev)}>
                 Video Autoplay {view.autoplay ? "ON" : "OFF"}
               </div>
@@ -185,7 +184,12 @@ const Modal: Component<ModalProps> = (props) => {
           </div>
         </header>
 
-        <div class={styles.modalImages} ref={(el) => (containerRef = el)} id="modalImages" onScroll={onScrollModal}>
+        <div
+          class={styles.modalImages}
+          ref={(el) => (containerRef = el)}
+          id="modalImages"
+          onScroll={onScrollModal}
+          style={{ "overflow-y": `${view.showThumb ? "hidden" : "scroll"}` }}>
           <div class={styles.visualList} style={{ height: `${displayMedias.length * ITEM_HEIGHT}px` }}>
             <For each={visualModal()}>
               {(media, index) => (

@@ -13,17 +13,17 @@ import { zoomPhoto } from "../../extents/helper/zoom";
 interface LiveProps {
   media: MediaType;
   isVisible: boolean;
-  currentChild: HTMLVideoElement;
 
   clickableArea: HTMLDivElement;
 }
 
 const Live: Component<LiveProps> = (props) => {
-  const currentChild = () => props.currentChild;
   const media = () => props.media;
   const isVisible = () => props.isVisible;
 
-  const isLiveVisible = createMemo(() => isVisible() && currentChild());
+  let liveRef: HTMLVideoElement;
+
+  const isLiveVisible = createMemo(() => isVisible() && liveRef);
 
   const parentMediaRef = props.clickableArea;
   const [isLoading, setIsLoading] = createSignal<boolean>(true);
@@ -32,7 +32,7 @@ const Live: Component<LiveProps> = (props) => {
 
   createMemo(async () => {
     if (!isLiveVisible()) return setIsLoading(true);
-    currentChild().load();
+    liveRef!.load();
     setIsLoading(false);
   });
 
@@ -43,34 +43,35 @@ const Live: Component<LiveProps> = (props) => {
   let timeId: number | undefined;
 
   createMemo(() => {
-    if (!isLiveVisible()) return;
+    if (!isLiveVisible() || !liveRef) return;
 
     if (pressed()) {
       timeId = setTimeout(async () => {
         setShowImageOnly(true);
 
-        return await safePlayVideo(currentChild());
+        return await safePlayVideo(liveRef);
       }, 200);
     }
 
     if (!pressed()) {
       clearTimeout(timeId);
-      if (!currentChild().paused) currentChild().pause();
+      if (!liveRef.paused) liveRef.pause();
     }
   });
 
   const seekToSelectedFrame = (e: Event) => {
-    seekingTo(e, currentChild(), media().selected_frame);
+    seekingTo(e, liveRef!, media().selected_frame);
   };
 
   const zoomSize = createMemo(() => {
     if (!isLiveVisible() || view.zoomLevel <= 1) return { width: "100%", height: "100%" };
-    return zoomPhoto(currentChild(), view.zoomLevel);
+    return zoomPhoto(liveRef!, view.zoomLevel);
   });
 
   return (
     <>
       <video
+        ref={(el) => (liveRef = el)}
         style={{
           width: zoomSize().width,
           height: zoomSize().height,
@@ -78,7 +79,7 @@ const Live: Component<LiveProps> = (props) => {
         inert
         onLoad={() => setIsLoading(true)}
         onLoadedData={(e) => seekToSelectedFrame(e)}
-        onPlay={(e) => seekingTo(e, currentChild(), 0)}
+        onPlay={(e) => seekingTo(e, liveRef!, 0)}
         onPause={(e) => seekToSelectedFrame(e)}
         controls={false}
         controlslist="nodownload"
@@ -109,7 +110,7 @@ const Live: Component<LiveProps> = (props) => {
 
       {/* ////////////// For editing /////////////////////////////// */}
       <Show when={isEditing() && isLiveVisible()}>
-        <EditLive media={media()} currentChild={currentChild()} isLoading={isLoading()} setIsLoading={setIsLoading} />
+        <EditLive media={media()} currentChild={liveRef!} isLoading={isLoading()} setIsLoading={setIsLoading} />
       </Show>
     </>
   );

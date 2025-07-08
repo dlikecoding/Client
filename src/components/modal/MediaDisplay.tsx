@@ -26,7 +26,6 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
 
   const { setView } = useManageURLContext();
 
-  const [currentChild, setCurrentChild] = createSignal<HTMLVideoElement | HTMLImageElement>();
   const [isVisible, setIsVisible] = createSignal<boolean>(false);
   const { isEditing, setShowImageOnly } = useViewMediaContext();
 
@@ -38,12 +37,6 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
         setIsVisible(isIntersecting); // pass intersection status to child components
 
         if (!isIntersecting) return;
-
-        // get current display child element like img/video tags
-        if (mediaRef && mediaRef.children.length > 0) {
-          setCurrentChild(mediaRef.children[0] as HTMLVideoElement | HTMLImageElement);
-        }
-
         // Set the current index when the item is visible in Modal
         props.setSelectCurrentItem(viewIndex(), media().media_id);
 
@@ -62,25 +55,22 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
     <div
       ref={mediaRef}
       class={styles.mediaContainer}
-      style={{ top: `${props.topPos}px`, overflow: isVisible() ? "auto" : "hidden" }}
+      style={{ top: `${props.topPos}px` }} //overflow: isVisible() ? "auto" : "hidden"
       data-modalid={media().media_id} // This media_id is needed to scrollIntoView
-      onClick={handleClick}>
-      <Switch fallback={<div>Unknown type</div>}>
-        <Match when={media().file_type === "Photo"}>
-          <Photo media={media()} isVisible={isVisible()} currentChild={currentChild() as HTMLImageElement} />
-        </Match>
-        <Match when={media().file_type === "Video"}>
-          <Video media={media()} isVisible={isVisible()} currentChild={currentChild() as HTMLVideoElement} />
-        </Match>
-        <Match when={media().file_type === "Live"}>
-          <Live
-            media={media()}
-            isVisible={isVisible()}
-            currentChild={currentChild() as HTMLVideoElement}
-            clickableArea={mediaRef!}
-          />
-        </Match>
-      </Switch>
+      onClick={() => console.log("Clicked mediaContainer")}>
+      <div class={styles.imageWrapper}>
+        <Switch fallback={<div>Unknown type</div>}>
+          <Match when={media().file_type === "Photo"}>
+            <Photo media={media()} isVisible={isVisible()} />
+          </Match>
+          <Match when={media().file_type === "Video"}>
+            <Video media={media()} isVisible={isVisible()} />
+          </Match>
+          <Match when={media().file_type === "Live"}>
+            <Live media={media()} isVisible={isVisible()} clickableArea={mediaRef!} />
+          </Match>
+        </Switch>
+      </div>
     </div>
   );
 };
