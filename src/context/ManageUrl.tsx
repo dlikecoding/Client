@@ -3,6 +3,9 @@ import { createContext, useContext, JSX, createMemo } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
 
 const LOCALSTORAGE_VIEW_KEY = "zoomAspect";
+export const MIN_ZOOM_LEVEL = 1;
+export const MAX_ZOOM_LEVEL = 5;
+export const ZOOM_SENSITIVITY = 0.3;
 
 export type SearchQuery = {
   year?: number;

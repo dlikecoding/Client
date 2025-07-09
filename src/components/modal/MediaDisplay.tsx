@@ -47,17 +47,25 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
       { threshold: 0.59 }
     );
 
-    // useMouseTask(mediaRef!);
+    useMouseTask(mediaRef!);
   });
 
   const handleClick = useZoomAndClickHandler(setView, isVisible, openModal, setOpenModal);
 
   const childDim = createMemo(() => {
-    // const dim =
-    //   window.innerWidth > window.innerHeight ? { width: "100%", height: "auto" } : { width: "auto", height: "100%" };
+    const zoomFactor = (1 + 0.75 * (view.zoomLevel - 1)) * 100;
 
-    if (!isVisible() || view.zoomLevel <= 1) return { width: "100%", height: "auto" };
-    return { width: `${(view.zoomLevel / 2) * 100}%`, height: "auto" };
+    const isVertical = window.innerWidth < window.innerHeight;
+    const isMinZoom = view.zoomLevel <= 1;
+
+    // If it's in vertical mode
+    if (isVertical) {
+      return !isVisible() || isMinZoom
+        ? { width: "100%", height: "auto" }
+        : { width: `${zoomFactor}%`, height: "auto" };
+    }
+    // If it's in landscape mode
+    return !isVisible() || isMinZoom ? { width: "auto", height: "100%" } : { width: "auto", height: `${zoomFactor}%` };
   });
 
   return (
@@ -67,7 +75,7 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
         [styles.mediaContainer]: true,
         [styles.mediaCenter]: view.zoomLevel <= 1,
       }}
-      style={{ top: `${props.topPos}px`, overflow: view.zoomLevel > 1 ? "scroll" : "hidden" }}
+      style={{ top: `${props.topPos}px` }} //overflow: view.zoomLevel > 1 ? "scroll" : "hidden"
       data-modalid={media().media_id} // This media_id is needed to scrollIntoView
       onClick={handleClick}>
       <Switch fallback={<div>Unknown type</div>}>

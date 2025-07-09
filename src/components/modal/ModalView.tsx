@@ -4,7 +4,7 @@ import { Portal } from "solid-js/web";
 import { Accessor, Component, createMemo, createSignal, For, onMount, Setter, Show } from "solid-js";
 import { createStore } from "solid-js/store";
 
-import { useManageURLContext } from "../../context/ManageUrl";
+import { MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL, useManageURLContext } from "../../context/ManageUrl";
 import { useViewMediaContext } from "../../context/ViewContext";
 import { useMediaContext } from "../../context/Medias";
 import { CompressIcon, CustomButtonIcon, ExpandIcon, GoBackIcon, ZoomInIcon, ZoomOutIcon } from "../svgIcons";
@@ -167,11 +167,11 @@ const Modal: Component<ModalProps> = (props) => {
             <button popoverTarget="more-modal-popover">{CustomButtonIcon()}</button>
             <div popover="auto" id="more-modal-popover" class="popover-container devices_filter_popover">
               <div class="media_type_contents">
-                <button onClick={() => handleZoom(1)} disabled={view.zoomLevel === 5}>
+                <button onClick={() => handleZoom(1)} disabled={view.zoomLevel >= MAX_ZOOM_LEVEL}>
                   {ZoomInIcon()}
                 </button>
                 <span>Zoom</span>
-                <button onClick={() => handleZoom(-1)} disabled={view.zoomLevel === 1}>
+                <button onClick={() => handleZoom(-1)} disabled={view.zoomLevel <= MIN_ZOOM_LEVEL}>
                   {ZoomOutIcon()}
                 </button>
               </div>
@@ -189,7 +189,8 @@ const Modal: Component<ModalProps> = (props) => {
           ref={(el) => (containerRef = el)}
           id="modalImages"
           onScroll={onScrollModal}
-          style={{ "overflow-y": `${view.showThumb ? "hidden" : "scroll"}` }}>
+          // style={{ "overflow-y": `${view.showThumb ? "hidden" : "scroll"}` }}
+        >
           <div class={styles.visualList} style={{ height: `${displayMedias.length * ITEM_HEIGHT}px` }}>
             <For each={visualModal()}>
               {(media, index) => (

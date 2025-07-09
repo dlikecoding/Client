@@ -22,7 +22,7 @@ const Photo: Component<PhotoProps> = (props) => {
 
   let photoRef: HTMLImageElement;
 
-  const { openModal, mouseGesture, translate } = useViewMediaContext();
+  const { openModal } = useViewMediaContext();
 
   const isPhotoVisible = createMemo(() => isVisible() && photoRef);
 
@@ -41,7 +41,7 @@ const Photo: Component<PhotoProps> = (props) => {
   return (
     <>
       {/* ================================================ */}
-      <header
+      {/* <header
         style={{
           background: "#000",
           height: "100px",
@@ -61,7 +61,7 @@ const Photo: Component<PhotoProps> = (props) => {
         <div>{translate.y}</div>
 
         <div>{view.zoomLevel}</div>
-      </header>
+      </header> */}
       {/* ================================================ */}
 
       <img
@@ -84,14 +84,14 @@ const Photo: Component<PhotoProps> = (props) => {
         alt={`Modal Image`}
       />
 
-      {/* <img
+      <img
         inert
         class={styles.overlayImg}
         style={{ opacity: imgLoading() ? 1 : 0 }}
         loading="lazy"
         src={media().thumb_path}
         alt={`Modal Image Overlay`}
-      /> */}
+      />
 
       {/* ////////////// All addon element must start here /////////////////////////////// */}
 
