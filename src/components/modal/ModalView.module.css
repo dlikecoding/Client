@@ -49,18 +49,39 @@ header > .modalTitle {
   scroll-snap-align: start;
   scroll-snap-stop: always;
 
+  display: flex;
+
   /* touch-action: none; */
   user-select: none;
   pointer-events: auto;
-  /* background-color: blue; */
 
   overflow: auto;
 }
 
-.mediaCenter {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* Portrait mode */
+@media (orientation: portrait) {
+  .mediaContainer {
+    align-items: var(--modal-center);
+  }
+
+  .mediaContainer > video,
+  .mediaContainer img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+/* Landscape mode */
+@media (orientation: landscape) {
+  .mediaContainer {
+    justify-content: var(--modal-center);
+  }
+
+  .mediaContainer > video,
+  .mediaContainer img {
+    width: auto;
+    height: 100%;
+  }
 }
 
 /* .imageWrapper {

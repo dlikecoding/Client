@@ -1,17 +1,14 @@
 import styles from "./Types.module.css";
-import { Component, createMemo, createSignal, Show } from "solid-js";
-import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
-import { useManageURLContext } from "../../../context/ManageUrl";
+import { Component, createMemo, createSignal, onMount, Show } from "solid-js";
 
 import EditPhoto from "../Editing/EditPhoto";
+import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
+import { StyleKeys } from "../MediaDisplay";
 
 interface PhotoProps {
   media: MediaType;
   isVisible: boolean;
-  childDim: {
-    width: string;
-    height: string;
-  };
+  childDim: StyleKeys;
 }
 
 const Photo: Component<PhotoProps> = (props) => {
@@ -29,14 +26,10 @@ const Photo: Component<PhotoProps> = (props) => {
   // Tracking image onload -> load thumbnail, when done -> load original
   const [imgLoading, setImgLoading] = createSignal<boolean>(true);
 
-  const { view } = useManageURLContext();
-
   createMemo(() => {
     if (!isPhotoVisible()) return;
     setImgLoading(false);
   });
-
-  // =========================================================
 
   return (
     <>
@@ -67,17 +60,15 @@ const Photo: Component<PhotoProps> = (props) => {
       <img
         // onMouseDown={onMouseDown}
         ref={(el) => (photoRef = el)}
-        style={{
-          width: childDim().width,
-          height: childDim().height,
+        style={{ ...childDim() }}
+        // transition: mouseGesture.drag ? "none" : "width 250ms ease, height 250ms ease",
+        // transform:
+        //   view.zoomLevel <= 1 || !isPhotoVisible()
+        //     ? "translate(0, 0)"
+        //     : `translate(${translate.x}px, ${translate.y}px)`,
 
-          // transition: mouseGesture.drag ? "none" : "width 250ms ease, height 250ms ease",
-          // transform:
-          //   view.zoomLevel <= 1 || !isPhotoVisible()
-          //     ? "translate(0, 0)"
-          //     : `translate(${translate.x}px, ${translate.y}px)`,
-        }}
         inert
+        // onLoad={() => setImgLoading(false)}
         onError={() => setImgLoading(true)}
         loading="lazy"
         src={media().source_file}

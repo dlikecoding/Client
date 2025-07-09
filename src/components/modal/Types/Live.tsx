@@ -1,5 +1,5 @@
 import styles from "./Types.module.css";
-import { Component, createMemo, createSignal, Setter, Show } from "solid-js";
+import { Component, createMemo, createSignal, Show } from "solid-js";
 import { MediaType, useViewMediaContext } from "../../../context/ViewContext";
 import { VIDEO_API_URL } from "../../../App";
 import EditLive from "../Editing/EditLive";
@@ -7,16 +7,14 @@ import EditLive from "../Editing/EditLive";
 import { useMousePressed } from "solidjs-use";
 import { safePlayVideo } from "../../extents/helper/helper";
 import { LivePhotoIcon } from "../../svgIcons";
+import { StyleKeys } from "../MediaDisplay";
 
 interface LiveProps {
   media: MediaType;
   isVisible: boolean;
 
   clickableArea: HTMLDivElement;
-  childDim: {
-    width: string;
-    height: string;
-  };
+  childDim: StyleKeys;
 }
 
 const Live: Component<LiveProps> = (props) => {
@@ -68,10 +66,7 @@ const Live: Component<LiveProps> = (props) => {
     <>
       <video
         ref={(el) => (liveRef = el)}
-        style={{
-          width: childDim().width,
-          height: childDim().height,
-        }}
+        style={{ ...childDim() }}
         inert
         onLoad={() => setIsLoading(true)}
         onLoadedData={(e) => seekToSelectedFrame(e)}

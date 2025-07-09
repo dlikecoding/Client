@@ -22,6 +22,8 @@
   --textSvgShadow: 0 0 4px rgb(0, 0, 0);
 
   --modal-object-fit: cover;
+
+  --modal-center: center;
 }
 
 /* ================== GLOBAL STYLES ================== */

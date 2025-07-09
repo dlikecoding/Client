@@ -124,6 +124,9 @@ const Modal: Component<ModalProps> = (props) => {
   // // Reset zoom when scroll to other elements
   createMemo(() => {
     if (current.elId) setView("zoomLevel", 1);
+
+    //On change el, set it to center (incase zoomed and then scroll to next element )
+    document.documentElement.style.setProperty("--modal-center", "center");
   });
   // createMemo(() => setShowImageOnly(isEditing()));
   /** Create sublist for thumbnails */

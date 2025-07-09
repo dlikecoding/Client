@@ -4,7 +4,7 @@ import { Component, createMemo, createSignal, Match, onCleanup, onMount, Setter,
 import Video from "./Types/Video";
 import Photo from "./Types/Photo";
 import Live from "./Types/Live";
-import { useIntersectionObserver } from "solidjs-use";
+import { useIntersectionObserver, useResizeObserver } from "solidjs-use";
 import { useManageURLContext, ZoomAndAspect } from "../../context/ManageUrl";
 import { SetStoreFunction } from "solid-js/store";
 import { useMouseTask } from "../hooks/MouseGesture";
@@ -17,6 +17,12 @@ interface MediaTypeProps {
   setSelectCurrentItem: (index: number, mediaId: number) => void;
   setLastEl?: Setter<HTMLElement | null | undefined>;
 }
+
+export type StyleKeys = {
+  width?: string;
+  height?: string;
+  "max-height"?: string;
+};
 
 const DOUBLE_CLICK_DELAY = 240; // ms, comment for future maintainers
 
@@ -47,25 +53,37 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
       { threshold: 0.59 }
     );
 
+    // Disable centering on zoom-in to prevent top of element from being cut off.
+    // Re-enable centering when the element's height is smaller than the viewport height.
+    if (!mediaRef || !mediaRef.children.length) return "";
+    const childEl = mediaRef.children[0] as HTMLElement;
+    useResizeObserver(childEl, (entries) => {
+      // console.log();
+      if (!childDim().height) return;
+      const [entry] = entries;
+      const { height } = entry.contentRect;
+
+      requestAnimationFrame(() => {
+        const adjustTo = height > window.innerHeight ? "none" : "center";
+        document.documentElement.style.setProperty("--modal-center", adjustTo);
+      });
+    });
+
     useMouseTask(mediaRef!);
   });
 
   const handleClick = useZoomAndClickHandler(setView, isVisible, openModal, setOpenModal);
 
   const childDim = createMemo(() => {
+    if (!isVisible() || view.zoomLevel < 1) return {};
+
+    const isPortrait = window.innerWidth < window.innerHeight;
     const zoomFactor = (1 + 0.75 * (view.zoomLevel - 1)) * 100;
 
-    const isVertical = window.innerWidth < window.innerHeight;
-    const isMinZoom = view.zoomLevel <= 1;
+    const isMaxHeight = view.zoomLevel === 1 ? "100dvh" : "none";
 
-    // If it's in vertical mode
-    if (isVertical) {
-      return !isVisible() || isMinZoom
-        ? { width: "100%", height: "auto" }
-        : { width: `${zoomFactor}%`, height: "auto" };
-    }
-    // If it's in landscape mode
-    return !isVisible() || isMinZoom ? { width: "auto", height: "100%" } : { width: "auto", height: `${zoomFactor}%` };
+    if (isPortrait) return { width: `${zoomFactor}%`, height: "auto", "max-height": isMaxHeight };
+    return { width: "auto", height: `${zoomFactor}%`, "max-height": isMaxHeight };
   });
 
   return (
@@ -73,9 +91,9 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
       ref={mediaRef}
       classList={{
         [styles.mediaContainer]: true,
-        [styles.mediaCenter]: view.zoomLevel <= 1,
+        // [styles.mediaCenter]: true, //view.zoomLevel <= 1
       }}
-      style={{ top: `${props.topPos}px` }} //overflow: view.zoomLevel > 1 ? "scroll" : "hidden"
+      style={{ top: `${props.topPos}px`, overflow: view.zoomLevel > 1 ? "scroll" : "hidden" }}
       data-modalid={media().media_id} // This media_id is needed to scrollIntoView
       onClick={handleClick}>
       <Switch fallback={<div>Unknown type</div>}>

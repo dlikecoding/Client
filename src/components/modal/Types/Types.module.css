@@ -1,8 +1,8 @@
 /* Overlay image for videos tag */
 .overlayImg {
-  width: 100%;
-  height: auto;
+  opacity: 1;
   transition: opacity 1s linear;
+  max-height: 100dvh;
 }
 
 /* /////////////////// VIDEO //////////////////////// */
@@ -166,3 +166,18 @@
 } */
 
 /* object-fit: var(--objectFitModal); */
+
+/* LOADING ANIMATION FOR VIDEO/LIVE */
+@keyframes pulseOpacity {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.pulse {
+  animation: pulseOpacity 1.5s ease-in-out infinite;
+}

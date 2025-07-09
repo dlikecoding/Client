@@ -7,18 +7,16 @@ import { VIDEO_API_URL } from "../../../App";
 import { createStore } from "solid-js/store";
 import { useManageURLContext } from "../../../context/ManageUrl";
 
-import Spinner from "../../extents/Spinner";
+// import Spinner from "../../extents/Spinner";
 import EditVideo from "../Editing/EditVideo";
+import { StyleKeys } from "../MediaDisplay";
 // import { useMediaContext } from "../../../context/Medias";
 // import { getKeyByItem, scrollToModalElement } from "../../extents/helper/helper";
 
 interface VideoProps {
   media: MediaType;
   isVisible: boolean;
-  childDim: {
-    width: string;
-    height: string;
-  };
+  childDim: StyleKeys;
 }
 
 type VideoStatus = {
@@ -86,10 +84,7 @@ const Video: Component<VideoProps> = (props) => {
     <>
       <video
         ref={(el) => (videoRef = el)}
-        style={{
-          width: childDim().width,
-          height: childDim().height,
-        }}
+        style={{ ...childDim() }}
         inert={!vidStatus.isFullScreen}
         onFullscreenChange={() => setVidStatus("isFullScreen", (prev) => !prev)}
         onLoad={() => setVidStatus("isLoading", true)}
@@ -119,7 +114,10 @@ const Video: Component<VideoProps> = (props) => {
 
       <img
         inert
-        class={styles.overlayImg}
+        classList={{
+          [styles.overlayImg]: true,
+          [styles.pulse]: vidStatus.isLoading && vidStatus.isPlaying, //view.zoomLevel <= 1
+        }}
         style={{ opacity: vidStatus.isLoading ? 1 : 0 }}
         loading="lazy"
         src={media().thumb_path}
@@ -128,11 +126,11 @@ const Video: Component<VideoProps> = (props) => {
       {/* use image to display while video loading (Work but problems to adjust thumbnail width) */}
 
       {/* ////////////// All addon element must start here /////////////////////////////// */}
-      <Show when={isVisible() && vidStatus.isLoading && vidStatus.isPlaying}>
+      {/* <Show when={isVisible() && vidStatus.isLoading && vidStatus.isPlaying}>
         <div class={styles.playPauseBtn}>
           <Spinner />
         </div>
-      </Show>
+      </Show> */}
 
       <Show when={isVideoVisible()}>
         {/* Design a videoPlayer control when video play, user able to control it */}
