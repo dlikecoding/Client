@@ -7,7 +7,6 @@ import EditLive from "../Editing/EditLive";
 import { useMousePressed } from "solidjs-use";
 import { safePlayVideo } from "../../extents/helper/helper";
 import { LivePhotoIcon } from "../../svgIcons";
-import { useManageURLContext } from "../../../context/ManageUrl";
 
 interface LiveProps {
   media: MediaType;
@@ -32,8 +31,6 @@ const Live: Component<LiveProps> = (props) => {
   const parentMediaRef = props.clickableArea;
   const [isLoading, setIsLoading] = createSignal<boolean>(true);
 
-  const { view } = useManageURLContext();
-
   createMemo(async () => {
     if (!isLiveVisible()) return setIsLoading(true);
     liveRef!.load();
@@ -41,7 +38,7 @@ const Live: Component<LiveProps> = (props) => {
   });
 
   // ================== Handle longpress to play live photos ===============================================
-  const { openModal } = useViewMediaContext();
+  const { openModal, setOpenModal } = useViewMediaContext();
   const { pressed } = useMousePressed({ target: parentMediaRef });
 
   let timeId: number | undefined;
@@ -51,7 +48,7 @@ const Live: Component<LiveProps> = (props) => {
 
     if (pressed()) {
       timeId = setTimeout(async () => {
-        // setShowImageOnly(true);
+        setOpenModal("showImage", true);
 
         return await safePlayVideo(liveRef);
       }, 200);

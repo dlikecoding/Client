@@ -53,6 +53,9 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
   const handleClick = useZoomAndClickHandler(setView, isVisible, openModal, setOpenModal);
 
   const childDim = createMemo(() => {
+    // const dim =
+    //   window.innerWidth > window.innerHeight ? { width: "100%", height: "auto" } : { width: "auto", height: "100%" };
+
     if (!isVisible() || view.zoomLevel <= 1) return { width: "100%", height: "auto" };
     return { width: `${(view.zoomLevel / 2) * 100}%`, height: "auto" };
   });
@@ -64,7 +67,7 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
         [styles.mediaContainer]: true,
         [styles.mediaCenter]: view.zoomLevel <= 1,
       }}
-      style={{ top: `${props.topPos}px` }} //overflow: isVisible() ? "auto" : "hidden"
+      style={{ top: `${props.topPos}px`, overflow: view.zoomLevel > 1 ? "scroll" : "hidden" }}
       data-modalid={media().media_id} // This media_id is needed to scrollIntoView
       onClick={handleClick}>
       <Switch fallback={<div>Unknown type</div>}>

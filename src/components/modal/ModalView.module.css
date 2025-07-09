@@ -79,23 +79,15 @@ header > .modalTitle {
 .mediaContainer > video,
 .mediaContainer > img,
 .mediaContainer > .overlayImg {
-  /* position: absolute; */
+  position: absolute;
 
   display: block;
-  /* 
-  width: 100%;
-  height: 100%; */
-
   object-fit: var(--modal-object-fit);
-  /* transition: width 250ms ease, height 250ms ease; */
+  transition: all 250ms ease;
 
-  /* overflow: hidden; */
-
-  /* Does not work */
   user-select: none;
   touch-action: none;
-  overflow: scroll;
-  /* pointer-events: none; */
+  /* overflow: scroll; */
 }
 
 /* /////////////////// THUMBNAIL //////////////////////// */

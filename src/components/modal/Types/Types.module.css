@@ -1,16 +1,9 @@
 /* Overlay image for videos tag */
-/* .overlayImg { */
-/* position: absolute; */
-/* display: block; */
-/* 
+.overlayImg {
   width: 100%;
-  height: 100%; */
-
-/* transition: opacity 1s linear;
-  pointer-events: none; */
-
-/* z-index: -1; */
-/* } */
+  height: auto;
+  transition: opacity 1s linear;
+}
 
 /* /////////////////// VIDEO //////////////////////// */
 .playerWrapper {

@@ -31,7 +31,7 @@ interface ModalProps {
 
 const BUFFER_ITEM = 3;
 
-const PADDING = 200;
+const PADDING = 100;
 const ITEM_HEIGHT = window.innerHeight + PADDING; // Full innerHeight + 100px for gap
 
 const VIEWPORT_HEIGHT = ITEM_HEIGHT * BUFFER_ITEM;
