@@ -98,3 +98,10 @@ export const numberToMonth = (n: number) => {
   ];
   return n >= 1 && n <= 12 ? months[n - 1] : "Invalid month number";
 };
+
+export const closePopovers = () => {
+  const popovers = document.querySelectorAll<HTMLElement>("div[popover]");
+  popovers.forEach((eachPopover: HTMLElement) => {
+    if (eachPopover.checkVisibility()) eachPopover.hidePopover();
+  });
+};

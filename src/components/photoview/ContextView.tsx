@@ -2,7 +2,7 @@ import style from "./PhotoView.module.css";
 
 import { useParams } from "@solidjs/router";
 import { useIntersectionObserver, useWindowSize } from "solidjs-use";
-import { createMemo, createResource, createSignal, For, onCleanup, Show } from "solid-js";
+import { createMemo, createResource, createSignal, For, onCleanup, onMount, Show } from "solid-js";
 
 import { useMediaContext } from "../../context/Medias";
 import { SearchQuery, useManageURLContext } from "../../context/ManageUrl";
@@ -17,7 +17,7 @@ import ActionNav from "./actionNav/ActionNav";
 import Loading from "../extents/Loading";
 import Select from "./buttons/Select";
 import ModalView from "../modal/ModalView";
-import { getElementBySelector } from "../extents/helper/helper";
+import { closePopovers, getElementBySelector } from "../extents/helper/helper";
 import FilterPhotoView from "./buttons/FilterPhotoView";
 
 const viewPageTitles = new Map([
@@ -43,6 +43,8 @@ const ContextView = () => {
   const { params, view, resetLibrary } = useManageURLContext();
   const { openModal, displayMedias, setDisplayMedia } = useViewMediaContext();
 
+  let containerRef: HTMLElement;
+
   const queries = (): SearchQuery => ({
     year: params.year,
     month: params.month,
@@ -66,11 +68,17 @@ const ContextView = () => {
   const [pageNumber, setPageNumber] = createSignal(0);
   const [lastEl, setLastEl] = createSignal<HTMLElement | null>();
 
-  useIntersectionObserver(lastEl, ([{ isIntersecting }]) => {
-    if (isIntersecting) {
-      setLastEl(null); //console.log("Hey, I'm visible");
-      setPageNumber((prev) => prev + 1);
-    }
+  onMount(() => {
+    useIntersectionObserver(
+      lastEl,
+      ([{ isIntersecting }]) => {
+        if (isIntersecting) {
+          setLastEl(null); //console.log("Hey, I'm visible");
+          setPageNumber((prev) => prev + 1);
+        }
+      },
+      { root: containerRef, threshold: 0.5, rootMargin: "300px" }
+    );
   });
 
   /** When last element is visible on the DOM, remove from the lastEl,
@@ -97,7 +105,6 @@ const ContextView = () => {
   });
 
   ///////////////// Virtualization ContextView /////////////////////////////////////////////////
-  let containerRef!: HTMLDivElement;
 
   const { width, height } = useWindowSize();
   const [scrollTop, setScrollTop] = createSignal<number>(PADDING_TOP);
@@ -151,18 +158,14 @@ const ContextView = () => {
       </header>
 
       <main
-        ref={containerRef}
+        ref={(el) => (containerRef = el)}
         class="mainHomePage"
         // classList={{ mainHomePage: true, [style.container]: true }}
         onScroll={(event: Event) => {
           event.preventDefault();
           setScrollTop(containerRef.scrollTop);
-
-          const popovers = document.querySelectorAll<HTMLElement>("div[popover]");
-          popovers.forEach((eachPopover: HTMLElement) => {
-            if (eachPopover.checkVisibility()) eachPopover.hidePopover();
-          });
-        }}>
+        }}
+        onTouchStart={() => closePopovers()}>
         <Show when={loadedMedias.loading || loadedMoreMedias.loading}>
           <Loading />
         </Show>

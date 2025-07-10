@@ -51,7 +51,7 @@ export function useMouseTask(el: HTMLElement) {
     if (!pos || !initTouch) return;
 
     if (mouseGesture.action === "pinchZoom" && "touches" in e && e.touches.length === 2) {
-      setMouseGesture("end", { x: pos.x, y: pos.y }); //current pos on viewport
+      // setMouseGesture("end", { x: pos.x, y: pos.y }); //current pos on viewport
       const newDistance = getDistance(e.touches[0], e.touches[1]);
       const delta = newDistance - initTouch;
 
@@ -70,9 +70,9 @@ export function useMouseTask(el: HTMLElement) {
 
   const onEnd = () => {
     if (mouseGesture.action !== "pinchZoom") return;
-    setView("zoomLevel", (prev) =>
-      prev <= MIN_ZOOM_LEVEL ? MIN_ZOOM_LEVEL : prev >= MAX_ZOOM_LEVEL ? MAX_ZOOM_LEVEL : prev
-    );
+    // setView("zoomLevel", (prev) =>
+    //   prev <= MIN_ZOOM_LEVEL ? MIN_ZOOM_LEVEL : prev >= MAX_ZOOM_LEVEL ? MAX_ZOOM_LEVEL : prev
+    // );
     reset();
   };
 

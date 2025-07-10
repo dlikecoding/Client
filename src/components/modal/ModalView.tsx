@@ -161,11 +161,11 @@ const Modal: Component<ModalProps> = (props) => {
             <p style={{ "font-size": "12px" }}>{displayTime().time}</p>
           </div>
           <div class="buttonContainer">
-            <button onClick={() => setView("modalObjFit", (prev) => !prev)}>
+            {/* <button onClick={() => setView("modalObjFit", (prev) => !prev)}>
               {view.modalObjFit ? ExpandIcon() : CompressIcon()}
-            </button>
+            </button> */}
 
-            <button onClick={() => setView("showThumb", (prev) => !prev)}>{view.showThumb ? "[ON]" : "[OFF]"}</button>
+            {/* <button onClick={() => setView("showThumb", (prev) => !prev)}>{view.showThumb ? "[ON]" : "[OFF]"}</button> */}
 
             <button popoverTarget="more-modal-popover">{CustomButtonIcon()}</button>
             <div popover="auto" id="more-modal-popover" class="popover-container devices_filter_popover">

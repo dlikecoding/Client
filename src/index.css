@@ -14,6 +14,8 @@
   --button-active-color: rgb(53, 132, 246);
   --button-delete-color: rgb(224, 58, 40);
 
+  --buttons-style: rgba(47, 47, 47, 0.775);
+
   --popup-bground: rgba(38, 38, 38, 0.79);
   --popup-bdropfilter: blur(20px) brightness(1);
 
@@ -189,9 +191,9 @@ header > button,
   position: relative;
   font: var(--font-info);
 
-  background: var(--popup-bground);
-  backdrop-filter: blur(20px) brightness(1);
-  -webkit-backdrop-filter: blur(20px) brightness(1);
+  background: var(--buttons-style);
+  backdrop-filter: blur(20px) brightness(1.5);
+  -webkit-backdrop-filter: blur(20px) brightness(1.5);
 
   border: 1.5px solid transparent;
 
