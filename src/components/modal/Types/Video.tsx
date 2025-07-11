@@ -136,7 +136,7 @@ const Video: Component<VideoProps> = (props) => {
         {/* Design a videoPlayer control when video play, user able to control it */}
         <div
           classList={{
-            [styles.playerWrapper]: true,
+            [modalS.modalThumbs]: true,
             [modalS.fadeOut]: openModal.showImage,
             [styles.videoControler]: true,
           }}>

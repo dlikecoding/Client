@@ -215,9 +215,15 @@ const Dashboard = () => {
 
         <div class={styles.backup}>
           <div>Scan for Missing Thumbnails</div>
-          <button style={{ background: "rgb(242, 88, 253)" }} onClick={scanMissingThumbs}>
+          <button style={{ background: "rgb(242, 88, 253)" }} popoverTarget="generate-thumbs">
             Scan
           </button>
+          <SlideUp
+            idElement="generate-thumbs"
+            noticeText={"Start scanning the whole files system for missing thumbs. This process could talk 5-10mins"}
+            confirmBtn={scanMissingThumbs}
+            infoText={() => "Regenerate Thumbs"}
+          />
         </div>
 
         <Show when={shouldReindex()}>
