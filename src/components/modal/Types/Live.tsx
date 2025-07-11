@@ -8,6 +8,7 @@ import { useMousePressed } from "solidjs-use";
 import { safePlayVideo } from "../../extents/helper/helper";
 import { LivePhotoIcon } from "../../svgIcons";
 import { StyleKeys } from "../MediaDisplay";
+import { useManageURLContext } from "../../../context/ManageUrl";
 
 interface LiveProps {
   media: MediaType;
@@ -22,6 +23,7 @@ const Live: Component<LiveProps> = (props) => {
   const isVisible = () => props.isVisible;
   const childDim = () => props.childDim;
 
+  const { view } = useManageURLContext();
   let liveRef: HTMLVideoElement;
 
   const isLiveVisible = createMemo(() => isVisible() && liveRef);
@@ -42,7 +44,7 @@ const Live: Component<LiveProps> = (props) => {
   let timeId: number | undefined;
 
   createMemo(() => {
-    if (!isLiveVisible() || !liveRef) return;
+    if (!isLiveVisible() || !liveRef || view.zoomLevel > 1) return;
 
     if (pressed()) {
       timeId = setTimeout(async () => {
