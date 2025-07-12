@@ -17,13 +17,13 @@ import NotFound from "../../components/extents/NotFound";
 import { SlideUp } from "../../components/photoview/actionNav/popover/SlideUp";
 import Logged from "./Logged";
 
-export interface loadedDashboard {
+export type loadedDashboard = {
   users?: UserType[];
   sysStatus: boolean;
   lastBackup: string;
   lastRestore: string;
   missedData: { thumbnail: number; hashcode: number; caption: number };
-}
+};
 
 type UserType = {
   user_name: string;
@@ -32,15 +32,15 @@ type UserType = {
   reg_user_id: string;
 };
 
-export interface ProcessMesg {
+export type ProcessMesg = {
   mesg: string;
   isRunning: boolean;
-}
+};
 
-export interface ImportArgs {
+export type ImportArgs = {
   path: string;
   aimode: 0 | 1;
-}
+};
 
 const Dashboard = () => {
   const [dashboardData, { mutate, refetch }] = createResource<loadedDashboard>(adminFetchAdminDashboard);

@@ -6,7 +6,7 @@ type AuthContextType = {
   setLoggedUser: SetStoreFunction<UserLogged>;
 };
 
-type UserLogged = {
+export type UserLogged = {
   userId: string;
   userEmail: string;
   userName: string;

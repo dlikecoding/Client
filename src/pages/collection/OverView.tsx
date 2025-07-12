@@ -1,10 +1,13 @@
-import { A } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
 import { createStore } from "solid-js/store";
 import style from "./OverView.module.css";
 import placeholder from "../../assets/svgs/place-holder.svg";
 import { createResource, For, onMount, Show } from "solid-js";
 import { fetchCollection, fetchStatistic } from "../../components/extents/request/fetching";
 import { useManageURLContext } from "../../context/ManageUrl";
+
+import { useAuthContext } from "../../context/AuthProvider";
+import { authenticateUser } from "../../components/extents/request/access";
 
 type UpdateKey = "Favorite" | "Hidden" | "Duplicate" | "Recently Deleted";
 
@@ -25,6 +28,7 @@ type ViewLocation = {
 type Collection = {
   albums: ViewAlbum[];
   locations: ViewLocation[];
+  statusBtn: boolean;
 };
 
 const OverView = () => {
@@ -35,6 +39,7 @@ const OverView = () => {
   const [collection, setCollection] = createStore<Collection>({
     albums: [],
     locations: [],
+    statusBtn: false,
   });
 
   const [_loadedAlbums] = createResource(async () => {
@@ -58,6 +63,24 @@ const OverView = () => {
 
   onMount(() => resetParams());
 
+  const navigate = useNavigate();
+  const { loggedUser } = useAuthContext();
+
+  const handleClicked = async (key: string) => {
+    const updateData = gotoPage[key as UpdateKey];
+    if (!updateData) return console.warn(`No update action found for: ${key}`);
+
+    const desKey = Object.keys(gotoPage[key as UpdateKey])[0];
+
+    const url = `/collection/${desKey}`;
+    if (desKey === "hidden" || desKey === "deleted") {
+      const allowAccess = await authenticateUser(loggedUser);
+      if (!allowAccess) return console.warn("Authentication failed");
+    }
+
+    updatePage(updateData);
+    navigate(url);
+  };
   return (
     <main class="mainHomePage">
       <header style={{ position: "relative" }}>
@@ -136,20 +159,27 @@ const OverView = () => {
         <h3>Utilities</h3>
         <div class={style.media_section}>
           <For each={Object.entries(loadedStatistics()!)}>
-            {([key, value]) => (
-              <A
-                href={parseInt(value) === 0 ? "#" : `/collection/${Object.keys(gotoPage[key as UpdateKey])[0]}`}
-                onClick={() => {
-                  if (parseInt(value) === 0) return;
-
-                  const updateData = gotoPage[key as UpdateKey];
-                  if (updateData) return updatePage(updateData);
-                  console.warn(`No update action found for: ${key}`);
-                }}>
-                <span>{key}</span>
-                <span>{value}</span>
-              </A>
-            )}
+            {([key, value]) => {
+              if (parseInt(value) === 0)
+                return (
+                  <button>
+                    <span>{key}</span>
+                    <span>{value}</span>
+                  </button>
+                );
+              return (
+                <button
+                  disabled={collection.statusBtn}
+                  onClick={async () => {
+                    setCollection("statusBtn", true);
+                    await handleClicked(key);
+                    setCollection("statusBtn", false);
+                  }}>
+                  <span>{key}</span>
+                  <span>{value}</span>
+                </button>
+              );
+            }}
           </For>
         </div>
       </Show>

@@ -111,7 +111,7 @@
   margin: 0 20px;
 }
 
-.media_section > A {
+.media_section > button {
   /* Reset styles */
   all: unset; /* Reset all default button styles */
   box-sizing: border-box; /* Ensure padding doesn't affect width */
@@ -128,22 +128,22 @@
   background: none;
 }
 
-.media_section > A:last-child {
+.media_section > button:last-child {
   border: none;
 }
 
-.media_section > A:hover {
+.media_section > button:hover {
   background-color: rgb(103, 103, 108);
   border-radius: 10px;
 }
 
 /* Styling spans inside the button */
-.media_section > A > span:first-child {
+.media_section > button > span:first-child {
   font-size: 18px;
   color: white;
 }
 
-.media_section > A > span:last-child {
+.media_section > button > span:last-child {
   font-size: 15px;
   color: rgb(205, 205, 205);
 }

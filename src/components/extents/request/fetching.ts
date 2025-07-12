@@ -41,6 +41,8 @@ const fetchData = async <T>(url: string): Promise<T | undefined> => {
   }
 };
 
+export const authHelper = async (url: string) => await fetchData(url);
+
 export const reqMethodHelper = async (url: string, method: string, body: Object) =>
   await fetch(url, {
     method: method,
