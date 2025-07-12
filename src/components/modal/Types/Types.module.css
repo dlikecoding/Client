@@ -24,6 +24,50 @@
   z-index: 10;
 } */
 
+.seekBtn {
+  position: fixed;
+  bottom: 0;
+
+  width: 40px;
+  height: 500px; /* More oval-like */
+
+  padding: 0;
+  background: transparent;
+}
+
+.backward {
+  left: 0;
+  border-top-right-radius: 300px;
+  border-bottom-right-radius: 300px;
+  transition: background 2s ease;
+}
+
+.forward {
+  right: 0;
+  border-top-left-radius: 300px;
+  border-bottom-left-radius: 300px;
+  transition: background 2s ease;
+}
+
+.backward:active {
+  background: linear-gradient(
+    to right,
+    rgba(59, 59, 59, 1) 0%,
+    rgba(59, 59, 59, 0.6) 40%,
+    rgba(59, 59, 59, 0.3) 70%,
+    rgba(59, 59, 59, 0) 100%
+  );
+}
+.forward:active {
+  background: linear-gradient(
+    to left,
+    rgba(59, 59, 59, 1) 0%,
+    rgba(59, 59, 59, 0.6) 40%,
+    rgba(59, 59, 59, 0.3) 70%,
+    rgba(59, 59, 59, 0) 100%
+  );
+}
+
 .videoControler {
   /* pointer-events: visible; */
   /* background-color: aqua; */

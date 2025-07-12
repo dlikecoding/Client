@@ -70,8 +70,8 @@ header {
   position: absolute;
   top: 3%;
   left: 4%;
-  width: var(--iconSVGSize);
-  height: var(--iconSVGSize);
+  width: var(--photoViewSVG);
+  height: var(--photoViewSVG);
   background-image: url("../../assets/svgs/select-icon.svg");
   background-size: contain;
   background-repeat: no-repeat;
@@ -84,15 +84,15 @@ header {
   right: 4%;
   color: rgb(247, 247, 247);
   text-shadow: 0 0 5px #343434;
-  font: 500 14px/14px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 500 12px/12px "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .overlayLive {
   position: absolute;
   top: 3%;
   right: 4%;
-  width: var(--iconSVGSize);
-  height: var(--iconSVGSize);
+  width: var(--photoViewSVG);
+  height: var(--photoViewSVG);
   background-image: url("../../assets/svgs/live-icon.svg");
   background-size: contain;
   background-repeat: no-repeat;
@@ -102,8 +102,8 @@ header {
   position: absolute;
   bottom: 3%;
   left: 4%;
-  width: var(--iconSVGSize);
-  height: var(--iconSVGSize);
+  width: var(--photoViewSVG);
+  height: var(--photoViewSVG);
   background-image: url("../../assets/svgs/favorite-icon.svg");
   background-size: contain;
   background-repeat: no-repeat;

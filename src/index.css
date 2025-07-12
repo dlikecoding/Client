@@ -20,6 +20,7 @@
   --popup-bdropfilter: blur(20px) brightness(1);
 
   --iconSVGSize: 25px;
+  --photoViewSVG: 21px;
 
   --textSvgShadow: 0 0 4px rgb(0, 0, 0);
 
@@ -204,7 +205,7 @@ header > button,
   height: 21px;
   min-height: 21px;
 
-  transition: all 0.1s ease-in-out;
+  transition: all 0.2s ease-in-out;
   pointer-events: auto;
 }
 
