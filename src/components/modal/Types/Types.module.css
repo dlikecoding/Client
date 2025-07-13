@@ -23,50 +23,54 @@
   gap: 2px;
   z-index: 10;
 } */
-
 .seekBtn {
   position: fixed;
   bottom: 0;
-
-  width: 40px;
-  height: 500px; /* More oval-like */
-
+  width: 50px;
+  height: 500px;
   padding: 0;
   background: transparent;
+  overflow: hidden;
+  border: none;
 }
 
 .backward {
   left: 0;
-  border-top-right-radius: 300px;
-  border-bottom-right-radius: 300px;
-  transition: background 2s ease;
+  border-radius: 0 250px 250px 0;
 }
 
 .forward {
   right: 0;
-  border-top-left-radius: 300px;
-  border-bottom-left-radius: 300px;
-  transition: background 2s ease;
+  border-radius: 250px 0 0 250px;
 }
 
-.backward:active {
-  background: linear-gradient(
-    to right,
-    rgba(59, 59, 59, 1) 0%,
-    rgba(59, 59, 59, 0.6) 40%,
-    rgba(59, 59, 59, 0.3) 70%,
-    rgba(59, 59, 59, 0) 100%
-  );
+.seekOverlay {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  margin: 0;
 }
-.forward:active {
-  background: linear-gradient(
-    to left,
-    rgba(59, 59, 59, 1) 0%,
-    rgba(59, 59, 59, 0.6) 40%,
-    rgba(59, 59, 59, 0.3) 70%,
-    rgba(59, 59, 59, 0) 100%
-  );
+
+.backward .seekOverlay {
+  background: linear-gradient(to right, rgba(59, 59, 59, 0.6) 0%, rgba(59, 59, 59, 0.2) 60%, rgba(59, 59, 59, 0) 100%);
 }
+
+.forward .seekOverlay {
+  background: linear-gradient(to left, rgba(59, 59, 59, 0.6) 0%, rgba(59, 59, 59, 0.2) 60%, rgba(59, 59, 59, 0) 100%);
+}
+
+.isDoubleClick .seekOverlay {
+  opacity: 1;
+}
+
+/* //////////////////////////////////// */
 
 .videoControler {
   /* pointer-events: visible; */

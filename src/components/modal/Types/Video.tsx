@@ -80,6 +80,14 @@ const Video: Component<VideoProps> = (props) => {
   //   const nextMedia = displayMedias[current.idx + 1];
   //   scrollToModalElement(nextMedia.media_id, "smooth");
   // };
+
+  const [seekButton, setSeekButton] = createStore({ backward: false, forward: false });
+  const seekAnimation = (direction: "backward" | "forward") => {
+    setSeekButton(direction, true);
+    direction === "backward" ? seekBackward(videoRef) : seekForward(videoRef);
+    setTimeout(() => setSeekButton(direction, false), 300); // matches CSS transition duration
+  };
+
   return (
     <>
       <video
@@ -142,17 +150,20 @@ const Video: Component<VideoProps> = (props) => {
             classList={{
               [styles.seekBtn]: true,
               [styles.backward]: true,
+              [styles.isDoubleClick]: seekButton.backward,
             }}
-            onDblClick={() => seekBackward(videoRef)}>
-            {/* {BackwardButtonIcon()} */}
+            onDblClick={() => seekAnimation("backward")}>
+            <div class={styles.seekOverlay}>{BackwardButtonIcon()}</div>
           </button>
+
           <button
             classList={{
               [styles.seekBtn]: true,
               [styles.forward]: true,
+              [styles.isDoubleClick]: seekButton.forward,
             }}
-            onDblClick={() => seekForward(videoRef)}>
-            {/* {ForwardButtonIcon()} */}
+            onDblClick={() => seekAnimation("forward")}>
+            <div class={styles.seekOverlay}>{ForwardButtonIcon()}</div>
           </button>
         </div>
 
