@@ -38,6 +38,8 @@
   -moz-osx-font-smoothing: grayscale;
 
   overscroll-behavior: smooth; /* Remove bouding for all of the pages */
+
+  font-family: system-ui, "Segoe UI", "Open Sans", sans-serif;
 }
 
 /* Hide Scrollbars */
@@ -58,7 +60,6 @@ body {
   scroll-behavior: none;
 
   color: white;
-  font-family: sans-serif;
 
   /* when hit scroll limits inside .mainHomePage, 
   don’t pass the scroll to parent (body). */

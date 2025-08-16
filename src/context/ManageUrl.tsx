@@ -1,6 +1,6 @@
 import { useLocation } from "@solidjs/router";
 import { createContext, useContext, JSX, createMemo } from "solid-js";
-import { createStore, SetStoreFunction } from "solid-js/store";
+import { createStore, reconcile, SetStoreFunction } from "solid-js/store";
 
 const LOCALSTORAGE_VIEW_KEY = "zoomAspect";
 export const MIN_ZOOM_LEVEL = 1;
@@ -8,21 +8,21 @@ export const MAX_ZOOM_LEVEL = 5;
 export const ZOOM_SENSITIVITY = 0.3;
 
 export type SearchQuery = {
-  year?: number;
-  month?: number;
+  year?: number | undefined;
+  month?: number | undefined;
 
   filterType?: "Photo" | "Live" | "Video";
-  filterDevice?: number;
+  filterDevice?: number | undefined;
 
-  searchKey?: string;
+  searchKey?: string | undefined;
 
-  favorite?: number;
-  hidden?: number;
-  deleted?: number;
-  duplicate?: number;
+  favorite?: number | undefined;
+  hidden?: number | undefined;
+  deleted?: number |undefined;
+  duplicate?: number | undefined;
 
-  albumId?: number;
-  locationId?: number;
+  albumId?: number | undefined;
+  locationId?: number | undefined;
 
   sortKey: "file_size" | "create_date" | "upload_at";
   sortOrder: 0 | 1;
@@ -89,11 +89,17 @@ export const ManageURLContextProvider = (props: ManageURLContextProviderProps) =
 
   // Resets all parameters in the query object to their default values
   const resetParams = () => {
-    setParams(defaultParams());
+    setParams(reconcile(defaultParams()));
   };
+
   const resetLibrary = () => {
-    setParams((prevState) => ({ ...prevState, ...resetFilter() }));
-  }; // For Library only (wo reset year, month)
+    // console.log({...params})
+    setParams(resetFilter());
+  }; 
+
+  // const resetLibrary = () => {
+  //   setParams((prevState) => ({ ...prevState, ...resetFilter() }));
+  // }; // For Library only (wo reset year, month)
 
   createMemo(() => saveLocalStorage(LOCALSTORAGE_VIEW_KEY, view));
 
@@ -139,7 +145,7 @@ const defaultParams = (): SearchQuery => ({
 
   sortKey: "create_date",
   sortOrder: 0, // Valid now
-  ...resetFilter,
+  ...resetFilter(),
 });
 
 // const defaultPage: StoreLastVisit = {
