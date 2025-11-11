@@ -19,6 +19,7 @@
     "@simplewebauthn/browser": "^13.1.0",
     "@solid-primitives/list": "^0.1.2",
     "@solidjs/router": "^0.15.3",
+    "@zoom-image/solid": "^0.2.30",
     "solid-js": "^1.9.7",
     "solidjs-use": "^2.3.0"
   }

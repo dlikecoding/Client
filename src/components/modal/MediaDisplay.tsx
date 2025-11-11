@@ -7,7 +7,9 @@ import Live from "./Types/Live";
 import { useIntersectionObserver, useResizeObserver } from "solidjs-use";
 import { useManageURLContext, ZoomAndAspect } from "../../context/ManageUrl";
 import { SetStoreFunction } from "solid-js/store";
-import { useMouseTask } from "../hooks/MouseGesture";
+// import { useMouseTask } from "../hooks/MouseGesture";
+
+import { useZoomImageWheel } from "@zoom-image/solid";
 
 interface MediaTypeProps {
   media: MediaType;
@@ -35,6 +37,8 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
 
   const [isVisible, setIsVisible] = createSignal<boolean>(false);
   const { openModal, setOpenModal } = useViewMediaContext();
+
+  const { createZoomImage } = useZoomImageWheel();
 
   onMount(() => {
     // Tracking if element is visible, then set the current index to this
@@ -69,7 +73,9 @@ const MediaDisplay: Component<MediaTypeProps> = (props) => {
       });
     });
 
-    useMouseTask(mediaRef!);
+    // useMouseTask(mediaRef!);
+
+    createZoomImage(mediaRef);
   });
 
   const handleClick = useZoomAndClickHandler(setView, isVisible, openModal, setOpenModal);
