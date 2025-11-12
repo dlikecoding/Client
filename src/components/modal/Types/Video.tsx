@@ -81,12 +81,12 @@ const Video: Component<VideoProps> = (props) => {
   //   scrollToModalElement(nextMedia.media_id, "smooth");
   // };
 
-  const [seekButton, setSeekButton] = createStore({ backward: false, forward: false });
-  const seekAnimation = (direction: "backward" | "forward") => {
-    setSeekButton(direction, true);
-    direction === "backward" ? seekBackward(videoRef) : seekForward(videoRef);
-    setTimeout(() => setSeekButton(direction, false), 300); // matches CSS transition duration
-  };
+  // const [seekButton, setSeekButton] = createStore({ backward: false, forward: false });
+  // const seekAnimation = (direction: "backward" | "forward") => {
+  //   setSeekButton(direction, true);
+  //   direction === "backward" ? seekBackward(videoRef) : seekForward(videoRef);
+  //   setTimeout(() => setSeekButton(direction, false), 300); // matches CSS transition duration
+  // };
 
   return (
     <>
@@ -142,7 +142,7 @@ const Video: Component<VideoProps> = (props) => {
 
       <Show when={isVideoVisible()}>
         {/* Design a videoPlayer control when video play, user able to control it */}
-        <div
+        {/* <div
           classList={{
             [modalS.fadeOut]: openModal.showImage,
           }}>
@@ -165,7 +165,7 @@ const Video: Component<VideoProps> = (props) => {
             onDblClick={() => seekAnimation("forward")}>
             <div class={styles.seekOverlay}>{ForwardButtonIcon()}</div>
           </button>
-        </div>
+        </div> */}
 
         <div
           classList={{
@@ -173,33 +173,38 @@ const Video: Component<VideoProps> = (props) => {
             [modalS.fadeOut]: openModal.showImage,
             [styles.videoControler]: true,
           }}>
-          <button class="buttonVideoPlayer" onClick={() => setVidStatus("muted", (prev) => !prev)}>
+          {/* <button class="buttonVideoPlayer" onClick={() => setVidStatus("muted", (prev) => !prev)}>
             {MuteIcon(vidStatus.muted)}
-          </button>
-          <button class="buttonVideoPlayer" onClick={(e) => fullScreenVideo(e, videoRef!)}>
-            {FullScreenIcon()}
-          </button>
-
-          <div class={styles.playbar}>
+          </button> */}
+          <div class={styles.playInfo}>
             <button onClick={async () => togglePlayVideo(videoRef)}>
               {vidStatus.isPlaying ? PauseButtonIcon() : PlayButtonIcon()}
             </button>
+            <p>{formatDuration(vidStatus.currentTime)}</p>
+            <button class="buttonVideoPlayer" onClick={(e) => fullScreenVideo(e, videoRef!)}>
+              {FullScreenIcon()}
+            </button>
+          </div>
 
+          <div class={styles.playbar}>
             <input
               class={styles.videoSlider}
               style={{ "--currentProcess": `${(vidStatus.currentTime / media().duration) * 100}%` }}
               type="range"
               min="0"
-              max={Math.round(media().duration)}
+              max={Math.round(media().duration * 100) / 100}
               value={vidStatus.currentTime}
-              // step={1 / slowMode()}
+              step={0.01}
               onInput={(e) => {
                 e.preventDefault();
                 videoRef!.currentTime = Number(e.target.value);
+                setVidStatus("currentTime", Number(e.target.value));
               }}
+              onMouseDown={() => pauseVideo(videoRef)}
+              onMouseUp={() => playVideo(videoRef)}
+              onTouchStart={() => pauseVideo(videoRef)}
+              onTouchEnd={() => playVideo(videoRef)}
             />
-            {/* NEED TO-DO Improve this funtion to prevent calculate time every second */}
-            {media().video_duration}
           </div>
         </div>
       </Show>
@@ -213,6 +218,21 @@ const Video: Component<VideoProps> = (props) => {
 };
 
 export default Video;
+
+const pauseVideo = (videoRef: HTMLVideoElement) => {
+  if (!videoRef) return;
+  if (!videoRef.paused) videoRef.pause();
+};
+const playVideo = (videoRef: HTMLVideoElement) => {
+  if (!videoRef) return;
+  if (videoRef.paused) videoRef.play();
+};
+
+const formatDuration = (seconds: number): string => {
+  const minutes = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${minutes.toString().padStart(2, "0")}:${secs.toFixed(2).padStart(5, "0")}`;
+};
 
 /**
  * Toggles video playback between play and pause.

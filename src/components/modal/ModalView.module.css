@@ -115,13 +115,12 @@ header > .modalTitle {
 .modalThumbs {
   position: fixed;
   width: 350px;
-  height: 50px;
+  height: auto;
 
   left: 50%;
   transform: translateX(-50%);
 
-  bottom: 90px;
-
+  bottom: 170px; /* 90px */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -138,14 +137,6 @@ header > .modalTitle {
   position: relative;
   width: 30px;
   height: 100%;
-}
-
-.modalThumbs > .videoControler {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* background: firebrick;
-  width: 100px; */
 }
 
 /* This is for thumbnail in modal view */
