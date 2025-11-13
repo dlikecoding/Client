@@ -39,7 +39,7 @@
 
   overscroll-behavior: smooth; /* Remove bouding for all of the pages */
 
-  font-family: system-ui, "Segoe UI", "Open Sans", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", "Open Sans", sans-serif;
 }
 
 /* Hide Scrollbars */

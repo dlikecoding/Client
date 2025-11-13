@@ -43,11 +43,10 @@
   stroke: rgba(0, 0, 0, 0.276);
 }
 
-.groupSearch input:focus {
-  background: rgba(255, 255, 255, 0.8);
-  box-shadow: 0 0 0 3px rgba(128, 160, 255, 0.5);
-
-  color: black;
+.groupSearch input {
+  border: 2px solid rgba(255, 255, 255, 0.446);
+  color: #1f02ff;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.446);
 }
 
 .groupSearch input:focus {
@@ -56,9 +55,8 @@
 
   color: black;
 }
-
 .groupSearch input::placeholder {
-  color: #494949;
+  color: rgba(255, 255, 255, 0.657);
 }
 
 .clearBtn {

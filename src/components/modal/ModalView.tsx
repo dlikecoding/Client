@@ -212,9 +212,8 @@ const Modal: Component<ModalProps> = (props) => {
         </div>
 
         {/* <Show when={view.showThumb}>
-          <div
-            classList={{ [styles.modalThumbs]: true, [styles.fadeOut]: showImageOnly() || displayMedias.length <= 1 }}>
-            <List each={visibleRows()} fallback={<NotFound />}>
+          <div classList={{ [styles.modalThumbs]: true, [styles.fadeOut]: displayMedias.length <= 1 }}>
+            <List each={visualModal()} fallback={<NotFound />}>
               {(media, index) => (
                 <div
                   style={media().media_id === current.elId ? { width: "50px", margin: "0 5px" } : {}}

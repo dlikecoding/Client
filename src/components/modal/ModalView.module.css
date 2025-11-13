@@ -120,7 +120,7 @@ header > .modalTitle {
   left: 50%;
   transform: translateX(-50%);
 
-  bottom: 170px; /* 90px */
+  bottom: 140px; /* 90px */
   display: flex;
   justify-content: center;
   align-items: center;

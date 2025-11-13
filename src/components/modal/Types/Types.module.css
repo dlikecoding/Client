@@ -23,7 +23,8 @@
   gap: 2px;
   z-index: 10;
 } */
-.seekBtn {
+
+/* .seekBtn {
   position: fixed;
   bottom: 0;
   width: 50px;
@@ -68,7 +69,7 @@
 
 .isDoubleClick .seekOverlay {
   opacity: 1;
-}
+} */
 
 /* //////////////////////////////////// */
 

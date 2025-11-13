@@ -40,7 +40,7 @@ const Search = () => {
       <div class={styles.groupSearch}>
         <input
           type="text"
-          placeholder="Find photos by input a sentence..."
+          placeholder="Cup of coffee on a wooden table..."
           value={keyword()}
           onInput={(e) => debouncedSetKeyword(e.currentTarget.value)}
         />
